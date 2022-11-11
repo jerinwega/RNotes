@@ -1,0 +1,3 @@
+rootProject.name = 'RNotes'
+
+include ':app'
