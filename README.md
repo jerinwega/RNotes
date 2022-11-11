@@ -1,4 +1,3 @@
-npm install
-
-npm start 
-npx react-native run-ios
+npm i
+pod install
+npm start

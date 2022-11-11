@@ -1,11 +1,11 @@
-
 import React, { Component } from 'react';
-import { createDrawerNavigator, createAppContainer } from "react-navigation";
-import Home from './src/screens/Home';
-import AddNote from './src/screens/AddNote';
-import EditNote from './src/screens/EditNote';
+import { createAppContainer } from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import Home from './screens/Home';
+// import AddNote from './src/screens/AddNote';
+// import EditNote from './src/screens/EditNote';
 import { Provider } from 'react-redux';
-import store from './src/redux/store';
+import store from './redux/store';
 
 const AppDrawerNavigator = createDrawerNavigator({
     Home: { screen: Home },

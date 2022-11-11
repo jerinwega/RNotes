@@ -1,1 +1,7 @@
 node_modules
+Pods
+android/app/debug.keystore
+android/app/src/debug/java/
+ios/Podfile.lock
+ios/RNotes.xcworkspace/
+ios/RNotes/LaunchScreen.storyboard
