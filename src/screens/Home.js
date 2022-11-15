@@ -6,11 +6,14 @@
  * @flow strict-local
  */
 
- import React from "react";
- import { View, StyleSheet, TextInput, TouchableOpacity} from "react-native";
- import { useColorMode, HStack, Center, Avatar, Button, StatusBar, Spinner, Image, Box, IconButton, Switch, Text} from "native-base";
+ import React, { useState } from "react";
+ import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions } from "react-native";
+ import { useColorMode, HStack, Center, Avatar, Button, StatusBar, Spinner, Fab, Box, IconButton, Switch, Text} from "native-base";
 //  import Menu, { MenuItem } from 'react-native-material-menu';
- import Icon from 'react-native-vector-icons/FontAwesome5';
+ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+ import OctIcon from 'react-native-vector-icons/Octicons';
+ import IonIcon from 'react-native-vector-icons/Ionicons';
+
  //  import { debounce } from 'lodash';
 //  import { getNotes, getSearch, getSort } from '../publics/redux/actions/notes'
 //  import { getCategory } from '../publics/redux/actions/category'
@@ -20,25 +23,25 @@
 //  console.disableYellowBox = true;
 import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 
-function ToggleDarkMode() {
+
+ const HomeScreen = ({ navigation }) => {
+
+  const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode, toggleColorMode } = useColorMode();
-  return (
-    <HStack space={2} alignItems="center">
-      <IconButton 
-      icon={colorMode === 'light' ? <Icon name="moon" color={DARK_COLOR} size={25} solid /> 
-      : <Icon name="sun" color={LIGHT_COLOR} size={25} solid />} 
-      borderRadius="full"
-      onPress={toggleColorMode}
-      />
 
-    </HStack>
-  );
-}
+  const [sortBy, setSort] = useState('DESC')
 
- const HomeScreen = () => {
-  const { colorMode } = useColorMode();
+
+  const handleSort = () => {
+    if (sortBy === 'DESC') {
+      setSort('ASC');
+    } else {
+      setSort('DESC');
+    }
+  }
 
   return (
+    <View style={{ width: deviceWidth }}>
     <Center 
     shadow="2"
     _dark={{ bg: DARK_COLOR }}
@@ -46,12 +49,12 @@ function ToggleDarkMode() {
       >
     <StatusBar _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
     <Box safeAreaTop bg="#f5f5f5" />
-    <HStack  _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" minW="350">
+    <HStack  _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
       <HStack px="2">
         <Avatar 
         _dark={{ bg: LIGHT_COLOR }}
         _light={{ bg: DARK_COLOR }}
-        style={{ height: 50, width: 50}}
+        style={{ height: 55, width: 55}}
         source={require('../assets/images/R5.jpg')}
         // source={{ uri: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"}}
         >
@@ -60,19 +63,61 @@ function ToggleDarkMode() {
         </Text>
         </Avatar>
       </HStack>
-      <HStack m="auto">
-        <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="4xl" style={{ fontFamily: 'ChocoChici'}}>
-          RNotes
-        </Text>
+        <HStack>
+          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="4xl" style={{ fontFamily: 'ChocoChici'}}>
+            RNotes
+          </Text>
         </HStack>
-      <HStack>
-      <ToggleDarkMode/>
-        {/* <IconButton icon={<Icon name="moon" color={colorMode === 'light' ? DARK_COLOR : 'white'} size={20} solid />} borderRadius="full"/> */}
-        <IconButton icon={<Icon name="lightbulb" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid />} />
-        <IconButton icon={<Icon name="ellipsis-v" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid />} />
-      </HStack>
+        <HStack px="2">
+          <IconButton 
+          icon={colorMode === 'light' ? <FontAwesome5Icon name="moon" color={DARK_COLOR} size={26} solid /> 
+          : <FontAwesome5Icon name="sun" color={LIGHT_COLOR} size={26} solid />} 
+          borderRadius="full"
+          onPress={toggleColorMode}
+          />
+          <IconButton
+          icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={28} solid />} 
+          borderRadius="full"           
+          />
+          <IconButton 
+          icon={sortBy === 'DESC' ? 
+          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid /> 
+          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid /> } 
+          borderRadius="full" 
+          onPress={handleSort}
+          />
+        </HStack>
     </HStack>
-    </Center>
+  </Center>
+  <Center>
+    {/* <Box style={{ width: deviceWidth }} h="85%">
+    onPress={() => this.props.navigation.navigate('AddNote')}
+    <Fab 
+      renderInPortal={false} 
+      colorScheme='muted'
+      shadow={2}
+      size="sm" 
+      icon={<FontAwesome5Icon color="white" name="plus" size={26} />} 
+    />
+    </Box> */}
+      <Box 
+        height="100" 
+        w="100%" 
+        shadow="2" 
+        // rounded="lg" 
+        _dark={{ bg: DARK_COLOR }}
+        _light={{ bg: LIGHT_COLOR }}
+      >
+        <Fab 
+        onPress={() => navigation.navigate('AddNote')}
+        renderInPortal={false} 
+        shadow={2} 
+        size={16}
+        colorScheme={colorMode === "light" ? "light" : "dark"}
+        icon={<FontAwesome5Icon color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid name="plus" />} />
+      </Box>
+  </Center>
+  </View>
   )
  }
  
