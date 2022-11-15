@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
+// import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import Home from './screens/Home';
 import AddNote from './screens/AddNote';
 // import EditNote from './src/screens/EditNote';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import { NativeBaseProvider, extendTheme } from "native-base";
+
 
 const AppDrawerNavigator = createDrawerNavigator({
     Home: { screen: Home },
@@ -13,14 +16,24 @@ const AppDrawerNavigator = createDrawerNavigator({
     // EditNote: { screen: EditNote },
   },
 );
-
 const AppContainer = createAppContainer(AppDrawerNavigator);
-export default class App extends Component{
-	render(){
-		return(
-			<Provider store={store}>
-				<AppContainer/>
-			</Provider>
-		)
-	}
+
+export default function App() {
+// let theme = useColorScheme();
+const config = {
+    useSystemColorMode: true
+}
+const extendedTheme = extendTheme({ config })
+
+// console.log("theme", theme)
+
+return (
+    <Provider store={store}>
+        {/* <AppearanceProvider> */}
+            <NativeBaseProvider theme={extendedTheme} >
+                <AppContainer />
+            </NativeBaseProvider>
+        {/* </AppearanceProvider> */}
+    </Provider>
+);
 }
