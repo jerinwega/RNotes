@@ -7,10 +7,10 @@
  */
 
  import React, { useState } from "react";
- import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions } from "react-native";
+ import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard  } from "react-native";
  import { useColorMode, HStack, Center, Avatar, Button, 
   StatusBar, Spinner, Fab, Box, IconButton, Switch, Text,
-  Divider, Container, Flex
+  Divider, Container, Flex, Input, Icon
 } from "native-base";
 //  import Menu, { MenuItem } from 'react-native-material-menu';
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -24,6 +24,7 @@
  
 //  console.disableYellowBox = true;
 import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
+import SearchBar from "react-native-dynamic-search-bar";
 
 
  const HomeScreen = ({ navigation }) => {
@@ -32,7 +33,7 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
   const { colorMode, toggleColorMode } = useColorMode();
 
   const [sortBy, setSort] = useState('DESC')
-
+  const [search, setSearch] = useState('')
 
   const handleSort = () => {
     if (sortBy === 'DESC') {
@@ -40,6 +41,11 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
     } else {
       setSort('DESC');
     }
+  }
+
+  const handleChange = text => {
+    console.log("value", text);
+    setSearch(text);
   }
 
   return (
@@ -53,9 +59,7 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
       <HStack px="2">
         <Avatar 
-        _dark={{ bg: LIGHT_COLOR }}
-        _light={{ bg: DARK_COLOR }}
-        style={{ height: 55, width: 55}}
+        style={{ height: 64, width: 64 }}
         source={require('../assets/images/R5.jpg')}
         // source={{ uri: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"}}
         >
@@ -69,21 +73,21 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
             RNotes
           </Text>
         </HStack>
-        <HStack px="2">
+        <HStack px="1">
           <IconButton 
-          icon={colorMode === 'light' ? <FontAwesome5Icon name="moon" color={DARK_COLOR} size={26} solid /> 
-          : <FontAwesome5Icon name="sun" color={LIGHT_COLOR} size={26} solid />} 
+          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={26} solid /> 
+          : <OctIcon name="sun" color={LIGHT_COLOR} size={26} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
           <IconButton
-          icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={28} solid />} 
-          borderRadius="full"           
+          icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid />} 
+          borderRadius="full"  
           />
           <IconButton 
           icon={sortBy === 'DESC' ? 
-          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid /> 
-          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid /> } 
+          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> 
+          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> } 
           borderRadius="full" 
           onPress={handleSort}
           />
@@ -91,18 +95,63 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
     </HStack>
   </Center>
   <View>
-    <Divider colorScheme={colorMode === "light" ? "light" : "dark"}/>
+    <Divider />
   </View>
-  <View style={{padding: 10 }} >
-            {/* <TextInput 
+  <Box style={{ flex:1 }} 
+    _dark={{ bg: "black" }}
+    _light={{ bg: "white" }}
+    shadow={4}
+    >
+  <View style={{ paddingTop: 24 }}>
+    <SearchBar
+      style={{ height: "25%", borderRadius: 20, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR}}
+      darkMode={colorMode === 'dark'}
+      fontSize={16}
+      // fontColor="#c6c6c6"
+      // iconColor="#c6c6c6"
+      // shadowColor="#282828"
+      // cancelIconColor="#c6c6c6"
+      // backgroundColor="#353d5e"
+      placeholder="Search"
+      onChangeText={(text) => console.log(text)}
+      // onSearchPress={() => console.log("Search Icon is pressed")}
+      // onClearPress={() => this.filterList("")}
+      // onPress={() => alert("onPress")}
+    />
+    {/* <Input
+      autoCorrect={false}
+      autoCapitalize="none"
+      size="lg"
+      padding={3}
+      shadow={2}
+      focusOutlineColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+      _dark={{ bg: DARK_COLOR, 
+        _focus: {
+          bg: DARK_COLOR
+        } 
+      }}
+      _light={{ bg: LIGHT_COLOR,
+        _focus: {
+          bg: LIGHT_COLOR
+        } 
+       }}
+      InputLeftElement={<Icon as={<FontAwesome5Icon name="search" />} ml="3" size={4} color={colorMode === "light" ? DARK_COLOR : LIGHT_COLOR} /> }
+      variant="rounded"
+      placeholder="Search" 
+      value={search}
+      onChangeText={debounce(handleChange, 900)}
+      />   */}
+      
+        {/* <TextInput 
               style={styles.textInput}
-              onChangeText={() => debounce(this.changeText,900)}
+              onChangeText={debounce(handleChange, 900)}
               //onEndEditing={() => this.changeText(text)}
-              placeholder="Search Here!"
+              placeholder="Search"
+              value={search}
             /> */}
-            {/* <Text>{this.state.text}</Text> */}
+
         </View>
-        <View style={{ flex:1 }}>
+        <View>
         {/* <Spinner color='blue' />  */}
 
           {/* {this.props.notes.isLoading == true ? 
@@ -112,176 +161,35 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
             )
           } */}
         </View>
-
-      <Box
-      >
+        </Box>
+      <Box>
         <Fab 
-        style={{ flex: 1 }}
-        onPress={() => navigation.navigate('AddNote')}
-        renderInPortal={false} 
-        shadow={2} 
-        size={16}
-        bg="purple.400"
-        // colorScheme="purple"
-        icon={<FontAwesome5Icon color="white" solid size={28} name="plus" />} />
+          style={{ flex: 1 }}
+          onPress={() => navigation.navigate('AddNote')}
+          renderInPortal={false} 
+          shadow={4} 
+          size={16}
+          bg={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+          icon={<FontAwesome5Icon color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } solid size={28} name="plus" />} />
       </Box>
   </View>
   )
  }
  
-  //  _menu = null;
-  
-  //  setMenuRef = ref => {
-  //    this._menu = ref;
-  //  };
-  
-  //  hideMenu = () => {
-  //    this._menu.hide();
-  //  };
-  
-  //  showMenu = () => {
-  //    this._menu.show();
-  //  };
- 
-  //  constructor(props) {
-  //    super(props);
-  //    this.state = {
-  //      text: '',
-  //      sortBy: 'DESC',
-  //      search: ''
-  //    }
-  //  }
- 
-  //  changeText = (value) => {
-  //   //  this.setState({search:value})
-  //   //  this.Search()
-  //  }
- 
-  //  Search = () => {
-  //    this.props.dispatch(getNotes(this.state.search, this.state.sortBy))
-  //  }
- 
-   // endEditing() {
-   //   const Text = this.state.text;
-   //   this.props.dispatch(getSearch(Text))
-   // }
- 
-  //  componentDidMount = () => {
-  //    this.getDataCategory()
-  //    this.getDataNotes()
-  //  }
- 
-   // componentWillUpdate(nextProps, nextState) {
-   //   if (nextState.open == true && this.state.open == false) {
-   //     this.endEditing()
-   //   }
-   // }
-  //  pickSort = (value) => {
-  //   console.log("value", value);
-  //   //  this.setState({sortBy: value})
-  //   //  this.props.dispatch(getNotes(this.state.search ,value))
-  //  }
- 
-  //  getDataNotes = () => {
-  //    this.props.dispatch(getNotes())
-  //  }
- 
-  //  getDataCategory = () => {
-  //    this.props.dispatch(getCategory())
-  //  }  
- 
-//      return (
-//        <Container>
-//         {/* <StatusBar bg="#3700B3" barStyle="light-content" />
-//       <Box safeAreaTop bg="violet.600" />
-//       <HStack bg="violet.800" px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" maxW="350">
-//         <HStack alignItems="center">
-//           <IconButton icon={<Icon size="sm" name="menu" color="white" />} />
-//           <Text color="white" fontSize="20" fontWeight="bold">
-//             Home
-//           </Text>
-//         </HStack>
-//         <HStack>
-//           <IconButton icon={<Icon name="favorite" size="sm" color="white" />} />
-//           <IconButton icon={<Icon name="search" size="sm" color="white" />} />
-//           <IconButton icon={<Icon name="more-vert" size="sm" color="white" />} />
-//         </HStack>
-//       </HStack> */}
-//          <HStack style={{ backgroundColor: 'red'}}>
-//            <Center>
-//              <Button
-//                transparent
-//                onPress={() => this.props.navigation.openDrawer()}>
-//                <Image
-//                  style={{height: 40, width: 40, borderRadius: 30 }}
-//                  source={
-//                    require('../assets/topImage.jpg')
-//                  }
-//                />
-//              </Button>
-//            </Center>
-//            <Text>
-//              <Text style={{alignSelf:'center', color:'#000000'}}>NOTE APP</Text>
-//            </Text>
-//            <Center>
-//              <View style={{right:10}}>
-//                {/* <Menu
-//                  ref={this.setMenuRef}
-//                  button={<Icon onPress={this.showMenu} name="sort-amount-asc" style={{ fontSize:20, color: "#000000" }}/>}>
-//                  <MenuItem onPress={()=>{this.hideMenu(), this.pickSort('ASC')}}>ASCENDING</MenuItem>
-//                  <MenuItem onPress={()=>{this.hideMenu(), this.pickSort('DESC')}}>DESCENDING</MenuItem>
-//                </Menu> */}
-//              </View>
-//            </Center>
-//          </HStack>
-//          {/* <View style={{padding: 10}}>
-//              <TextInput 
-//                style={styles.textInput}
-//                onChangeText={() => debounce(this.changeText,900)}
-//                onEndEditing={() => this.changeText(text)}
-//                placeholder="Search Here!"
-//              />
-//              <Text>{this.state.text}</Text>
-//          </View> */}
-//          <View style={{ flex:1}}>
-//          <Spinner color='blue' /> 
-//            {/* { this.props.notes.isLoading == true ? 
-//              <Spinner color='blue' /> 
-//              :
-//              ( 
-//               <ListData navigation={this.props.navigation}/>
-//              )
-//            } */}
-//          </View>
-//          <TouchableOpacity style={styles.fab} onPress={() => this.props.navigation.navigate('AddNote')}>
-//           <Icon name={'plus'} size={21} color="#000" solid />
-//          </TouchableOpacity> 
-//        </Container>
-//      );
-//  }
- 
+
  const styles = StyleSheet.create({
-   textInput: {
-     borderRadius: 23,
-     margin: 10,
-     marginBottom: 5,
-     marginTop: 15,
-     padding: 10,
-     paddingLeft: 20,
-     elevation: 2
-   },
-   fab: {
-     elevation: 3,
-     alignItems:'center',
-     justifyContent:'center',
-     width:60,
-     height:60,
-     position: 'relative',                                          
-     bottom: 35,                                                    
-     right: 15,
-     backgroundColor:'#FFF',
-     borderRadius:100,
-   },
+  // textInput: {
+  //   borderColor: "black",
+  //   borderBottomWidth: 1,
+  //   borderTopWidth: 1,
+  //   borderRadius: 23,
+  //   margin: 10,
+  //   marginBottom: 5,
+  //   marginTop: 15,
+  //   padding: 10,
+  //   paddingLeft: 20,
+  //   elevation: 10
+  // },
  });
  
 //  const mapStateToProps = ( state ) => {
