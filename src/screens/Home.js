@@ -8,13 +8,15 @@
 
  import React, { useState } from "react";
  import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions } from "react-native";
- import { useColorMode, HStack, Center, Avatar, Button, StatusBar, Spinner, Fab, Box, IconButton, Switch, Text} from "native-base";
+ import { useColorMode, HStack, Center, Avatar, Button, 
+  StatusBar, Spinner, Fab, Box, IconButton, Switch, Text,
+  Divider, Container, Flex
+} from "native-base";
 //  import Menu, { MenuItem } from 'react-native-material-menu';
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
-
- //  import { debounce } from 'lodash';
+ import { debounce } from 'lodash';
 //  import { getNotes, getSearch, getSort } from '../publics/redux/actions/notes'
 //  import { getCategory } from '../publics/redux/actions/category'
 //  import { connect } from 'react-redux'
@@ -41,15 +43,14 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
   }
 
   return (
-    <View style={{ width: deviceWidth }}>
+    <View style={{ width: deviceWidth, flex: 1 }}>
     <Center 
-    shadow="2"
     _dark={{ bg: DARK_COLOR }}
     _light={{ bg: LIGHT_COLOR }}
       >
     <StatusBar _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
     <Box safeAreaTop bg="#f5f5f5" />
-    <HStack  _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
+    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
       <HStack px="2">
         <Avatar 
         _dark={{ bg: LIGHT_COLOR }}
@@ -89,34 +90,41 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
         </HStack>
     </HStack>
   </Center>
-  <Center>
-    {/* <Box style={{ width: deviceWidth }} h="85%">
-    onPress={() => this.props.navigation.navigate('AddNote')}
-    <Fab 
-      renderInPortal={false} 
-      colorScheme='muted'
-      shadow={2}
-      size="sm" 
-      icon={<FontAwesome5Icon color="white" name="plus" size={26} />} 
-    />
-    </Box> */}
-      <Box 
-        height="100" 
-        w="100%" 
-        shadow="2" 
-        // rounded="lg" 
-        _dark={{ bg: DARK_COLOR }}
-        _light={{ bg: LIGHT_COLOR }}
+  <View>
+    <Divider colorScheme={colorMode === "light" ? "light" : "dark"}/>
+  </View>
+  <View style={{padding: 10 }} >
+            {/* <TextInput 
+              style={styles.textInput}
+              onChangeText={() => debounce(this.changeText,900)}
+              //onEndEditing={() => this.changeText(text)}
+              placeholder="Search Here!"
+            /> */}
+            {/* <Text>{this.state.text}</Text> */}
+        </View>
+        <View style={{ flex:1 }}>
+        {/* <Spinner color='blue' />  */}
+
+          {/* {this.props.notes.isLoading == true ? 
+            <Spinner color='blue' /> :
+            ( 
+              <ListData navigation={this.props.navigation}/>
+            )
+          } */}
+        </View>
+
+      <Box
       >
         <Fab 
+        style={{ flex: 1 }}
         onPress={() => navigation.navigate('AddNote')}
         renderInPortal={false} 
         shadow={2} 
         size={16}
-        colorScheme={colorMode === "light" ? "light" : "dark"}
-        icon={<FontAwesome5Icon color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid name="plus" />} />
+        bg="purple.400"
+        // colorScheme="purple"
+        icon={<FontAwesome5Icon color="white" solid size={28} name="plus" />} />
       </Box>
-  </Center>
   </View>
   )
  }
@@ -252,29 +260,29 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 //      );
 //  }
  
-//  const styles = StyleSheet.create({
-//    textInput: {
-//      borderRadius: 23,
-//      margin: 10,
-//      marginBottom: 5,
-//      marginTop: 15,
-//      padding: 10,
-//      paddingLeft: 20,
-//      elevation: 2
-//    },
-//    fab: {
-//      elevation: 3,
-//      alignItems:'center',
-//      justifyContent:'center',
-//      width:60,
-//      height:60,
-//      position: 'relative',                                          
-//      bottom: 35,                                                    
-//      right: 15,
-//      backgroundColor:'#FFF',
-//      borderRadius:100,
-//    },
-//  });
+ const styles = StyleSheet.create({
+   textInput: {
+     borderRadius: 23,
+     margin: 10,
+     marginBottom: 5,
+     marginTop: 15,
+     padding: 10,
+     paddingLeft: 20,
+     elevation: 2
+   },
+   fab: {
+     elevation: 3,
+     alignItems:'center',
+     justifyContent:'center',
+     width:60,
+     height:60,
+     position: 'relative',                                          
+     bottom: 35,                                                    
+     right: 15,
+     backgroundColor:'#FFF',
+     borderRadius:100,
+   },
+ });
  
 //  const mapStateToProps = ( state ) => {
 //      return {
