@@ -10,7 +10,7 @@
  import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions, TouchableHighlight, Keyboard  } from "react-native";
  import { useColorMode, HStack, Center, Avatar, Button, 
   StatusBar, Spinner, Fab, Box, IconButton, Switch, Text,
-  Divider, Container, Flex, Input, Icon, useDisclose, Menu, Pressable
+  Divider, Container, Flex, Input, Icon, useDisclose, Menu, Pressable, VStack, Skeleton, FlatList, ScrollView
 } from "native-base";
 //  import Menu, { MenuItem } from 'react-native-material-menu';
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -24,6 +24,7 @@
 import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
+ import SkeletonLoader from '../components/common/SkeletonLoader'
 
 
  const HomeScreen = ({ navigation }) => {
@@ -86,7 +87,7 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
           />
           <Menu w="24" placement={'bottom'} trigger={triggerProps => {
             return <IconButton {...triggerProps}
-                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid />} 
+                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={28} solid />} 
                   borderRadius="full"  
                   />;
           }}>
@@ -123,42 +124,32 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
     <Divider />
   </View>
 
-    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black' }}>
-      
-      <View style={{ paddingTop: 24 }}>
+    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 24 }}>
         <SearchBar
           clearIconComponent={!search && <></>}
-          style={{ height: "24%", borderRadius: 20, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}
+          style={{ height: "6%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}
           darkMode={colorMode === 'dark'}
           fontSize={16}
           placeholder="Search"
           onChangeText={debounce(handleChange, 600)}
           onClearPress={() => setSearch('')}
         />
+
+      <View style={{ flex: 1 }}>
+        <ScrollView>
+          <SkeletonLoader />
+        </ScrollView>
       </View>
-
-
-          <View>
-          {/* <Spinner color='blue' />  */}
-
-            {/* {this.props.notes.isLoading == true ? 
-              <Spinner color='blue' /> :
-              ( 
-                <ListData navigation={this.props.navigation}/>
-              )
-            } */}
-          </View>
+      
+      <RNBounceable  
+        bounceEffectIn={0.6}
+        style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
+        onPress={() => navigation.navigate('AddNote')}
+      >
+        <FontAwesome5Icon solid size={28} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+      </ RNBounceable>
 
     </View>
-
-    <RNBounceable  
-      bounceEffectIn={0.6}
-      style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
-      onPress={() => navigation.navigate('AddNote')}
-    >
-      <FontAwesome5Icon solid size={28} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
-    </ RNBounceable>
-    
   </View>
   )
  }
