@@ -7,10 +7,10 @@
  */
 
  import React, { useState } from "react";
- import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard  } from "react-native";
+ import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions, TouchableHighlight, Keyboard  } from "react-native";
  import { useColorMode, HStack, Center, Avatar, Button, 
   StatusBar, Spinner, Fab, Box, IconButton, Switch, Text,
-  Divider, Container, Flex, Input, Icon
+  Divider, Container, Flex, Input, Icon, useDisclose, Menu, Pressable
 } from "native-base";
 //  import Menu, { MenuItem } from 'react-native-material-menu';
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -21,14 +21,17 @@
 //  import { getCategory } from '../publics/redux/actions/category'
 //  import { connect } from 'react-redux'
 //  import ListData from '../Components/listData';
- 
-//  console.disableYellowBox = true;
 import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
+import RNBounceable from "@freakycoder/react-native-bounceable";
 
 
  const HomeScreen = ({ navigation }) => {
 
+  // const {
+  //   isOpen,
+  //   onToggle
+  // } = useDisclose();
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -44,7 +47,7 @@ import SearchBar from "react-native-dynamic-search-bar";
   }
 
   const handleChange = text => {
-    console.log("value", text);
+    console.log("text", text)
     setSearch(text);
   }
 
@@ -58,15 +61,16 @@ import SearchBar from "react-native-dynamic-search-bar";
     <Box safeAreaTop bg="#f5f5f5" />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
       <HStack px="2">
+      <RNBounceable bounceEffectIn={0.8} onPress={() => {} }>
         <Avatar 
         style={{ height: 64, width: 64 }}
         source={require('../assets/images/R5.jpg')}
-        // source={{ uri: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"}}
         >
          <Text color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } bold fontSize="2xl">
          R
         </Text>
         </Avatar>
+        </RNBounceable>
       </HStack>
         <HStack>
           <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="4xl" style={{ fontFamily: 'ChocoChici'}}>
@@ -80,10 +84,23 @@ import SearchBar from "react-native-dynamic-search-bar";
           borderRadius="full"
           onPress={toggleColorMode}
           />
-          <IconButton
-          icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid />} 
-          borderRadius="full"  
-          />
+          <Menu w="24" placement={'bottom'} trigger={triggerProps => {
+            return <IconButton {...triggerProps}
+                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid />} 
+                  borderRadius="full"  
+                  />;
+          }}>
+              <Menu.Group title="Priority" m="auto">
+                <Menu.Item alignItems={'center'}>
+                  <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>
+                    None
+                  </Text>
+                </Menu.Item>
+                <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="red.600" /></Menu.Item>
+                <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="yellow.600" /></Menu.Item>
+                <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="green.600" /></Menu.Item>
+              </Menu.Group>
+            </Menu>
           <IconButton 
           icon={sortBy === 'DESC' ? 
           <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> 
@@ -94,102 +111,78 @@ import SearchBar from "react-native-dynamic-search-bar";
         </HStack>
     </HStack>
   </Center>
-  <View>
+  
+  <View style={{
+    shadowColor: DARK_COLOR,
+    shadowOpacity: 0.9,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 1,
+      width: 1
+    } }}>
     <Divider />
   </View>
-  <Box style={{ flex:1 }} 
-    _dark={{ bg: "black" }}
-    _light={{ bg: "white" }}
-    shadow={4}
-    >
-  <View style={{ paddingTop: 24 }}>
-    <SearchBar
-      style={{ height: "25%", borderRadius: 20, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR}}
-      darkMode={colorMode === 'dark'}
-      fontSize={16}
-      // fontColor="#c6c6c6"
-      // iconColor="#c6c6c6"
-      // shadowColor="#282828"
-      // cancelIconColor="#c6c6c6"
-      // backgroundColor="#353d5e"
-      placeholder="Search"
-      onChangeText={(text) => console.log(text)}
-      // onSearchPress={() => console.log("Search Icon is pressed")}
-      // onClearPress={() => this.filterList("")}
-      // onPress={() => alert("onPress")}
-    />
-    {/* <Input
-      autoCorrect={false}
-      autoCapitalize="none"
-      size="lg"
-      padding={3}
-      shadow={2}
-      focusOutlineColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
-      _dark={{ bg: DARK_COLOR, 
-        _focus: {
-          bg: DARK_COLOR
-        } 
-      }}
-      _light={{ bg: LIGHT_COLOR,
-        _focus: {
-          bg: LIGHT_COLOR
-        } 
-       }}
-      InputLeftElement={<Icon as={<FontAwesome5Icon name="search" />} ml="3" size={4} color={colorMode === "light" ? DARK_COLOR : LIGHT_COLOR} /> }
-      variant="rounded"
-      placeholder="Search" 
-      value={search}
-      onChangeText={debounce(handleChange, 900)}
-      />   */}
+
+    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black' }}>
       
-        {/* <TextInput 
-              style={styles.textInput}
-              onChangeText={debounce(handleChange, 900)}
-              //onEndEditing={() => this.changeText(text)}
-              placeholder="Search"
-              value={search}
-            /> */}
+      <View style={{ paddingTop: 24 }}>
+        <SearchBar
+          clearIconComponent={!search && <></>}
+          style={{ height: "24%", borderRadius: 20, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}
+          darkMode={colorMode === 'dark'}
+          fontSize={16}
+          placeholder="Search"
+          onChangeText={debounce(handleChange, 600)}
+          onClearPress={() => setSearch('')}
+        />
+      </View>
 
-        </View>
-        <View>
-        {/* <Spinner color='blue' />  */}
 
-          {/* {this.props.notes.isLoading == true ? 
-            <Spinner color='blue' /> :
-            ( 
-              <ListData navigation={this.props.navigation}/>
-            )
-          } */}
-        </View>
-        </Box>
-      <Box>
-        <Fab 
-          style={{ flex: 1 }}
-          onPress={() => navigation.navigate('AddNote')}
-          renderInPortal={false} 
-          shadow={4} 
-          size={16}
-          bg={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
-          icon={<FontAwesome5Icon color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } solid size={28} name="plus" />} />
-      </Box>
+          <View>
+          {/* <Spinner color='blue' />  */}
+
+            {/* {this.props.notes.isLoading == true ? 
+              <Spinner color='blue' /> :
+              ( 
+                <ListData navigation={this.props.navigation}/>
+              )
+            } */}
+          </View>
+
+    </View>
+
+    <RNBounceable  
+      bounceEffectIn={0.6}
+      style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
+      onPress={() => navigation.navigate('AddNote')}
+    >
+      <FontAwesome5Icon solid size={28} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+    </ RNBounceable>
+    
   </View>
   )
  }
  
 
  const styles = StyleSheet.create({
-  // textInput: {
-  //   borderColor: "black",
-  //   borderBottomWidth: 1,
-  //   borderTopWidth: 1,
-  //   borderRadius: 23,
-  //   margin: 10,
-  //   marginBottom: 5,
-  //   marginTop: 15,
-  //   padding: 10,
-  //   paddingLeft: 20,
-  //   elevation: 10
-  // },
+  fab: {
+    elevation: 3,
+    alignItems:'center',
+    justifyContent:'center',
+    width:64,
+    height:64,
+    position: 'absolute',                                          
+    bottom: 35,                                                    
+    right: 20,
+    borderRadius:100,
+    shadowColor: DARK_COLOR,
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 1
+    }
+  },
  });
  
 //  const mapStateToProps = ( state ) => {

@@ -13,11 +13,11 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2B2CB4966C1B74BD12578D3B /* libPods-RNotes-RNotesTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32AB975D9739EBC5808C96C1 /* libPods-RNotes-RNotesTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		89CA4DD020FF4DB89542DCDF /* WildWorldBOLD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8426788FCCD4BA3BB9431A5 /* WildWorldBOLD.ttf */; };
+		8BA1E9B17581495AB29D4BF2 /* Stanley.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03ACD078FBD040CDA4036447 /* Stanley.ttf */; };
 		A1ABEAE70B97510FD4684A74 /* libPods-RNotes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 538B8CEB3F3BF46719E97B0C /* libPods-RNotes.a */; };
 		BED2CEE7D96246CABAF6F06D /* GeraldinePersonalUseItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2222527C2044E88980CECA /* GeraldinePersonalUseItalic.ttf */; };
 		F372506B0C0D442EAB4E6891 /* ChocoChici.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8CB194E77A6C4342BC36BED9 /* ChocoChici.ttf */; };
-		8BA1E9B17581495AB29D4BF2 /* Stanley.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03ACD078FBD040CDA4036447 /* Stanley.ttf */; };
-		89CA4DD020FF4DB89542DCDF /* WildWorldBOLD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8426788FCCD4BA3BB9431A5 /* WildWorldBOLD.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +34,7 @@
 		00E356EE1AD99517003FC87E /* RNotesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNotesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RNotesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNotesTests.m; sourceTree = "<group>"; };
+		03ACD078FBD040CDA4036447 /* Stanley.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Stanley.ttf; path = ../src/assets/fonts/Stanley.ttf; sourceTree = "<group>"; };
 		0D1BABA10083C7BB795C7969 /* Pods-RNotes-RNotesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNotes-RNotesTests.debug.xcconfig"; path = "Target Support Files/Pods-RNotes-RNotesTests/Pods-RNotes-RNotesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* RNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RNotes/AppDelegate.h; sourceTree = "<group>"; };
@@ -50,8 +51,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RNotes/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CB194E77A6C4342BC36BED9 /* ChocoChici.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChocoChici.ttf; path = ../src/assets/fonts/ChocoChici.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		03ACD078FBD040CDA4036447 /* Stanley.ttf */ = {isa = PBXFileReference; name = "Stanley.ttf"; path = "../src/assets/fonts/Stanley.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F8426788FCCD4BA3BB9431A5 /* WildWorldBOLD.ttf */ = {isa = PBXFileReference; name = "WildWorldBOLD.ttf"; path = "../src/assets/fonts/WildWorldBOLD.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F8426788FCCD4BA3BB9431A5 /* WildWorldBOLD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = WildWorldBOLD.ttf; path = ../src/assets/fonts/WildWorldBOLD.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
