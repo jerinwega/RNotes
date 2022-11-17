@@ -12,7 +12,7 @@
  import { View } from "react-native";
 
  const SkeletonLoader = () => {
- const colors = ['red.100', 'yellow.100', 'green.100'];
+ const colors = ['red.100', 'yellow.100', 'green.100', 'coolGray.100'];
  const randomizeColors = colors[Math.floor(Math.random() * get(colors, 'length'))];
 
  const skeletonRows = [];
@@ -33,7 +33,7 @@
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}
                 >
-                    <Skeleton h="20" startColor={randomizeColors}/>
+                    <Skeleton h="20" startColor={randomizeColors} />
                     <Skeleton.Text px="4" py="4" startColor={randomizeColors} lines={3} alignItems="center" />
                 </VStack>
             </View>
@@ -42,7 +42,7 @@
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}
                 >
-                    <Skeleton h="20" startColor={randomizeColors}/>
+                    <Skeleton h="20" startColor={randomizeColors} />
                     <Skeleton.Text px="4" py="4" startColor={randomizeColors} lines={3} alignItems="center" />
                 </VStack>
             </View>
