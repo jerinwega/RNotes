@@ -28,7 +28,7 @@
                 paddingTop: 24 
             }} 
         >
-            <View style={{ width: '50%', paddingRight:10 }}>
+            <View style={{ width: '50%', paddingRight: 8 }}>
                 <VStack overflow="hidden" borderWidth={1} rounded="2xl" space={4} 
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}
@@ -37,7 +37,7 @@
                     <Skeleton.Text px="4" py="4" startColor={randomizeColors} lines={3} alignItems="center" />
                 </VStack>
             </View>
-            <View style={{ width: '50%', paddingLeft:10 }}>
+            <View style={{ width: '50%', paddingLeft: 8 }}>
                 <VStack overflow="hidden" borderWidth={1} rounded="2xl" space={4}
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}

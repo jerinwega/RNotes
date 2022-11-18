@@ -16,6 +16,7 @@
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
+ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
  import { debounce } from 'lodash';
 //  import { getNotes, getSearch, getSort } from '../publics/redux/actions/notes'
 //  import { getCategory } from '../publics/redux/actions/category'
@@ -81,22 +82,18 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
         <HStack px="1">
           <IconButton 
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={26} solid /> 
-          : <OctIcon name="sun" color={LIGHT_COLOR} size={26} solid />} 
+          : <OctIcon name="sun" color={LIGHT_COLOR} size={25} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
           <Menu w="24" placement={'bottom'} trigger={triggerProps => {
             return <IconButton {...triggerProps}
-                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={28} solid />} 
-                  borderRadius="full"  
+                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid />} 
+                  borderRadius="full"
                   />;
           }}>
               <Menu.Group title="Priority" m="auto">
-                <Menu.Item alignItems={'center'}>
-                  <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>
-                    None
-                  </Text>
-                </Menu.Item>
+                <Menu.Item alignItems={'center'}><Icon as={<OctIcon name="circle-slash" solid />} size={25} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} /></Menu.Item>
                 <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="red.600" /></Menu.Item>
                 <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="yellow.600" /></Menu.Item>
                 <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="green.600" /></Menu.Item>
@@ -146,7 +143,7 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
         style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
         onPress={() => navigation.navigate('AddNote')}
       >
-        <FontAwesome5Icon solid size={28} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+        <FontAwesome5Icon solid size={30} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
       </ RNBounceable>
 
     </View>
