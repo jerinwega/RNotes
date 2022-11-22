@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-// import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import Home from './screens/Home';
 import AddNote from './screens/AddNote';
-// import EditNote from './src/screens/EditNote';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import { NativeBaseProvider, extendTheme } from "native-base";
@@ -13,49 +11,25 @@ import { NativeBaseProvider, extendTheme } from "native-base";
 const AppDrawerNavigator = createDrawerNavigator({
     Home: { screen: Home },
     AddNote: { screen: AddNote },
-    // EditNote: { screen: EditNote },
+    EditNote: { screen: AddNote },
   },
 );
 const AppContainer = createAppContainer(AppDrawerNavigator);
 
 export default function App() {
-// let theme = useColorScheme();
-const config = {
+
+const systemTheme = {
     useSystemColorMode: true
 }
-const extendedTheme = extendTheme({ config, 
-    // components: {
-        // Button: {
-        //   // Can simply pass default props to change default behaviour of components.
-        //   baseStyle: {
-        //     rounded: 'md',
-        //   },
-        //   defaultProps: {
-        //     colorScheme: 'red',
-        //   },
-        // },
-        // Fab: {
-        //   // Can pass also function, giving you access theming tools
-        //   baseStyle: ({ colorMode }) => {
-        //     return {
-        //       bg: colorMode === 'dark' ? 'red.300' : 'blue.300',
-        //     };
-        //   },
-        //   defaultProps: ({ colorMode }) => {
-        //     return {
-        //         colorScheme: colorMode === 'dark' ? 'red.300' : 'blue.300',
-        //       };
-        //     },
-        // },
-    //   }
-})
-
-// console.log("theme", theme)
+const config = {
+    strictMode: 'warn',
+  };
+const extendedTheme = extendTheme({ systemTheme })
 
 return (
     <Provider store={store}>
         {/* <AppearanceProvider> */}
-            <NativeBaseProvider theme={extendedTheme} >
+            <NativeBaseProvider config={config} theme={extendedTheme} >
                 <AppContainer />
             </NativeBaseProvider>
         {/* </AppearanceProvider> */}

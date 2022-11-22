@@ -16,7 +16,6 @@
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
- import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
  import { debounce } from 'lodash';
 //  import { getNotes, getSearch, getSort } from '../publics/redux/actions/notes'
 //  import { getCategory } from '../publics/redux/actions/category'
@@ -55,14 +54,14 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
-    <Center 
-    _dark={{ bg: DARK_COLOR }}
-    _light={{ bg: LIGHT_COLOR }}
+    <Center
+      _dark={{ bg: DARK_COLOR }}
+      _light={{ bg: LIGHT_COLOR }}
       >
-    <StatusBar _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
-    <Box safeAreaTop bg="#f5f5f5" />
-    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
-      <HStack px="2">
+    <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
+    <Box safeAreaTop />
+    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
+      <HStack>
       <RNBounceable bounceEffectIn={0.8} onPress={() => {} }>
         <Avatar 
         style={{ height: 64, width: 64 }}
@@ -75,11 +74,11 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
         </RNBounceable>
       </HStack>
         <HStack>
-          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="4xl" style={{ fontFamily: 'ChocoChici'}}>
+          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="38" style={{ fontFamily: 'ChocoChici'}}>
             RNotes
           </Text>
         </HStack>
-        <HStack px="1">
+        <HStack>
           <IconButton 
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={26} solid /> 
           : <OctIcon name="sun" color={LIGHT_COLOR} size={25} solid />} 
@@ -130,6 +129,9 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
           placeholder="Search"
           onChangeText={debounce(handleChange, 600)}
           onClearPress={() => setSearch('')}
+          autoCorrect={false}
+          autoFocus={false}
+          autoCapitalize={'none'}
         />
 
       <View style={{ flex: 1 }}>
@@ -175,7 +177,6 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
  
 //  const mapStateToProps = ( state ) => {
 //      return {
-//          category: state.category,
 //          notes: state.notes
 //      }
 //  }

@@ -17,7 +17,7 @@
 
  const skeletonRows = [];
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
         skeletonRows.push(
         <View
             key={i}
@@ -28,21 +28,21 @@
                 paddingTop: 24 
             }} 
         >
-            <View style={{ width: '50%', paddingRight: 8 }}>
-                <VStack overflow="hidden" borderWidth={1} rounded="2xl" space={4} 
+            <View style={{ width: '50%', paddingRight: 10 }}>
+                <VStack overflow="hidden" borderWidth={1} rounded="3xl" space={4} 
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}
                 >
-                    <Skeleton h="20" startColor={randomizeColors} />
+                    <Skeleton h="16" startColor={randomizeColors} />
                     <Skeleton.Text px="4" py="4" startColor={randomizeColors} lines={3} alignItems="center" />
                 </VStack>
             </View>
-            <View style={{ width: '50%', paddingLeft: 8 }}>
-                <VStack overflow="hidden" borderWidth={1} rounded="2xl" space={4}
+            <View style={{ width: '50%', paddingLeft: 10 }}>
+                <VStack overflow="hidden" borderWidth={1} rounded="3xl" space={4}
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}
                 >
-                    <Skeleton h="20" startColor={randomizeColors} />
+                    <Skeleton h="16" startColor={randomizeColors} />
                     <Skeleton.Text px="4" py="4" startColor={randomizeColors} lines={3} alignItems="center" />
                 </VStack>
             </View>
