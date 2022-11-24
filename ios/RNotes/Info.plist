@@ -69,6 +69,9 @@
 		<string>GeraldinePersonalUseItalic.ttf</string>
 		<string>Stanley.ttf</string>
 		<string>WildWorldBOLD.ttf</string>
+		<string>Lato-BlackItalic.ttf</string>
+		<string>Lato-BoldItalic.ttf</string>
+		<string>Lato-Italic.ttf</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>

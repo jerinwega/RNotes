@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Dimensions } from 'react-native';
+import { View, TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
 // import { Picker } from 'react-native-picker/picker';
 import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input } from "native-base";
 import AntIcon from "react-native-vector-icons/AntDesign";
@@ -56,7 +56,7 @@ const AddNote = ({
                   icon={<IonIcon name="arrow-back-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={36} />}
                   borderRadius="full"
                   onPress={() => {
-                    navigation.goBack()
+                    navigation.navigate('Home')
                     setPriority('low')
                   }}
                   />  
@@ -66,14 +66,13 @@ const AddNote = ({
                 <Select 
                 selectedValue={priority} 
                 minWidth="150" 
-                accessibilityLabel="PRIORITY" 
-                placeholder="PRIORITY" 
                 textAlign={'center'}
-                fontWeight={'bold'}
-                fontSize={16}
+                fontWeight={'900'}
+                fontFamily= {'Lato-Regular'}
+                fontSize={18}
                 _selectedItem={{
-                    startIcon: <FontAwesome5Icon size={16} name="angle-double-right" style={{ paddingTop: 5 }} solid color={startEndIconColor} />,
-                    endIcon: <FontAwesome5Icon size={16} name="angle-double-left" style={{ paddingTop: 5 }} solid color={startEndIconColor} />,
+                    startIcon: <FontAwesome5Icon size={16} name="angle-double-right" style={{ paddingTop: 9 }} solid color={startEndIconColor} />,
+                    endIcon: <FontAwesome5Icon size={16} name="angle-double-left" style={{ paddingTop: 9 }} solid color={startEndIconColor} />,
                 }}
                 _light={{
                   bg: "white",
@@ -84,8 +83,9 @@ const AddNote = ({
                 color={startEndIconColor}
                 _item={{
                   _text: {
-                    fontSize: 16,
-                    fontWeight: 'bold',
+                    fontSize: 18,
+                    fontWeight: '900',
+                    fontFamily: 'Lato-Regular',
                     color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR
                   }
                 }}
@@ -102,7 +102,7 @@ const AddNote = ({
                   icon={<IonIcon name="checkmark-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={36} />}
                   borderRadius="full"
                   onPress={() => {
-                    navigation.goBack()
+                    navigation.navigate('Home')
                     setPriority('low')
                   }}
                   />
@@ -125,14 +125,17 @@ const AddNote = ({
               <Box mx={8}>
               <Input
                 fontSize={'24'}
+                fontFamily={'Lato-Regular'}
                 autoCorrect={false}
                 autoFocus={false}
                 value={title} 
-                fontWeight={'bold'} 
+                fontWeight={'900'} 
                 textAlign={'center'} 
-                variant={'underlined'} 
+                rounded={'2xl'}
                 placeholder="Title" 
                 onChangeText={(text) => setTitle(text)}
+                _dark={{ bg: DARK_COLOR }}
+                _light={{ bg: LIGHT_COLOR }} 
               />
               </Box>
               <Box mx={8} py={6}>
@@ -140,30 +143,32 @@ const AddNote = ({
                   autoCorrect={false} 
                   autoFocus={false}
                   autoCapitalize={'none'}
+                  fontFamily={'Lato-Regular'}
+                  fontWeight={'bold'} 
                   fontSize={'20'} 
                   rounded={'2xl'}
                   px={3} 
                   py={3} 
                   h={'xl'} 
-                  placeholder="Ideas..." 
+                  placeholder="ideas..." 
                   _light={{
-                      bg: 'white',
+                      bg: LIGHT_COLOR,
                     }} 
                   _dark={{
-                      bg: 'black',
+                      bg: DARK_COLOR,
                     }} 
                   value={note} 
                   onChangeText={(text) => setNote(text)}
                 />
               </Box>
               </View>
+              <TouchableWithoutFeedback onPress={() => {
+                console.log("pressed");
+                Keyboard.dismiss();
+              }}>
+                <View style={[ StyleSheet.absoluteFillObject, { flex: 1, zIndex: -1 }]} />
+              </TouchableWithoutFeedback>
           </View>
         ); 
     }
-// const mapStateToProps = ( state ) => {
-//   return (
-//     category: state.category
-//   )
-// }
-// export default connect(mapStateToProps)(AddNote);
 export default AddNote;
