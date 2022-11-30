@@ -10,6 +10,7 @@
  import { Text, View, useColorMode } from "native-base";
 import { Dimensions } from "react-native";
 import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
+import moment from 'moment';
 
  const NoteList = ({
   item
@@ -18,7 +19,7 @@ import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
 
   const deviceWidth = Dimensions.get('window').width - 40;
 
-  const { title, description, priority } = item;
+  const { title, description, priority, time } = item;
 
   let bgColor = 'green.100';
   let borderColor = 'green.200'
@@ -42,11 +43,16 @@ import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
           py={3}
           rounded="3xl" 
           borderWidth={1} 
-          shadow={2}
+          shadow={1}
           _dark={{ borderColor: borderColor, borderTopWidth: 4, borderTopColor: borderColor }} 
           _light={{ borderColor: borderColor }}
         >
-              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} fontWeight={'800'} pb={3} >{title}</Text>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text fontSize={12} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} fontStyle='italic' numberOfLines={1}>
+                  {moment(time).format('DD MMM YYYY')}
+                </Text>
+              </View>
+              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} fontWeight={'900'} pb={2} >{title}</Text>
               <Text fontSize={16} bold color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} numberOfLines={5}>{description}</Text>
         </View>
   );

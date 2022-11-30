@@ -22,13 +22,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   const { colorMode, toggleColorMode } = useColorMode();
   const [user, setUser] = useState('');
 
+
   const handleUser = async () => {
     Keyboard.dismiss();
     await AsyncStorage.setItem('user', user);
     onClose();
     await navigation.navigate('Home')
   }
-
 
   return (
     <>

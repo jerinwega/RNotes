@@ -7,9 +7,9 @@
  */
 
  import React, { useEffect, useState } from "react";
- import { StyleSheet, Dimensions, Keyboard  } from "react-native";
+ import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
  import { useColorMode, HStack, Center, Avatar, Button, 
-  StatusBar, Spinner, Fab, Box, IconButton, Switch, Text,
+  StatusBar, Spinner, Fab, Box, IconButton, Switch, Text, Modal, FormControl,
   Divider, Container, Flex, Input, Icon, useDisclose, Menu, Pressable, VStack, Skeleton, FlatList, ScrollView, View
 } from "native-base";
 //  import Menu, { MenuItem } from 'react-native-material-menu';
@@ -22,7 +22,7 @@
 //  import { connect } from 'react-redux'
 //  import ListData from '../Components/listData';
 import { get } from 'lodash';
-import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR, SKELETON_DARK, SKELETON_LIGHT } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
  import SkeletonLoader from '../components/common/SkeletonLoader'
@@ -30,15 +30,18 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
- const HomeScreen = ({ route, navigation, user }) => {
+ const HomeScreen = ({ route, navigation, user, onClose }) => {
 
   const { width: deviceWidth } = Dimensions.get('window');
+
   const { colorMode, toggleColorMode } = useColorMode();
 
   const [sortBy, setSort] = useState('DESC')
   const [search, setSearch] = useState('')
   const [greet, setGreet] = useState('');
   const [notes, setNotes] = useState([]);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [updatedUser, setUpdatedUser] = useState(user);
 
   const { allNotes } = get(route, 'params', []);
 
@@ -49,7 +52,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
   useEffect(() => {
     findNotes();
-  }, [route])
+  }, [navigation])
 
 
   useEffect(() => {
@@ -79,11 +82,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     if(result !== null) setNotes(JSON.parse(result))
   }
 
-  const isEditable = async () => {
-    await AsyncStorage.setItem('isEditable', JSON.stringify(true));
-    await navigation.navigate('User')
-  }
-
 
   const handleSort = () => {
     if (sortBy === 'DESC') {
@@ -97,7 +95,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     setSearch(text);
   }
 
-  avatar = user.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase();
+  const handleEditName = async () => {
+    Keyboard.dismiss();
+    setShowUserModal(false);
+    await AsyncStorage.setItem('user', updatedUser);
+    onClose();
+  }
+
+  const handleCloseUserModal = () => {
+    setShowUserModal(false);
+    setUpdatedUser(user);
+  }
+
+  avatar = updatedUser.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase();
 
 
   return (
@@ -110,12 +120,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     <Box safeAreaTop />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
       <HStack>
-      <RNBounceable bounceEffectIn={0.8} onPress={isEditable}>
+      <RNBounceable bounceEffectIn={0.8} onPress={() => setShowUserModal(true)}>
         <Avatar 
         _dark={{ bg: LIGHT_COLOR }}
         _light={{ bg: DARK_COLOR }}
           style={{ height: 64, width: 64 }}
         >
+          <Avatar.Badge bg="green.500" />
          <Text fontFamily = 'Lato-Regular' color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontWeight='900' fontSize={'30'}>
           {avatar.substring(0,2)}
         </Text>
@@ -171,7 +182,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 24 }}>
         <Text textAlign={'center'} mx='6' pb='6' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} bold fontSize={'18'} fontFamily={'Lato-Regular'} fontStyle='italic'>
-          {`Good ${greet}, ${user}!`}
+          {`Good ${greet}, ${updatedUser}!`}
         </Text>
       {get(notes, 'length') ?
         <SearchBar
@@ -198,6 +209,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
         :
         <View flex={1} px={5} py={6}>
         <FlatList 
+          showsVerticalScrollIndicator={false}
           data={notes} 
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
@@ -220,6 +232,57 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
       </ RNBounceable>
 
     </View>
+    
+    <Modal 
+      shadow={4} 
+      isOpen={showUserModal} 
+      onClose={() => setShowUserModal(false)} 
+      _backdrop={{
+        _dark: {
+          bg: 'coolGray.800'
+        },
+        _light: {
+          bg: 'warmGray.50'
+        }
+      }}
+    >
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <Modal.Content>
+          <Modal.CloseButton 
+            _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
+            borderRadius={'full'} onPress={handleCloseUserModal}/>
+          <Modal.Body mt={9}>
+          <FormControl px={2}>
+              <Input 
+                rounded={'3xl'}
+                textAlign={'center'}
+                fontSize={20}
+                fontFamily={'Lato-Regular'}
+                fontWeight={'900'}
+                autoCorrect={false}
+                autoFocus={false}
+                value={updatedUser}
+                onChangeText={(value) => setUpdatedUser(value)}
+                placeholder="Name"
+                _dark={{ bg: 'black' }}
+                _light={{ bg: 'white' }} 
+              />
+            </FormControl>
+          </Modal.Body>
+            <Button.Group mb={2} justifyContent={'center'}>
+              <Button 
+                variant="ghost" 
+                borderRadius={'3xl'}
+                onPress={handleEditName}
+              >
+              <Text fontFamily = 'Lato-Regular' color={'green.500'} fontWeight='900' fontSize={'16'}>
+                OK        
+              </Text>
+              </Button>
+            </Button.Group>
+        </Modal.Content>
+        </TouchableWithoutFeedback>
+      </Modal>
   </View>
   )
  }

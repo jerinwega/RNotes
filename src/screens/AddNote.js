@@ -15,8 +15,7 @@ const AddNote = ({
   navigation,
   route
 }) => { 
-
-  const { notes } = get(route, 'notes', {});
+  const { notes } = get(route, 'params');
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
 
@@ -55,11 +54,7 @@ const AddNote = ({
       time: Date.now()
     }
 
-    // console.log(notes, note)
     const allNotes = [...notes, note];
-
-    // console.log(allNotes);
-    // setNotes(allNotes);
     await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
     navigation.navigate('Home', { allNotes })
     setTitle('')
