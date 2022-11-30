@@ -1,37 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+// import { createAppContainer } from 'react-navigation';
+// import { createDrawerNavigator } from 'react-navigation-drawer';
 import Home from './screens/Home';
 import User from './screens/User';
 import AddNote from './screens/AddNote';
-import { Provider } from 'react-redux';
-import store from './redux/store';
 import { NativeBaseProvider, extendTheme } from "native-base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 
 
 
-const AppDrawerNavigator = createDrawerNavigator({
-    User: { screen: User },
-    Home: { screen: Home },
-    AddNote: { screen: AddNote },
-    EditNote: { screen: AddNote },
-  },
-);
-const AppContainer = createAppContainer(AppDrawerNavigator);
+
+const Stack = createStackNavigator();
 
 export default function App() {
 
-  // const [user, setUser] = useState('');
+  const [user, setUser] = useState('');
+  const [isEditable, setIsEditable] = useState(false)
+  
 
-  // const findUser = async () => {
-  //   const result = await AsyncStorage.getItem('user')
-  //   setUser(JSON.parse(result))
-  // }
+  const findIsEditable = async () => {
+   const result = await AsyncStorage.getItem('isEditable');
+   if (result !== null) setIsEditable(JSON.parse(result));
+  }
 
-  // useEffect(() => {
-  //   findUser();
-  // }, [])
+  const findUser = async () => {
+    const result = await AsyncStorage.getItem('user')
+    if (result !== null) setUser(result);
+  }
+
+  useEffect(() => {
+    findUser();
+    findIsEditable();
+  }, [])
 
 const config = {
     useSystemColorMode: true
@@ -62,10 +64,21 @@ const colorModeManager = {
 const extendedTheme = extendTheme({ config })
 
 return (
-    <Provider store={store}>
-            <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager} >
-                <AppContainer />
-            </NativeBaseProvider>
-    </Provider>
+  <NavigationContainer>
+    <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager} >
+       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {(!user || isEditable) && 
+        <Stack.Screen name="User">
+          {(props) => <User {...props} onClose={findUser} />}
+        </Stack.Screen>
+        }
+        <Stack.Screen name="Home">
+          {(props) => <Home {...props} user={user} />}
+        </Stack.Screen>
+        <Stack.Screen name="AddNote" component={AddNote} />
+        <Stack.Screen name="EditNote" component={AddNote} />  
+      </Stack.Navigator>
+    </NativeBaseProvider>
+    </NavigationContainer>
 );
 }

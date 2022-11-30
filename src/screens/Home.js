@@ -7,10 +7,10 @@
  */
 
  import React, { useEffect, useState } from "react";
- import { View, StyleSheet, TextInput, TouchableOpacity, Dimensions, TouchableHighlight, Keyboard  } from "react-native";
+ import { StyleSheet, Dimensions, Keyboard  } from "react-native";
  import { useColorMode, HStack, Center, Avatar, Button, 
   StatusBar, Spinner, Fab, Box, IconButton, Switch, Text,
-  Divider, Container, Flex, Input, Icon, useDisclose, Menu, Pressable, VStack, Skeleton, FlatList, ScrollView
+  Divider, Container, Flex, Input, Icon, useDisclose, Menu, Pressable, VStack, Skeleton, FlatList, ScrollView, View
 } from "native-base";
 //  import Menu, { MenuItem } from 'react-native-material-menu';
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -21,30 +21,42 @@
 //  import { getCategory } from '../publics/redux/actions/category'
 //  import { connect } from 'react-redux'
 //  import ListData from '../Components/listData';
+import { get } from 'lodash';
 import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
  import SkeletonLoader from '../components/common/SkeletonLoader'
+ import NoteList from '../components/views/NoteList';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
- const HomeScreen = ({ navigation }) => {
+ const HomeScreen = ({ route, navigation, user }) => {
 
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode, toggleColorMode } = useColorMode();
 
   const [sortBy, setSort] = useState('DESC')
   const [search, setSearch] = useState('')
-  const [user, setUser] = useState('');
-
   const [greet, setGreet] = useState('');
+  const [notes, setNotes] = useState([]);
 
+  const { allNotes } = get(route, 'params', []);
 
 
   useEffect(() => {
-    findUser();
     findDayTimeGreet();
   }, [])
+
+  useEffect(() => {
+    findNotes();
+  }, [route])
+
+
+  useEffect(() => {
+    if (get(allNotes, 'length')) {
+      setNotes(allNotes);
+    }
+  }, [allNotes])
 
 
   const findDayTimeGreet = () => {
@@ -62,6 +74,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     }
   }
 
+  const findNotes = async () => {
+    const result = await AsyncStorage.getItem('notes');
+    if(result !== null) setNotes(JSON.parse(result))
+  }
+
+  const isEditable = async () => {
+    await AsyncStorage.setItem('isEditable', JSON.stringify(true));
+    await navigation.navigate('User')
+  }
+
 
   const handleSort = () => {
     if (sortBy === 'DESC') {
@@ -72,20 +94,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   }
 
   const handleChange = text => {
-    console.log("text", text)
     setSearch(text);
   }
 
- const findUser = async () => {
-    const result = await AsyncStorage.getItem('user');
-    setUser(result);
-  }
+  avatar = user.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase();
 
-  
-
-// console.log("user", typeof user);
-
-const avatar = user.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase() 
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -97,7 +110,7 @@ const avatar = user.split(/\s/).reduce((response,word)=> response+word.slice(0,1
     <Box safeAreaTop />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
       <HStack>
-      <RNBounceable bounceEffectIn={0.8} onPress={() => {} }>
+      <RNBounceable bounceEffectIn={0.8} onPress={isEditable}>
         <Avatar 
         _dark={{ bg: LIGHT_COLOR }}
         _light={{ bg: DARK_COLOR }}
@@ -160,9 +173,10 @@ const avatar = user.split(/\s/).reduce((response,word)=> response+word.slice(0,1
         <Text textAlign={'center'} mx='6' pb='6' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} bold fontSize={'18'} fontFamily={'Lato-Regular'} fontStyle='italic'>
           {`Good ${greet}, ${user}!`}
         </Text>
+      {get(notes, 'length') ?
         <SearchBar
           clearIconComponent={!search && <></>}
-          style={{ height: "6%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}
+          style={{ width: deviceWidth - 40, height: "6%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}
           darkMode={colorMode === 'dark'}
           fontSize={16}
           fontFamily={'Lato-Regular'}
@@ -172,18 +186,35 @@ const avatar = user.split(/\s/).reduce((response,word)=> response+word.slice(0,1
           autoCorrect={false}
           autoFocus={false}
           autoCapitalize={'none'}
-        />
+        /> : null
+        }
 
-      <View style={{ flex: 1 }}>
+      {!notes || get(notes, 'length') === 0 ? 
+      <View flex={1}>
         <ScrollView>
-          <SkeletonLoader />
+          <SkeletonLoader /> 
         </ScrollView>
-      </View>
+        </View>
+        :
+        <View flex={1} px={5} py={6}>
+        <FlatList 
+          data={notes} 
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          keyExtractor={item => { 
+            const key = item.id;
+            return key.toString()
+          }}
+          renderItem={({item}) => <NoteList item={item} />}
+        />
+        </View>
+        }      
+      
       
       <RNBounceable  
         bounceEffectIn={0.6}
         style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
-        onPress={() => navigation.navigate('AddNote')}
+        onPress={() => navigation.navigate('AddNote', { notes })}
       >
         <FontAwesome5Icon solid size={30} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
       </ RNBounceable>

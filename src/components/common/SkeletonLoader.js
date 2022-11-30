@@ -7,9 +7,8 @@
  */
 
  import React from "react";
- import { VStack, Skeleton, Text } from "native-base";
+ import { VStack, Skeleton, Text, View } from "native-base";
  import { get } from 'lodash';
- import { View } from "react-native";
 import { SKELETON_DARK, SKELETON_LIGHT } from "../../utils/constants";
 
  const SkeletonLoader = () => {
@@ -24,9 +23,9 @@ import { SKELETON_DARK, SKELETON_LIGHT } from "../../utils/constants";
             key={i}
             style={{
                 flexDirection: 'row',
-                paddingRight: 24,
-                paddingLeft: 24,
-                paddingTop: 24 
+                paddingRight: 20,
+                paddingLeft: 20,
+                paddingBottom: 20
             }} 
         >
             <View style={{ width: '50%', paddingRight: 10 }}>

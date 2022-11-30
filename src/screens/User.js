@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
- import React, { useState } from "react";
+ import React, { useEffect, useState } from "react";
  import { View, StyleSheet, Dimensions, Keyboard } from "react-native";
  import { useColorMode, HStack, Center, StatusBar, Box, IconButton, Input } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -17,14 +17,15 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
- const UserScreen = ({ navigation }) => {
+ const UserScreen = ({ navigation, onClose }) => {
 
   const { colorMode, toggleColorMode } = useColorMode();
-  const [user, setUser] = useState('')
+  const [user, setUser] = useState('');
 
   const handleUser = async () => {
     Keyboard.dismiss();
-    await AsyncStorage.setItem('user', user)
+    await AsyncStorage.setItem('user', user);
+    onClose();
     await navigation.navigate('Home')
   }
 

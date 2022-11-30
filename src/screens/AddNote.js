@@ -1,38 +1,71 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
-// import { Picker } from 'react-native-picker/picker';
 import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input } from "native-base";
 import AntIcon from "react-native-vector-icons/AntDesign";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import OctIcon from 'react-native-vector-icons/Octicons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-// import { addNote } from '../publics/redux/actions/notes'
-// import { connect } from 'react-redux'
 import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { get } from 'lodash';
+
 
 const AddNote = ({
-  navigation
+  navigation,
+  route
 }) => { 
 
+  const { notes } = get(route, 'notes', {});
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
 
   const [priority, setPriority] = useState('low');
   const [title, setTitle] = useState('');
-  const [note, setNote] = useState('');
+  const [description, setDescription] = useState('');
 
 
+  // useEffect = (() => {
+  //   setPriority('low')
+  // }, []);
 
-    // addDataNote(title,note,category_id) {
-    //   this.props.dispatch(addNote(title,note,category_id))
-    //   this.props.navigation.goBack()
-    // }
+  const handleChange = (value, name) => {
+    if (name === 'title') {
+      setTitle(value);
+    }
+    if (name === 'description') {
+      setDescription(value)
+    }
+    if (name === 'priority') {
+      setPriority(value)
+    }
+  }
 
-    // updateDataNote(id,title,note,category_id) {
-    //   this.props.dispatch(updateNote(id,title,note,category_id))
-    //   this.props.navigation.goBack()
-    // }
+  const handleSubmit = async () => {
+    if (!title.trim() && !description.trim()) {
+      setPriority('low')
+      navigation.navigate('Home');
+      return;
+    }
+    const note = {
+      id: Date.now(),
+      title,
+      description,
+      priority,
+      time: Date.now()
+    }
+
+    // console.log(notes, note)
+    const allNotes = [...notes, note];
+
+    // console.log(allNotes);
+    // setNotes(allNotes);
+    await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
+    navigation.navigate('Home', { allNotes })
+    setTitle('')
+    setDescription('')
+    setPriority('low')
+  }
 
    let startEndIconColor = '#16a34a';
     if (priority === 'medium') {
@@ -41,7 +74,6 @@ const AddNote = ({
       startEndIconColor = '#dc2626';
     }
    
-
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
             <Center
@@ -55,10 +87,7 @@ const AddNote = ({
               <IconButton 
                   icon={<IonIcon name="arrow-back-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={36} />}
                   borderRadius="full"
-                  onPress={() => {
-                    navigation.navigate('Home')
-                    setPriority('low')
-                  }}
+                  onPress={handleSubmit}
                   />  
               </HStack>
               <HStack>
@@ -79,7 +108,7 @@ const AddNote = ({
                 }} _dark={{
                   bg: "black",
                 }}
-                onValueChange={itemValue => setPriority(itemValue)}
+                onValueChange={itemValue => handleChange(itemValue, 'priority')}
                 color={startEndIconColor}
                 _item={{
                   _text: {
@@ -101,10 +130,7 @@ const AddNote = ({
               <IconButton 
                   icon={<IonIcon name="checkmark-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={36} />}
                   borderRadius="full"
-                  onPress={() => {
-                    navigation.navigate('Home')
-                    setPriority('low')
-                  }}
+                  onPress={handleSubmit}
                   />
             </HStack>
             </HStack>
@@ -121,6 +147,7 @@ const AddNote = ({
               <Divider />
             </View>
 
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 24 }}>
               <Box mx={8}>
               <Input
@@ -133,7 +160,7 @@ const AddNote = ({
                 textAlign={'center'} 
                 rounded={'2xl'}
                 placeholder="Title" 
-                onChangeText={(text) => setTitle(text)}
+                onChangeText={(text) => handleChange(text, 'title')}
                 _dark={{ bg: DARK_COLOR }}
                 _light={{ bg: LIGHT_COLOR }} 
               />
@@ -157,17 +184,12 @@ const AddNote = ({
                   _dark={{
                       bg: DARK_COLOR,
                     }} 
-                  value={note} 
-                  onChangeText={(text) => setNote(text)}
+                  value={description} 
+                  onChangeText={(text) => handleChange(text, 'description')}
                 />
               </Box>
               </View>
-              <TouchableWithoutFeedback onPress={() => {
-                console.log("pressed");
-                Keyboard.dismiss();
-              }}>
-                <View style={[ StyleSheet.absoluteFillObject, { flex: 1, zIndex: -1 }]} />
-              </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
           </View>
         ); 
     }
