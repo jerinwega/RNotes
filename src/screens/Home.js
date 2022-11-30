@@ -96,15 +96,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   }
 
   const handleEditName = async () => {
+    if (!updatedUser) {
+      setUpdatedUser(user);
+      setShowUserModal(false);
+      return;
+    } else {
     Keyboard.dismiss();
     setShowUserModal(false);
     await AsyncStorage.setItem('user', updatedUser);
     onClose();
+    }
   }
 
   const handleCloseUserModal = () => {
-    setShowUserModal(false);
     setUpdatedUser(user);
+    setShowUserModal(false);
   }
 
   avatar = updatedUser.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase();
