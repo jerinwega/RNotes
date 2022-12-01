@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Home from './screens/Home';
 import User from './screens/User';
 import AddNote from './screens/AddNote';
+// import ViewNotes from './screens/ViewNotes';
 import { NativeBaseProvider, extendTheme } from "native-base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -62,7 +63,7 @@ return (
           {(props) => <Home {...props} user={user} onClose={findUser} />}
         </Stack.Screen>
         <Stack.Screen name="AddNote" component={AddNote} />
-        {/* <Stack.Screen name="EditNote" component={AddNote} />   */}
+        {/* <Stack.Screen name="ViewNotes" component={ViewNotes} />   */}
       </Stack.Navigator>
     </NativeBaseProvider>
     </NavigationContainer>

@@ -6,11 +6,12 @@
  * @flow strict-local
  */
 
- import React from "react";
- import { Text, View, useColorMode, Pressable, Box } from "native-base";
-import { Dimensions, TouchableOpacity } from "react-native";
+ import React, { useState, useRef } from "react";
+ import { Text, View, useColorMode, Pressable, Box, AlertDialog, Button, Divider } from "native-base";
+import { Dimensions } from "react-native";
 import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
 import moment from 'moment';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
  const NoteList = ({
   item,
@@ -21,7 +22,14 @@ import moment from 'moment';
 
   const deviceWidth = Dimensions.get('window').width - 40;
 
-  const { title, description, priority, time } = item;
+  const { id, title, description, priority, time } = item;
+
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+  const [noteID, setNoteID] = useState('');
+
+  const cancelRef = useRef(null);
+
 
   let hashBgColor = '#dcfce7';
   let borderColor = 'green.200';
@@ -51,8 +59,26 @@ import moment from 'moment';
     return bg;
   }
 
- return <Pressable 
-        onPress={() => navigation.navigate('AddNote', { viewedNote: item , isEdit: true, data: allNotes })} onLongPress={() => { console.log("long")}}
+  const handleNoteLongPress = (id) => {
+    setNoteID(id);
+    setIsDeleteAlertOpen(true);
+  }
+  const onDeleteAlertClose = () => {
+    setNoteID('');
+    setIsDeleteAlertOpen(false);
+  }
+
+  const handleDeleteAlert = async () => {
+    const newNotes = allNotes.filter(item => item.id !== noteID);
+    await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+    setIsDeleteAlertOpen(false);
+    setNoteID('');
+    navigation.navigate('Home', { allNotes: newNotes })
+  }
+
+ return <>
+      <Pressable
+        onPress={() => navigation.navigate('AddNote', { viewedNote: item , isEdit: true, data: allNotes })} onLongPress={() => handleNoteLongPress(id)}
       >
       {({
         isPressed
@@ -78,5 +104,23 @@ import moment from 'moment';
               </Box>   
           }}
         </Pressable>
+        <AlertDialog leastDestructiveRef={cancelRef} isOpen={isDeleteAlertOpen} size={'sm'}>
+        <AlertDialog.Content borderRadius={'2xl'} opacity={0.97}>
+          <AlertDialog.Body>
+            <Text color={'red.500'} fontWeight={'900'} fontFamily={'Lato-Regular'} fontSize={18} textAlign={'center'}>Delete Note !</Text>
+            <Text bold fontFamily={'Lato-Regular'} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
+          </AlertDialog.Body>
+            <Button.Group space={0}>
+              <Button p={3} borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={onDeleteAlertClose} ref={cancelRef}>
+                <Text fontWeight={'800'} color={'blue.500'} fontFamily={'Lato-Regular'} fontSize={15}>NO</Text>
+              </Button>
+              <Divider orientation="vertical" />
+              <Button p={3} borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={handleDeleteAlert}>
+                <Text fontWeight={'800'} color={'red.500'} fontFamily={'Lato-Regular'} fontSize={15}>YES</Text>
+              </Button>
+            </Button.Group>
+        </AlertDialog.Content>
+      </AlertDialog>
+      </>
  }
  export default NoteList;

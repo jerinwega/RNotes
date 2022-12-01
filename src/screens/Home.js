@@ -257,12 +257,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
         <Modal.Content borderRadius={'2xl'}>
           <Modal.CloseButton 
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
-            borderRadius={'full'} onPress={handleCloseUserModal}/>
+            borderRadius={'full'} />
             <Modal.Header>
               <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> 
           </Modal.Header>
           <Modal.Body>
-          <FormControl mt={3} px={3}>
+          <FormControl my={2} px={3}>
               <Input 
                 rounded={'3xl'}
                 textAlign={'center'}
@@ -280,25 +280,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
               />
             </FormControl>
           </Modal.Body>
-            <Button.Group space={3} mb={2} justifyContent={'center'}>
-              <Button 
-                variant="ghost"                 
-                borderRadius={'xl'}
-                onPress={handleCloseUserModal}>
-                <Text fontFamily = 'Lato-Regular' fontWeight={'800'} color={'red.500'} fontSize={'14'}>
-                  CANCEL        
-                </Text>
-              </Button>
               <Button
-                borderRadius={'xl'}
+                padding={3}
+                width={'full'}
                 variant="ghost" 
                 onPress={handleEditName}
+                borderRadius={'none'}
               >
-              <Text fontFamily = 'Lato-Regular' fontWeight={'800'} color={'green.500'} fontSize={'14'}>
+              <Text fontFamily={'Lato-Regular'} fontWeight={'800'} color={'green.500'} fontSize={'16'}>
                 SAVE        
               </Text>
               </Button>
-            </Button.Group>
         </Modal.Content>
         </TouchableWithoutFeedback>
       </Modal>
@@ -327,11 +319,5 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     }
   },
  });
- 
-//  const mapStateToProps = ( state ) => {
-//      return {
-//          notes: state.notes
-//      }
-//  }
-//  export default connect(mapStateToProps)(HomeScreen);
+
  export default HomeScreen;
