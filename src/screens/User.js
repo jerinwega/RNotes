@@ -61,6 +61,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
             textAlign={'center'} 
             variant={'unstyled'} 
             placeholder="Name"
+            _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }}
             onChangeText={(user) => setUser(user)}
           />
         {user.trim() ?

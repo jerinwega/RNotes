@@ -96,7 +96,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   }
 
   const handleEditName = async () => {
-    if (!updatedUser) {
+    if (!updatedUser || updatedUser === user) {
       setUpdatedUser(user);
       setShowUserModal(false);
       return;
@@ -176,9 +176,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   </Center>
   
   <View style={{
-    shadowColor: DARK_COLOR,
+    shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR,
     shadowOpacity: 0.9,
-    shadowRadius: 1,
+    shadowRadius: 2,
     shadowOffset: {
       height: 1,
       width: 1
@@ -203,6 +203,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
           autoCorrect={false}
           autoFocus={false}
           autoCapitalize={'none'}
+          selectionColor={colorMode === 'light' ? 'black': 'white'}
         /> : null
         }
 
@@ -214,7 +215,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
         </View>
         :
         <View flex={1} px={5} py={6}>
-        <FlatList 
+        <FlatList
           showsVerticalScrollIndicator={false}
           data={notes} 
           numColumns={2}
@@ -223,7 +224,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
             const key = item.id;
             return key.toString()
           }}
-          renderItem={({item}) => <NoteList item={item} />}
+          renderItem={({item}) => <NoteList item={item} allNotes={notes} navigation={navigation} />}
         />
         </View>
         }      
@@ -242,7 +243,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     <Modal 
       shadow={4} 
       isOpen={showUserModal} 
-      onClose={() => setShowUserModal(false)} 
+      onClose={handleCloseUserModal} 
       _backdrop={{
         _dark: {
           bg: 'coolGray.800'
@@ -253,16 +254,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
       }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content>
+        <Modal.Content borderRadius={'2xl'}>
           <Modal.CloseButton 
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} onPress={handleCloseUserModal}/>
-          <Modal.Body mt={9}>
-          <FormControl px={2}>
+            <Modal.Header>
+              <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> 
+          </Modal.Header>
+          <Modal.Body>
+          <FormControl mt={3} px={3}>
               <Input 
                 rounded={'3xl'}
                 textAlign={'center'}
-                fontSize={20}
+                fontSize={22}
                 fontFamily={'Lato-Regular'}
                 fontWeight={'900'}
                 autoCorrect={false}
@@ -270,19 +274,28 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
                 value={updatedUser}
                 onChangeText={(value) => setUpdatedUser(value)}
                 placeholder="Name"
+                _focus={{ _dark: { bg: DARK_COLOR }, selectionColor: colorMode === 'light' ? 'black': 'white' }}
                 _dark={{ bg: 'black' }}
                 _light={{ bg: 'white' }} 
               />
             </FormControl>
           </Modal.Body>
-            <Button.Group mb={2} justifyContent={'center'}>
+            <Button.Group space={3} mb={2} justifyContent={'center'}>
               <Button 
+                variant="ghost"                 
+                borderRadius={'xl'}
+                onPress={handleCloseUserModal}>
+                <Text fontFamily = 'Lato-Regular' fontWeight={'800'} color={'red.500'} fontSize={'14'}>
+                  CANCEL        
+                </Text>
+              </Button>
+              <Button
+                borderRadius={'xl'}
                 variant="ghost" 
-                borderRadius={'3xl'}
                 onPress={handleEditName}
               >
-              <Text fontFamily = 'Lato-Regular' color={'green.500'} fontWeight='900' fontSize={'16'}>
-                OK        
+              <Text fontFamily = 'Lato-Regular' fontWeight={'800'} color={'green.500'} fontSize={'14'}>
+                SAVE        
               </Text>
               </Button>
             </Button.Group>

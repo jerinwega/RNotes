@@ -24,9 +24,21 @@ const AddNote = ({
   const [description, setDescription] = useState('');
 
 
-  // useEffect = (() => {
-  //   setPriority('low')
-  // }, []);
+  const { viewedNote } = get(route, 'params');
+  const { isEdit } = get(route, 'params');
+  const { data } = get(route, 'params');
+
+  useEffect(() => {
+    if (isEdit) {
+      setTitle(viewedNote.title);
+      setDescription(viewedNote.description)
+      setPriority(viewedNote.priority)
+    }
+  }, [])
+
+
+  // console.log(data)
+
 
   const handleChange = (value, name) => {
     if (name === 'title') {
@@ -46,20 +58,37 @@ const AddNote = ({
       navigation.navigate('Home');
       return;
     }
+
+    const sameNote = (data || []).some(item => item.id === viewedNote.id)
+
+    if (sameNote && viewedNote.title === title && viewedNote.description === description && viewedNote.priority === priority) {
+      setPriority('low')
+      navigation.navigate('Home');
+      return;
+    }
+
     const note = {
       id: Date.now(),
       title,
       description,
       priority,
       time: Date.now()
+    }    
+    if (isEdit) {
+       const  allNotes = [...data, note];
+        await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
+        navigation.navigate('Home', { allNotes })
+        setTitle('')
+        setDescription('')
+        setPriority('low')
+    } else {
+      const allNotes = [...notes, note];
+      await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
+      navigation.navigate('Home', { allNotes })
+      setTitle('')
+      setDescription('')
+      setPriority('low')
     }
-
-    const allNotes = [...notes, note];
-    await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
-    navigation.navigate('Home', { allNotes })
-    setTitle('')
-    setDescription('')
-    setPriority('low')
   }
 
    let startEndIconColor = '#16a34a';
@@ -100,7 +129,8 @@ const AddNote = ({
                 }}
                 _light={{
                   bg: "white",
-                }} _dark={{
+                }} 
+                _dark={{
                   bg: "black",
                 }}
                 onValueChange={itemValue => handleChange(itemValue, 'priority')}
@@ -156,6 +186,7 @@ const AddNote = ({
                 rounded={'2xl'}
                 placeholder="Title" 
                 onChangeText={(text) => handleChange(text, 'title')}
+                _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }} 
                 _dark={{ bg: DARK_COLOR }}
                 _light={{ bg: LIGHT_COLOR }} 
               />
@@ -172,7 +203,8 @@ const AddNote = ({
                   px={3} 
                   py={3} 
                   h={'xl'} 
-                  placeholder="ideas..." 
+                  placeholder="ideas..."
+                  _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }} 
                   _light={{
                       bg: LIGHT_COLOR,
                     }} 

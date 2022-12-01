@@ -62,7 +62,7 @@ return (
           {(props) => <Home {...props} user={user} onClose={findUser} />}
         </Stack.Screen>
         <Stack.Screen name="AddNote" component={AddNote} />
-        <Stack.Screen name="EditNote" component={AddNote} />  
+        {/* <Stack.Screen name="EditNote" component={AddNote} />   */}
       </Stack.Navigator>
     </NativeBaseProvider>
     </NavigationContainer>
