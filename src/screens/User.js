@@ -26,7 +26,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   const handleUser = async () => {
     Keyboard.dismiss();
     await AsyncStorage.setItem('user', user);
-    onClose();
+    await onClose();
     await navigation.navigate('Home')
   }
 

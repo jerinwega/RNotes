@@ -12,6 +12,7 @@ import { Dimensions } from "react-native";
 import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DeleteAlert from "../common/DeleteAlert";
 
  const NoteList = ({
   item,
@@ -78,7 +79,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
  return <>
       <Pressable
-        onPress={() => navigation.navigate('AddNote', { viewedNote: item , isEdit: true, data: allNotes })} onLongPress={() => handleNoteLongPress(id)}
+        onPress={() => navigation.navigate('ViewNotes', { viewedNote: item , allNotes })} 
+        onLongPress={() => handleNoteLongPress(id)}
       >
       {({
         isPressed
@@ -91,7 +93,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
         py={3}
         rounded="3xl" 
         borderWidth={1} 
-        _dark={{ borderColor: borderColor, borderTopWidth: 4 }} 
+        _dark={{ borderColor: borderColor, borderTopWidth: 2 }} 
         _light={{ borderColor: borderColor }}
         style={{ transform: [{ scale: isPressed ? 0.9 : 1 }], backgroundColor: handleBackground(isPressed) }}>
             <View style={{ alignItems: 'flex-end' }}>
@@ -99,28 +101,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
                   {moment(time).format('DD MMM YYYY')}
                 </Text>
               </View>
-              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} fontWeight={'900'} pb={2} >{title}</Text>
-              <Text fontSize={16} bold color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} numberOfLines={5}>{description}</Text>
+              <Text numberOfLines={1} fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={'Lato-Regular'} fontWeight={'900'} pb={2} >{title}</Text>
+              <Text fontSize={16} bold color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={'Lato-Regular'} numberOfLines={5}>{description}</Text>
               </Box>   
           }}
         </Pressable>
-        <AlertDialog leastDestructiveRef={cancelRef} isOpen={isDeleteAlertOpen} size={'sm'}>
-        <AlertDialog.Content borderRadius={'2xl'} opacity={0.97}>
-          <AlertDialog.Body>
-            <Text color={'red.500'} fontWeight={'900'} fontFamily={'Lato-Regular'} fontSize={18} textAlign={'center'}>Delete Note !</Text>
-            <Text bold fontFamily={'Lato-Regular'} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
-          </AlertDialog.Body>
-            <Button.Group space={0}>
-              <Button p={3} borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={onDeleteAlertClose} ref={cancelRef}>
-                <Text fontWeight={'800'} color={'blue.500'} fontFamily={'Lato-Regular'} fontSize={15}>NO</Text>
-              </Button>
-              <Divider orientation="vertical" />
-              <Button p={3} borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={handleDeleteAlert}>
-                <Text fontWeight={'800'} color={'red.500'} fontFamily={'Lato-Regular'} fontSize={15}>YES</Text>
-              </Button>
-            </Button.Group>
-        </AlertDialog.Content>
-      </AlertDialog>
+        <DeleteAlert 
+          isDeleteAlertOpen={isDeleteAlertOpen} 
+          cancelRef={cancelRef}
+          handleDeleteAlert={handleDeleteAlert}
+          onDeleteAlertClose={onDeleteAlertClose} 
+        />
       </>
  }
  export default NoteList;

@@ -37,9 +37,6 @@ const AddNote = ({
   }, [])
 
 
-  // console.log(data)
-
-
   const handleChange = (value, name) => {
     if (name === 'title') {
       setTitle(value);
@@ -54,7 +51,6 @@ const AddNote = ({
 
   const handleSubmit = async () => {
     if (!title.trim() && !description.trim()) {
-      setPriority('low')
       navigation.navigate('Home');
       return;
     }
@@ -62,7 +58,6 @@ const AddNote = ({
     const sameNote = (data || []).some(item => item.id === viewedNote.id)
 
     if (sameNote && viewedNote.title === title && viewedNote.description === description && viewedNote.priority === priority) {
-      setPriority('low')
       navigation.navigate('Home');
       return;
     }
@@ -73,9 +68,18 @@ const AddNote = ({
       description,
       priority,
       time: Date.now()
-    }    
+    }  
+    
+    const editedNote = {
+      id: Date.now(),
+      title,
+      description,
+      priority,
+      time: Date.now(),
+      edited: true
+    } 
     if (isEdit) {
-       const  allNotes = [...data, note];
+       const  allNotes = [...data, editedNote];
         await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
         navigation.navigate('Home', { allNotes })
         setTitle('')
@@ -91,7 +95,7 @@ const AddNote = ({
     }
   }
 
-   let startEndIconColor = '#16a34a';
+  let startEndIconColor = '#16a34a';
     if (priority === 'medium') {
       startEndIconColor = '#ca8a04';
     } else if (priority === 'high') {
@@ -115,7 +119,6 @@ const AddNote = ({
                   />  
               </HStack>
               <HStack>
-              <Box>
                 <Select 
                 selectedValue={priority} 
                 minWidth="150" 
@@ -124,8 +127,8 @@ const AddNote = ({
                 fontFamily= {'Lato-Regular'}
                 fontSize={18}
                 _selectedItem={{
-                    startIcon: <FontAwesome5Icon size={16} name="angle-double-right" style={{ paddingTop: 9 }} solid color={startEndIconColor} />,
-                    endIcon: <FontAwesome5Icon size={16} name="angle-double-left" style={{ paddingTop: 9 }} solid color={startEndIconColor} />,
+                    startIcon: <FontAwesome5Icon size={16} name="angle-double-right" style={{ paddingTop: 6 }} solid color={startEndIconColor} />,
+                    endIcon: <FontAwesome5Icon size={16} name="angle-double-left" style={{ paddingTop: 6 }} solid color={startEndIconColor} />,
                 }}
                 _light={{
                   bg: "white",
@@ -133,6 +136,7 @@ const AddNote = ({
                 _dark={{
                   bg: "black",
                 }}
+                borderColor={startEndIconColor}
                 onValueChange={itemValue => handleChange(itemValue, 'priority')}
                 color={startEndIconColor}
                 _item={{
@@ -145,11 +149,10 @@ const AddNote = ({
                 }}
                 variant="rounded"
               >
-                  <Select.Item alignItems={'center'} label="High" value="high"/>
-                  <Select.Item alignItems={'center'} label=" Medium" value="medium" />
-                  <Select.Item alignItems={'center'} label=" Low" value="low" />
+                  <Select.Item alignItems={'center'} label="HIGH" value="high"/>
+                  <Select.Item alignItems={'center'} label=" MEDIUM" value="medium" />
+                  <Select.Item alignItems={'center'} label=" LOW" value="low" />
                   </Select>
-            </Box>
             </HStack>
             <HStack>
               <IconButton 

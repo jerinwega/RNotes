@@ -104,7 +104,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     Keyboard.dismiss();
     setShowUserModal(false);
     await AsyncStorage.setItem('user', updatedUser);
-    onClose();
+    await onClose();
     }
   }
 
