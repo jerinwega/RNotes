@@ -1,6 +1,14 @@
+/**
+ * LoveProject999 : RNotes
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow strict-local
+ */
+
 import React, { useRef, useState } from 'react';
-import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
-import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View, ScrollView } from "native-base";
+import { Dimensions } from 'react-native';
+import { Text, HStack, Box, StatusBar, Center, useColorMode, IconButton, View, ScrollView } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
@@ -15,85 +23,13 @@ const ViewNotes = ({
   navigation,
   route
 }) => { 
-//   const { notes } = get(route, 'params');
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
-
-//   const [priority, setPriority] = useState('low');
-//   const [title, setTitle] = useState('');
-//   const [description, setDescription] = useState('');
-
-
   const { viewedNote } = get(route, 'params');
   const { allNotes } = get(route, 'params');
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const cancelRef = useRef(null);
-
-  // console.log(viewedNote)
-
-//   useEffect(() => {
-//     if (isEdit) {
-//       setTitle(viewedNote.title);
-//       setDescription(viewedNote.description)
-//       setPriority(viewedNote.priority)
-//     }
-//   }, [])
-
-
-  // console.log(data)
-
-
-//   const handleChange = (value, name) => {
-//     if (name === 'title') {
-//       setTitle(value);
-//     }
-//     if (name === 'description') {
-//       setDescription(value)
-//     }
-//     if (name === 'priority') {
-//       setPriority(value)
-//     }
-//   }
-
-//   const handleSubmit = async () => {
-//     if (!title.trim() && !description.trim()) {
-//       setPriority('low')
-//       navigation.navigate('Home');
-//       return;
-//     }
-
-//     const sameNote = (data || []).some(item => item.id === viewedNote.id)
-
-//     if (sameNote && viewedNote.title === title && viewedNote.description === description && viewedNote.priority === priority) {
-//       setPriority('low')
-//       navigation.navigate('Home');
-//       return;
-//     }
-
-//     const note = {
-//       id: Date.now(),
-//       title,
-//       description,
-//       priority,
-//       time: Date.now()
-//     }    
-//     if (isEdit) {
-//        const  allNotes = [...data, note];
-//         await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
-//         navigation.navigate('Home', { allNotes })
-//         setTitle('')
-//         setDescription('')
-//         setPriority('low')
-//     } else {
-//       const allNotes = [...notes, note];
-//       await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
-//       navigation.navigate('Home', { allNotes })
-//       setTitle('')
-//       setDescription('')
-//       setPriority('low')
-//     }
-//   }
 
     const onDeleteAlertClose = () => {
       setIsDeleteAlertOpen(false);
@@ -105,7 +41,6 @@ const ViewNotes = ({
       setIsDeleteAlertOpen(false);
       navigation.navigate('Home', { allNotes: newNotes })
     }
-
 
     let startEndIconColor = '#16a34a';
     let hashBgColor = '#dcfce7';
@@ -120,7 +55,6 @@ const ViewNotes = ({
         borderColor = 'red.200';
     }
 
-   
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
             <Center
@@ -158,29 +92,30 @@ const ViewNotes = ({
             </HStack>
           </Center>
 
-
-          <DoubleClick
-              doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: allNotes })}
-              delay={300}
-          >
-            <View flex={1}>
-            <View pt={6} pb={2} px={6} bg={colorMode === 'light' ? 'white' : 'black'}>
-              <Text opacity={0.5} mb={4} textAlign={'right'} bold fontFamily={'Lato-Regular'}>             
+          
+            <View pt={6} pb={4} px={6} bg={colorMode === 'light' ? 'white' : 'black'}>
+              <Text opacity={0.6} mb={4} textAlign={'right'} bold fontFamily={'Lato-Regular'}>             
                 {`${get(viewedNote, 'edited', false) ? "Updated At": "Created At"} : ${moment(get(viewedNote, 'time', '')).format('DD/MM/YYYY - hh:mm A')}`}
               </Text>
-              <Text color={startEndIconColor} bold fontFamily={'Lato-Regular'} fontSize={26}>             
+              <Text color={startEndIconColor} bold fontFamily={'Lato-Regular'} fontSize={28}>             
                 {get(viewedNote, 'title', '')}
               </Text>
             </View>
-      
-            <ScrollView indicatorStyle={colorMode === 'light' ? 'black' : 'white'} px={7} pt={4} bg={colorMode === 'light' ? 'white' : 'black'}>
-             
-              <Text fontFamily={'Lato-Regular'} fontSize={20}>             
-              {get(viewedNote, 'description', '')}
-              </Text>
+            
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }} indicatorStyle={colorMode === 'light' ? 'black' : 'white'} bg={colorMode === 'light' ? 'white' : 'black'}>
+            <DoubleClick
+              doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: allNotes })}
+              delay={300}
+              >
+              <View px={7} flex={1} pb={4}>
+                <Text fontFamily={'Lato-Regular'} fontSize={20}>             
+                  {get(viewedNote, 'description', '')}
+                </Text>
+              </View>
+              </DoubleClick>
+
             </ScrollView>
-            </View>
-            </DoubleClick>
+
             <DeleteAlert 
               isDeleteAlertOpen={isDeleteAlertOpen} 
               cancelRef={cancelRef}

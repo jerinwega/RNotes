@@ -58,40 +58,34 @@ const AddNote = ({
     const sameNote = (data || []).some(item => item.id === viewedNote.id)
 
     if (sameNote && viewedNote.title === title && viewedNote.description === description && viewedNote.priority === priority) {
-      navigation.navigate('Home');
+      navigation.navigate('ViewNotes', { viewedNote: viewedNote , allNotes: data });
       return;
     }
-
-    const note = {
-      id: Date.now(),
-      title,
-      description,
-      priority,
-      time: Date.now()
-    }  
     
-    const editedNote = {
-      id: Date.now(),
-      title,
-      description,
-      priority,
-      time: Date.now(),
-      edited: true
-    } 
     if (isEdit) {
-       const  allNotes = [...data, editedNote];
-        await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
-        navigation.navigate('Home', { allNotes })
-        setTitle('')
-        setDescription('')
-        setPriority('low')
+      const editedNotes = (data || []).filter(item => {
+        if (item.id === viewedNote.id) {
+          item.title = title
+          item.description = description
+          item.time = Date.now()
+          item.priority = priority
+          item.edited = true
+        }
+        return item;
+      });
+        await AsyncStorage.setItem('notes', JSON.stringify(editedNotes));
+        navigation.navigate('Home', { allNotes: editedNotes })
     } else {
+      const note = {
+        id: Date.now(),
+        title,
+        description,
+        priority,
+        time: Date.now()
+      }  
       const allNotes = [...notes, note];
       await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
       navigation.navigate('Home', { allNotes })
-      setTitle('')
-      setDescription('')
-      setPriority('low')
     }
   }
 

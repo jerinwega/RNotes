@@ -1,6 +1,5 @@
 /**
  * LoveProject999 : RNotes
- * https://github.com/facebook/react-native
  *
  * @format
  * @flow strict-local
@@ -97,7 +96,7 @@ import DeleteAlert from "../common/DeleteAlert";
         _light={{ borderColor: borderColor }}
         style={{ transform: [{ scale: isPressed ? 0.9 : 1 }], backgroundColor: handleBackground(isPressed) }}>
             <View style={{ alignItems: 'flex-end' }}>
-                <Text fontSize={12} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} fontStyle='italic' numberOfLines={1}>
+                <Text bold fontSize={13} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'Lato-Regular'} fontStyle='italic' numberOfLines={1}>
                   {moment(time).format('DD MMM YYYY')}
                 </Text>
               </View>

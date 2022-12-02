@@ -209,7 +209,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
       {!notes || get(notes, 'length') === 0 ? 
       <View flex={1}>
-        <ScrollView>
+        <ScrollView indicatorStyle={colorMode === 'light' ? 'black' : 'white'}>
           <SkeletonLoader /> 
         </ScrollView>
         </View>
@@ -246,10 +246,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
       onClose={handleCloseUserModal} 
       _backdrop={{
         _dark: {
-          bg: 'coolGray.800'
+          bg: 'dark.100'
         },
         _light: {
-          bg: 'warmGray.50'
+          bg: 'gray.900'
         }
       }}
     >
@@ -274,9 +274,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
                 value={updatedUser}
                 onChangeText={(value) => setUpdatedUser(value)}
                 placeholder="Name"
+                borderColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+                borderWidth={2}
                 _focus={{ _dark: { bg: DARK_COLOR }, selectionColor: colorMode === 'light' ? 'black': 'white' }}
-                _dark={{ bg: 'black' }}
-                _light={{ bg: 'white' }} 
+                _dark={{ bg: DARK_COLOR }}
+                _light={{ bg: LIGHT_COLOR }} 
               />
             </FormControl>
           </Modal.Body>
