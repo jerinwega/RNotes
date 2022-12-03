@@ -7,45 +7,48 @@
  */
 
  import React, { useEffect, useState } from "react";
- import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
- import { useColorMode, HStack, Center, Avatar, Button, 
-  StatusBar, Spinner, Fab, Box, IconButton, Switch, Text, Modal, FormControl,
-  Divider, Container, Flex, Input, Icon, useDisclose, Menu, Pressable, VStack, Skeleton, FlatList, ScrollView, View
+ import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl } from "react-native";
+ import { 
+  useColorMode, HStack, Center, Avatar, Button, 
+  StatusBar, Box, IconButton, Text, Modal, FormControl,
+  Divider, Input, Icon, Menu, FlatList, ScrollView, View
 } from "native-base";
-//  import Menu, { MenuItem } from 'react-native-material-menu';
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
  import { debounce } from 'lodash';
-//  import { getNotes, getSearch, getSort } from '../publics/redux/actions/notes'
-//  import { getCategory } from '../publics/redux/actions/category'
-//  import { connect } from 'react-redux'
-//  import ListData from '../Components/listData';
-import { get } from 'lodash';
-import { LIGHT_COLOR, DARK_COLOR, SKELETON_DARK, SKELETON_LIGHT } from '../utils/constants';
+import { get, orderBy } from 'lodash';
+import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
  import SkeletonLoader from '../components/common/SkeletonLoader'
  import NoteList from '../components/views/NoteList';
+ import NotFound from "../components/views/NotFound";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
   const { width: deviceWidth } = Dimensions.get('window');
-
   const { colorMode, toggleColorMode } = useColorMode();
+  const { allNotes } = get(route, 'params', []);
 
-  const [sortBy, setSort] = useState('DESC')
+  const [sortBy, setSort] = useState('desc')
   const [search, setSearch] = useState('')
+  const [searchNotFound, setSearchNotFound] = useState(false);
   const [greet, setGreet] = useState('');
   const [notes, setNotes] = useState([]);
   const [showUserModal, setShowUserModal] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState(user);
+  const [updatedUser, setUpdatedUser] = useState('');
+  const [refreshState, setRefreshState] = useState(false);
 
-  const { allNotes } = get(route, 'params', []);
 
-
+  useEffect(() => {
+    if (user) {
+      setUpdatedUser(user);
+    }
+  }, [user]);
+  
   useEffect(() => {
     findDayTimeGreet();
   }, [])
@@ -82,17 +85,37 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     if(result !== null) setNotes(JSON.parse(result))
   }
 
-
   const handleSort = () => {
-    if (sortBy === 'DESC') {
-      setSort('ASC');
+    if (sortBy === 'desc') {
+      setSort('asc');
     } else {
-      setSort('DESC');
+      setSort('desc');
     }
   }
 
-  const handleChange = text => {
+  const handleSearch = async (text) => {
+    if (!text.trim()) {
+      setSearch('')
+      setSearchNotFound(false);
+      return await findNotes();
+    }
     setSearch(text);
+    const searchResults = (notes || []).filter(note => {
+      if((note.title.toLowerCase()).includes(text.toLowerCase())) {
+        return note;
+      }
+    });
+    if (get(searchResults, 'length')) {
+      setNotes([...searchResults]);
+    } else {
+      setSearchNotFound(true);
+    }
+  }
+
+  const handleClearSearch = async () => {
+    setSearch('')
+    setSearchNotFound(false);
+    return await findNotes();
   }
 
   const handleEditName = async () => {
@@ -113,8 +136,36 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     setShowUserModal(false);
   }
 
-  avatar = updatedUser.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase();
+  const avatar = updatedUser.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase();
 
+  const sortedNotes = (notes) => {
+    return orderBy(notes, ['time'], [sortBy])
+  }
+
+  const handlePriority = async (priority) => {
+    let prorityNotes = [];
+      switch(priority) {
+        case 'high': {
+          prorityNotes = (notes || []).filter(note => note.priority === priority);
+        }
+        case 'medium': {
+          prorityNotes = (notes || []).filter(note => note.priority === priority);
+        }
+        case 'low': {
+          prorityNotes = (notes || []).filter(note => note.priority === priority);
+        }
+      }
+    
+    if (get(prorityNotes, 'length')) {
+      setNotes([...prorityNotes]);
+    }
+}
+
+const onRefresh = async () => {
+  setRefreshState(true);
+  await findNotes();
+  setRefreshState(false);
+}
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -124,7 +175,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
       >
     <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
     <Box safeAreaTop />
-    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
+    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" style={{ width: deviceWidth }}>
       <HStack>
       <RNBounceable bounceEffectIn={0.8} onPress={() => setShowUserModal(true)}>
         <Avatar 
@@ -140,34 +191,46 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
         </RNBounceable>
       </HStack>
         <HStack>
-          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="38" fontFamily = 'ChocoChici'>
+          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="40" fontFamily = 'ChocoChici'>
             RNotes
           </Text>
         </HStack>
         <HStack>
           <IconButton 
-          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={26} solid /> 
+          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={25} solid /> 
           : <OctIcon name="sun" color={LIGHT_COLOR} size={25} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
-          <Menu w="24" placement={'bottom'} trigger={triggerProps => {
+          <Menu 
+          
+          w="24" 
+          placement={'bottom'} 
+          _backdrop={{ 
+            _dark: {
+                bg: 'dark.100'
+              },
+            _light: {
+              bg: 'gray.900'
+            } 
+            }}
+            onOpen={async () => await findNotes()}
+            trigger={triggerProps => {
             return <IconButton {...triggerProps}
-                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={26} solid />} 
+                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid />} 
                   borderRadius="full"
                   />;
           }}>
-              <Menu.Group _title={{ fontFamily: 'Lato-Regular', fontWeight: 'bold' }} title="Priority" m="auto">
-                <Menu.Item alignItems={'center'}><Icon as={<OctIcon name="circle-slash" solid />} size={25} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} /></Menu.Item>
-                <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="red.600" /></Menu.Item>
-                <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="yellow.600" /></Menu.Item>
-                <Menu.Item alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={26} color="green.600" /></Menu.Item>
+              <Menu.Group _title={{ fontFamily: 'Lato-Regular', fontWeight: 'bold', color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} title="Priority" m="auto">
+                <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.600" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="yellow.600" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
           <IconButton 
-          icon={sortBy === 'DESC' ? 
-          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> 
-          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> } 
+          icon={sortBy === 'desc' ? 
+          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={24} solid /> 
+          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={24} solid /> } 
           borderRadius="full" 
           onPress={handleSort}
           />
@@ -186,8 +249,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     <Divider />
   </View>
 
-    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 24 }}>
-        <Text textAlign={'center'} mx='6' pb='6' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} bold fontSize={'18'} fontFamily={'Lato-Regular'} fontStyle='italic'>
+    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 20 }}>
+        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontWeight={'900'} fontSize={'18'} fontFamily={'Lato-Regular'} fontStyle='italic'>
           {`Good ${greet}, ${updatedUser}!`}
         </Text>
       {get(notes, 'length') ?
@@ -198,8 +261,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
           fontSize={16}
           fontFamily={'Lato-Regular'}
           placeholder="Search"
-          onChangeText={debounce(handleChange, 600)}
-          onClearPress={() => setSearch('')}
+          onChangeText={debounce(handleSearch, 600)}
+          onClearPress={handleClearSearch}
           autoCorrect={false}
           autoFocus={false}
           autoCapitalize={'none'}
@@ -215,20 +278,30 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
         </View>
         :
         <View flex={1} px={5} py={6}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={notes} 
-          numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
-          keyExtractor={item => { 
-            const key = item.id;
-            return key.toString()
-          }}
-          renderItem={({item}) => <NoteList item={item} allNotes={notes} navigation={navigation} />}
-        />
+        {searchNotFound ? <NotFound /> :
+          (
+          <FlatList
+            refreshControl={(
+              <RefreshControl
+                refreshing={refreshState}
+                onRefresh={onRefresh}
+                tintColor={colorMode=== 'light' ? DARK_COLOR : LIGHT_COLOR}
+              />
+            )}
+            showsVerticalScrollIndicator={false}
+            data={sortedNotes(notes)} 
+            numColumns={2}
+            columnWrapperStyle={{ justifyContent: 'space-between' }}
+            keyExtractor={item => { 
+              const key = item.id;
+              return key.toString()
+            }}
+            renderItem={({item}) => <NoteList item={item} allNotes={notes} navigation={navigation} />}
+          />
+          )
+        }
         </View>
-        }      
-      
+      }      
       
       <RNBounceable  
         bounceEffectIn={0.6}
@@ -299,7 +372,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   </View>
   )
  }
- 
 
  const styles = StyleSheet.create({
   fab: {

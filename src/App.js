@@ -12,10 +12,15 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState('');
+  const [isFirstLoad, setIsFirstLoad] = useState(false);
   
   const findUser = async () => {
     const result = await AsyncStorage.getItem('user')
-    if (result !== null) setUser(result);
+    if (result === null) {
+      setIsFirstLoad(true);
+    }
+    setUser(result);
+    setIsFirstLoad(false);
   }
 
   useEffect(() => {
@@ -54,7 +59,7 @@ return (
   <NavigationContainer>
     <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager} >
        <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!user && 
+        {isFirstLoad && 
         <Stack.Screen name="User">
           {(props) => <User {...props} onClose={findUser} />}
         </Stack.Screen>

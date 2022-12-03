@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
-import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input } from "native-base";
+import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
+import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View } from "native-base";
 import AntIcon from "react-native-vector-icons/AntDesign";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import OctIcon from 'react-native-vector-icons/Octicons';
@@ -95,6 +95,7 @@ const AddNote = ({
     } else if (priority === 'high') {
       startEndIconColor = '#dc2626';
     }
+
    
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
@@ -121,8 +122,7 @@ const AddNote = ({
                 fontFamily= {'Lato-Regular'}
                 fontSize={18}
                 _selectedItem={{
-                    startIcon: <FontAwesome5Icon size={16} name="angle-double-right" style={{ paddingTop: 6 }} solid color={startEndIconColor} />,
-                    endIcon: <FontAwesome5Icon size={16} name="angle-double-left" style={{ paddingTop: 6 }} solid color={startEndIconColor} />,
+                    background: startEndIconColor,
                 }}
                 _light={{
                   bg: "white",
@@ -143,9 +143,9 @@ const AddNote = ({
                 }}
                 variant="rounded"
               >
-                  <Select.Item alignItems={'center'} label="HIGH" value="high"/>
-                  <Select.Item alignItems={'center'} label=" MEDIUM" value="medium" />
-                  <Select.Item alignItems={'center'} label=" LOW" value="low" />
+                  <Select.Item  alignItems={'center'} label="HIGH" value="high"/>
+                  <Select.Item  alignItems={'center'} label=" MEDIUM" value="medium" />
+                  <Select.Item  alignItems={'center'} label=" LOW" value="low" />
                   </Select>
             </HStack>
             <HStack>
@@ -171,7 +171,7 @@ const AddNote = ({
 
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 24 }}>
-              <Box mx={8}>
+              <Box mx={5}>
               <Input
                 fontSize={'24'}
                 fontFamily={'Lato-Regular'}
@@ -188,8 +188,9 @@ const AddNote = ({
                 _light={{ bg: LIGHT_COLOR }} 
               />
               </Box>
-              <Box mx={8} py={6}>
+              <Box flex={1} mx={5} py={6}>
                 <TextArea 
+                  flex={1}
                   autoCorrect={false} 
                   autoFocus={false}
                   autoCapitalize={'none'}
@@ -197,9 +198,8 @@ const AddNote = ({
                   fontWeight={'bold'} 
                   fontSize={'20'} 
                   rounded={'2xl'}
-                  px={3} 
-                  py={3} 
-                  h={'xl'} 
+                  px={4} 
+                  py={4} 
                   placeholder="ideas..."
                   _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }} 
                   _light={{
