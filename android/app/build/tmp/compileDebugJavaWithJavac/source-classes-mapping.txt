@@ -1,0 +1,16 @@
+com/rnotes/MainApplication.java
+ com.rnotes.MainApplication
+ com.rnotes.MainApplication$1
+com/rnotes/BuildConfig.java
+ com.rnotes.BuildConfig
+SplashActivity.java
+ com.rnotes.SplashActivity
+com/rnotes/ReactNativeFlipper.java
+ com.rnotes.ReactNativeFlipper
+ com.rnotes.ReactNativeFlipper$1
+ com.rnotes.ReactNativeFlipper$2
+ com.rnotes.ReactNativeFlipper$2$1
+com/facebook/react/PackageList.java
+ com.facebook.react.PackageList
+com/rnotes/MainActivity.java
+ com.rnotes.MainActivity

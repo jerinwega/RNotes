@@ -31,17 +31,17 @@
       shadow={4} 
     >
       <AlertDialog.Content borderRadius={'2xl'}>
-        <AlertDialog.Body>
-          <Text color={'red.600'} fontWeight={'900'} fontFamily={'Lato-Regular'} fontSize={18} textAlign={'center'}>Delete Note !</Text>
+        <AlertDialog.Body py={5}>
+          <Text color={'red.500'} fontWeight={'900'} fontFamily={'Lato-Regular'} fontSize={18} textAlign={'center'}>Delete Note !</Text>
           <Text bold fontFamily={'Lato-Regular'} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
         </AlertDialog.Body>
           <Button.Group space={0}>
-            <Button p={3} borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={onDeleteAlertClose} ref={cancelRef}>
-              <Text fontWeight={'800'} color={'blue.600'} fontFamily={'Lato-Regular'} fontSize={15}>NO</Text>
+            <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={onDeleteAlertClose} ref={cancelRef}>
+              <Text fontWeight={'800'} color={'blue.500'} fontFamily={'Lato-Regular'} fontSize={15}>NO</Text>
             </Button>
             <Divider orientation="vertical" />
-            <Button p={3} borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={handleDeleteAlert}>
-              <Text fontWeight={'800'} color={'red.600'} fontFamily={'Lato-Regular'} fontSize={15}>YES</Text>
+            <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={handleDeleteAlert}>
+              <Text fontWeight={'800'} color={'red.500'} fontFamily={'Lato-Regular'} fontSize={15}>YES</Text>
             </Button>
           </Button.Group>
       </AlertDialog.Content>

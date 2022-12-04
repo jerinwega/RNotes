@@ -7,6 +7,7 @@ import { NativeBaseProvider, extendTheme } from "native-base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import SplashScreen from 'react-native-splash-screen'
 
 const Stack = createStackNavigator();
 
@@ -17,13 +18,15 @@ export default function App() {
   const findUser = async () => {
     const result = await AsyncStorage.getItem('user')
     if (result === null) {
-      setIsFirstLoad(true);
+       setIsFirstLoad(true);
+    } else {
+      setUser(result);
+      setIsFirstLoad(false);
     }
-    setUser(result);
-    setIsFirstLoad(false);
   }
 
   useEffect(() => {
+    SplashScreen.hide();
     findUser();
   }, [])
 
@@ -55,17 +58,20 @@ const colorModeManager = {
 
 const extendedTheme = extendTheme({ config })
 
+if (isFirstLoad) {
+ return  (
+ <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager}>
+    <User onClose={findUser} />
+  </NativeBaseProvider>
+ );
+}
+
 return (
   <NavigationContainer>
     <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager} >
        <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isFirstLoad && 
-        <Stack.Screen name="User">
-          {(props) => <User {...props} onClose={findUser} />}
-        </Stack.Screen>
-        }
         <Stack.Screen name="Home">
-          {(props) => <Home {...props} user={user} onClose={findUser} />}
+        {(props) => <Home {...props} user={user} onClose={findUser} />}
         </Stack.Screen>
         <Stack.Screen name="AddNote" component={AddNote} />
         <Stack.Screen name="ViewNotes" component={ViewNotes} />  

@@ -92,7 +92,7 @@ import DeleteAlert from "../common/DeleteAlert";
         py={3}
         rounded="3xl" 
         borderWidth={1} 
-        _dark={{ borderColor: borderColor, borderTopWidth: 2 }} 
+        _dark={{ borderColor: borderColor, borderTopWidth: 4 }} 
         _light={{ borderColor: borderColor }}
         style={{ transform: [{ scale: isPressed ? 0.9 : 1 }], backgroundColor: handleBackground(isPressed) }}>
             <View style={{ alignItems: 'flex-end' }}>

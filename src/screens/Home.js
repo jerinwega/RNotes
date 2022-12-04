@@ -6,12 +6,12 @@
  * @flow strict-local
  */
 
- import React, { useEffect, useState } from "react";
+ import React, { useEffect, useState, useRef } from "react";
  import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl } from "react-native";
  import { 
   useColorMode, HStack, Center, Avatar, Button, 
   StatusBar, Box, IconButton, Text, Modal, FormControl,
-  Divider, Input, Icon, Menu, FlatList, ScrollView, View
+  Divider, Input, Icon, Menu, FlatList, ScrollView, View, Alert, VStack, Heading, CloseIcon
 } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
@@ -25,6 +25,7 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
  import NoteList from '../components/views/NoteList';
  import NotFound from "../components/views/NotFound";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NoteAlert from "../components/common/NoteAlert";
 
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
@@ -41,6 +42,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   const [showUserModal, setShowUserModal] = useState(false);
   const [updatedUser, setUpdatedUser] = useState('');
   const [refreshState, setRefreshState] = useState(false);
+  const [showNoteAlert, setShowNoteAlert] = useState(false);
+  const cancelRef = useRef(null);
+
 
 
   useEffect(() => {
@@ -86,6 +90,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   }
 
   const handleSort = () => {
+    if (get(notes, 'length') === 0) {
+      setShowNoteAlert(true);
+     return;
+    }
     if (sortBy === 'desc') {
       setSort('asc');
     } else {
@@ -93,7 +101,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     }
   }
 
+
+
+   // . search back issue check
+
+
+
   const handleSearch = async (text) => {
+
+    setSearchNotFound(false);
     if (!text.trim()) {
       setSearch('')
       setSearchNotFound(false);
@@ -101,16 +117,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     }
     setSearch(text);
     const searchResults = (notes || []).filter(note => {
-      if((note.title.toLowerCase()).includes(text.toLowerCase())) {
+      if((get(note, 'title').toLowerCase()).includes(text.toLowerCase())) {
         return note;
       }
     });
+
+    console.log("search", searchResults.length)
+
     if (get(searchResults, 'length')) {
+      console.log("hit")
+      setSearchNotFound(false);
       setNotes([...searchResults]);
     } else {
+      console.log("hit1")
       setSearchNotFound(true);
     }
   }
+
+
 
   const handleClearSearch = async () => {
     setSearch('')
@@ -143,6 +167,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   }
 
   const handlePriority = async (priority) => {
+
+    if (get(notes, 'length') === 0) {
+      setShowNoteAlert(true);
+      return;
+     }
     let prorityNotes = [];
       switch(priority) {
         case 'high': {
@@ -195,15 +224,14 @@ const onRefresh = async () => {
             RNotes
           </Text>
         </HStack>
-        <HStack>
+        <HStack alignItems={'center'}>
           <IconButton 
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={25} solid /> 
           : <OctIcon name="sun" color={LIGHT_COLOR} size={25} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
-          <Menu 
-          
+          <Menu
           w="24" 
           placement={'bottom'} 
           _backdrop={{ 
@@ -215,7 +243,8 @@ const onRefresh = async () => {
             } 
             }}
             onOpen={async () => await findNotes()}
-            trigger={triggerProps => {
+            trigger={
+              triggerProps => {
             return <IconButton {...triggerProps}
                   icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid />} 
                   borderRadius="full"
@@ -229,9 +258,10 @@ const onRefresh = async () => {
             </Menu>
           <IconButton 
           icon={sortBy === 'desc' ? 
-          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={24} solid /> 
-          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={24} solid /> } 
-          borderRadius="full" 
+          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={23} solid /> 
+          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={23} solid /> } 
+          borderRadius="full"
+          // disabled={get(notes, 'length') === 0 }
           onPress={handleSort}
           />
         </HStack>
@@ -369,6 +399,11 @@ const onRefresh = async () => {
         </Modal.Content>
         </TouchableWithoutFeedback>
       </Modal>
+      <NoteAlert 
+        showNoteAlert={showNoteAlert} 
+        cancelRef={cancelRef}
+        onNoteAlertClose={() => setShowNoteAlert(false)} 
+      />
   </View>
   )
  }
