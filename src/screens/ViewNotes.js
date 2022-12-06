@@ -11,7 +11,7 @@ import { Dimensions } from 'react-native';
 import { Text, HStack, Box, StatusBar, Center, useColorMode, IconButton, View, ScrollView } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
+import { DARK_COLOR, FONT, LIGHT_COLOR } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
@@ -94,10 +94,10 @@ const ViewNotes = ({
 
           
             <View pt={6} pb={4} px={6} bg={colorMode === 'light' ? 'white' : 'black'}>
-              <Text opacity={0.6} mb={4} textAlign={'right'} bold fontFamily={'Lato-Regular'}>             
+              <Text opacity={0.6} mb={4} textAlign={'right'} fontFamily={FONT.family} fontWeight={FONT.semibold} fontSize={14}>             
                 {`${get(viewedNote, 'edited', false) ? "Updated At": "Created At"} : ${moment(get(viewedNote, 'time', '')).format('DD/MM/YYYY - hh:mm A')}`}
               </Text>
-              <Text color={startEndIconColor} bold fontFamily={'Lato-Regular'} fontSize={28}>             
+              <Text color={startEndIconColor}fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={30}>             
                 {get(viewedNote, 'title', '')}
               </Text>
             </View>
@@ -108,7 +108,7 @@ const ViewNotes = ({
               delay={300}
               >
               <View px={7} flex={1} pb={4}>
-                <Text fontFamily={'Lato-Regular'} fontSize={20}>             
+                <Text fontFamily={FONT.family} fontWeight={FONT.semibold} fontSize={22}>             
                   {get(viewedNote, 'description', '')}
                 </Text>
               </View>

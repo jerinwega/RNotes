@@ -34,6 +34,7 @@
     <orderEntry type="module" module-name="RNotes.react-native-gesture-handler.main" scope="TEST" />
     <orderEntry type="module" module-name="RNotes.react-native-safe-area-context.main" scope="TEST" />
     <orderEntry type="module" module-name="RNotes.react-native-screens.main" scope="TEST" />
+    <orderEntry type="module" module-name="RNotes.react-native-spinkit.main" scope="TEST" />
     <orderEntry type="module" module-name="RNotes.react-native-splash-screen.main" scope="TEST" />
     <orderEntry type="module" module-name="RNotes.react-native-svg.main" scope="TEST" />
     <orderEntry type="module" module-name="RNotes.react-native-vector-icons.main" scope="TEST" />
@@ -52,13 +53,14 @@
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.lifecycle:lifecycle-common:2.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.arch.core:core-common:2.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.annotation:annotation:1.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.facebook.soloader:annotation:0.10.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.facebook.soloader:nativeloader:0.10.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.21" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.6.21" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.6.21" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: ./../node_modules/hermes-engine/android/hermes-debug.aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.facebook.flipper:flipper:0.93.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.facebook.flipper:flipper-network-plugin:0.93.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.facebook.flipper:flipper-fresco-plugin:0.93.0@aar" level="project" />
@@ -68,7 +70,6 @@
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.vectordrawable:vectordrawable-animated:1.0.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.legacy:legacy-support-core-ui:1.0.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.swiperefreshlayout:swiperefreshlayout:1.0.0@aar" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.webkit:android-jsc:r250230@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: artifacts:react-native-reanimated:unspecified" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.facebook.fresco:fresco:2.5.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.facebook.fresco:imagepipeline-okhttp3:2.5.0@aar" level="project" />

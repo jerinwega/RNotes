@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
 import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View } from "native-base";
-import AntIcon from "react-native-vector-icons/AntDesign";
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import OctIcon from 'react-native-vector-icons/Octicons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import FeatherIcon from 'react-native-vector-icons/Feather';
-import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR, FONT } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 
@@ -118,8 +114,8 @@ const AddNote = ({
                 selectedValue={priority} 
                 minWidth="150" 
                 textAlign={'center'}
-                fontWeight={'900'}
-                fontFamily= {'Lato-Regular'}
+                fontFamily={FONT.family}
+                fontWeight={FONT.bold}
                 fontSize={18}
                 _selectedItem={{
                     background: startEndIconColor,
@@ -136,8 +132,8 @@ const AddNote = ({
                 _item={{
                   _text: {
                     fontSize: 18,
-                    fontWeight: '900',
-                    fontFamily: 'Lato-Regular',
+                    fontFamily: FONT.family,
+                    fontWeight: FONT.bold,
                     color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR
                   }
                 }}
@@ -170,43 +166,45 @@ const AddNote = ({
             </View>
 
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 24 }}>
+            <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
               <Box mx={5}>
               <Input
-                fontSize={'24'}
-                fontFamily={'Lato-Regular'}
+                py={3}
+                fontSize={'26'}
+                fontFamily={FONT.family}
+                fontWeight={FONT.bold}
                 autoCorrect={false}
                 autoFocus={false}
                 value={title} 
-                fontWeight={'900'} 
-                textAlign={'center'} 
-                rounded={'2xl'}
-                placeholder="Title" 
+                textAlign={'center'}
+                rounded={'3xl'}
+                placeholder="Title"
+                color={startEndIconColor}
                 onChangeText={(text) => handleChange(text, 'title')}
-                _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }} 
-                _dark={{ bg: DARK_COLOR }}
-                _light={{ bg: LIGHT_COLOR }} 
+                _focus={{ selectionColor: startEndIconColor }} 
+                _dark={{ bg: 'black' }}
+                _light={{ bg: 'white' }} 
               />
               </Box>
-              <Box flex={1} mx={5} py={6}>
+              <Box flex={1} mx={5} pb={6} pt={2}>
                 <TextArea 
                   flex={1}
                   autoCorrect={false} 
                   autoFocus={false}
                   autoCapitalize={'none'}
-                  fontFamily={'Lato-Regular'}
-                  fontWeight={'bold'} 
-                  fontSize={'20'} 
-                  rounded={'2xl'}
+                  fontFamily={FONT.family}
+                  fontWeight={FONT.semibold}
+                  fontSize={'22'} 
+                  rounded={'3xl'}
                   px={4} 
                   py={4} 
                   placeholder="ideas..."
                   _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }} 
                   _light={{
-                      bg: LIGHT_COLOR,
+                      bg: 'white',
                     }} 
                   _dark={{
-                      bg: DARK_COLOR,
+                      bg: 'black',
                     }} 
                   value={description} 
                   onChangeText={(text) => handleChange(text, 'description')}

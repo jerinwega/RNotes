@@ -12,7 +12,7 @@
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
-import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR, FONT } from '../utils/constants';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -54,8 +54,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
             autoCorrect={false}
             autoFocus={false}
             value={user} 
-            fontWeight={'900'} 
-            fontFamily={'Lato-Regular'}
+            fontFamily={FONT.family}
+            fontWeight={FONT.bold}
             textAlign={'center'} 
             variant={'unstyled'} 
             placeholder="Name"

@@ -7,18 +7,18 @@
  */
 
  import React, { useEffect, useState, useRef } from "react";
- import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl } from "react-native";
+ import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl, Platform } from "react-native";
  import { 
   useColorMode, HStack, Center, Avatar, Button, 
   StatusBar, Box, IconButton, Text, Modal, FormControl,
-  Divider, Input, Icon, Menu, FlatList, ScrollView, View, Alert, VStack, Heading, CloseIcon
+  Divider, Input, Icon, Menu, FlatList, ScrollView, View, Alert, VStack, Heading, CloseIcon, Pressable
 } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
  import { debounce } from 'lodash';
 import { get, orderBy } from 'lodash';
-import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR, FONT } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
  import SkeletonLoader from '../components/common/SkeletonLoader'
@@ -63,9 +63,7 @@ import NoteAlert from "../components/common/NoteAlert";
 
 
   useEffect(() => {
-    if (get(allNotes, 'length')) {
       setNotes(allNotes);
-    }
   }, [allNotes])
 
 
@@ -111,6 +109,7 @@ import NoteAlert from "../components/common/NoteAlert";
 
     setSearchNotFound(false);
     if (!text.trim()) {
+      Keyboard.dismiss()
       setSearch('')
       setSearchNotFound(false);
       return await findNotes();
@@ -137,6 +136,7 @@ import NoteAlert from "../components/common/NoteAlert";
 
 
   const handleClearSearch = async () => {
+    Keyboard.dismiss()
     setSearch('')
     setSearchNotFound(false);
     return await findNotes();
@@ -213,7 +213,7 @@ const onRefresh = async () => {
           style={{ height: 64, width: 64 }}
         >
           <Avatar.Badge bg="green.500" />
-         <Text fontFamily = 'Lato-Regular' color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontWeight='900' fontSize={'30'}>
+         <Text fontFamily={FONT.family} fontWeight={FONT.bold} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'36'}>
           {avatar.substring(0,2)}
         </Text>
         </Avatar>
@@ -234,6 +234,7 @@ const onRefresh = async () => {
           <Menu
           w="24" 
           placement={'bottom'} 
+          rounded={'3xl'}
           _backdrop={{ 
             _dark: {
                 bg: 'dark.100'
@@ -250,7 +251,7 @@ const onRefresh = async () => {
                   borderRadius="full"
                   />;
           }}>
-              <Menu.Group _title={{ fontFamily: 'Lato-Regular', fontWeight: 'bold', color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} title="Priority" m="auto">
+              <Menu.Group _title={{ fontFamily: FONT.family, fontWeight: FONT.bold }} title="Priority" m="auto">
                 <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.600" /></Menu.Item>
                 <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="yellow.600" /></Menu.Item>
                 <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.600" /></Menu.Item>
@@ -261,7 +262,6 @@ const onRefresh = async () => {
           <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={23} solid /> 
           : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={23} solid /> } 
           borderRadius="full"
-          // disabled={get(notes, 'length') === 0 }
           onPress={handleSort}
           />
         </HStack>
@@ -278,18 +278,17 @@ const onRefresh = async () => {
     } }}>
     <Divider />
   </View>
-
-    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? 'white' : 'black', paddingTop: 20 }}>
-        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontWeight={'900'} fontSize={'18'} fontFamily={'Lato-Regular'} fontStyle='italic'>
+    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
+        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'19'} fontFamily={FONT.family} fontWeight={FONT.semibold} fontStyle={FONT.italic}>
           {`Good ${greet}, ${updatedUser}!`}
         </Text>
       {get(notes, 'length') ?
         <SearchBar
           clearIconComponent={!search && <></>}
-          style={{ width: deviceWidth - 40, height: "6%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}
+          style={{ width: deviceWidth - 40, height: "6%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? 'white' : 'black' }}
           darkMode={colorMode === 'dark'}
-          fontSize={16}
-          fontFamily={'Lato-Regular'}
+          fontSize={17}
+          fontFamily={FONT.family}
           placeholder="Search"
           onChangeText={debounce(handleSearch, 600)}
           onClearPress={handleClearSearch}
@@ -301,11 +300,9 @@ const onRefresh = async () => {
         }
 
       {!notes || get(notes, 'length') === 0 ? 
-      <View flex={1}>
-        <ScrollView indicatorStyle={colorMode === 'light' ? 'black' : 'white'}>
-          <SkeletonLoader /> 
-        </ScrollView>
-        </View>
+          <View flex={1}>
+            <SkeletonLoader /> 
+          </View>
         :
         <View flex={1} px={5} py={6}>
         {searchNotFound ? <NotFound /> :
@@ -361,27 +358,25 @@ const onRefresh = async () => {
           <Modal.CloseButton 
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
-            <Modal.Header>
+            <Modal.Header borderBottomWidth={1}>
               <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> 
           </Modal.Header>
           <Modal.Body>
-          <FormControl my={2} px={3}>
+          <FormControl mt={2} px={2}>
               <Input 
                 rounded={'3xl'}
                 textAlign={'center'}
-                fontSize={22}
-                fontFamily={'Lato-Regular'}
-                fontWeight={'900'}
+                fontSize={24}
+                fontFamily={FONT.family}
+                fontWeight={FONT.bold}
                 autoCorrect={false}
                 autoFocus={false}
                 value={updatedUser}
                 onChangeText={(value) => setUpdatedUser(value)}
                 placeholder="Name"
-                borderColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
-                borderWidth={2}
-                _focus={{ _dark: { bg: DARK_COLOR }, selectionColor: colorMode === 'light' ? 'black': 'white' }}
-                _dark={{ bg: DARK_COLOR }}
-                _light={{ bg: LIGHT_COLOR }} 
+                _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }}
+                _dark={{ bg: 'black' }}
+                _light={{ bg: 'white' }} 
               />
             </FormControl>
           </Modal.Body>
@@ -392,7 +387,7 @@ const onRefresh = async () => {
                 onPress={handleEditName}
                 borderRadius={'none'}
               >
-              <Text fontFamily={'Lato-Regular'} fontWeight={'800'} color={'green.500'} fontSize={'16'}>
+              <Text fontFamily={FONT.family} color={'green.500'} fontSize={'16'} fontWeight={FONT.bold}>
                 SAVE        
               </Text>
               </Button>

@@ -8,21 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* RNotesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* RNotesTests.m */; };
+		099317A5293F022800CA8619 /* ChocoChici.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8CB194E77A6C4342BC36BED9 /* ChocoChici.ttf */; };
+		099317A6293F022B00CA8619 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 848CC544B35F48EAAD6A8D2C /* Lato-Regular.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1C114F1897154CB6A39A5EDF /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 848CC544B35F48EAAD6A8D2C /* Lato-Regular.ttf */; };
-		1EAF46B67B55414784721213 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB586B1E85B8442E9EF03572 /* Lato-Bold.ttf */; };
-		2679390F0FD24230B173A4DD /* Lato-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D803178760B94AB0B8AB71F8 /* Lato-BoldItalic.ttf */; };
 		2B2CB4966C1B74BD12578D3B /* libPods-RNotes-RNotesTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32AB975D9739EBC5808C96C1 /* libPods-RNotes-RNotesTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		89CA4DD020FF4DB89542DCDF /* WildWorldBOLD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8426788FCCD4BA3BB9431A5 /* WildWorldBOLD.ttf */; };
-		8BA1E9B17581495AB29D4BF2 /* Stanley.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03ACD078FBD040CDA4036447 /* Stanley.ttf */; };
-		97F28BA9A64044A9892C4964 /* Lato-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D90351E66D643249569867B /* Lato-Black.ttf */; };
 		A1ABEAE70B97510FD4684A74 /* libPods-RNotes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 538B8CEB3F3BF46719E97B0C /* libPods-RNotes.a */; };
-		A2950E9E041240848B95363F /* Lato-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5707A825C6A546E992798167 /* Lato-BlackItalic.ttf */; };
-		BED2CEE7D96246CABAF6F06D /* GeraldinePersonalUseItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2222527C2044E88980CECA /* GeraldinePersonalUseItalic.ttf */; };
-		ED72565D3B284B0F98CA6D9B /* Lato-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4ED6120159B4429881BF84C /* Lato-Italic.ttf */; };
 		F372506B0C0D442EAB4E6891 /* ChocoChici.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8CB194E77A6C4342BC36BED9 /* ChocoChici.ttf */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +34,7 @@
 		00E356EE1AD99517003FC87E /* RNotesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNotesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RNotesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNotesTests.m; sourceTree = "<group>"; };
-		03ACD078FBD040CDA4036447 /* Stanley.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Stanley.ttf; path = ../src/assets/fonts/Stanley.ttf; sourceTree = "<group>"; };
+		03ACD078FBD040CDA4036447 /* Stanley.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Stanley.ttf; path = ../src/assets/fonts/Stanley.ttf; sourceTree = "<group>"; };
 		0D1BABA10083C7BB795C7969 /* Pods-RNotes-RNotesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNotes-RNotesTests.debug.xcconfig"; path = "Target Support Files/Pods-RNotes-RNotesTests/Pods-RNotes-RNotesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* RNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RNotes/AppDelegate.h; sourceTree = "<group>"; };
@@ -49,21 +43,21 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RNotes/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RNotes/main.m; sourceTree = "<group>"; };
 		1F2222527C2044E88980CECA /* GeraldinePersonalUseItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GeraldinePersonalUseItalic.ttf; path = ../src/assets/fonts/GeraldinePersonalUseItalic.ttf; sourceTree = "<group>"; };
-		2D90351E66D643249569867B /* Lato-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Black.ttf"; path = "../src/assets/fonts/Lato-Black.ttf"; sourceTree = "<group>"; };
+		2D90351E66D643249569867B /* Lato-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Black.ttf"; path = "../src/assets/fonts/Lato-Black.ttf"; sourceTree = "<group>"; };
 		31EADE42038425191AD20F15 /* Pods-RNotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNotes.release.xcconfig"; path = "Target Support Files/Pods-RNotes/Pods-RNotes.release.xcconfig"; sourceTree = "<group>"; };
 		32AB975D9739EBC5808C96C1 /* libPods-RNotes-RNotesTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNotes-RNotesTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D2BD777521DCB297267F96F /* Pods-RNotes-RNotesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNotes-RNotesTests.release.xcconfig"; path = "Target Support Files/Pods-RNotes-RNotesTests/Pods-RNotes-RNotesTests.release.xcconfig"; sourceTree = "<group>"; };
 		538B8CEB3F3BF46719E97B0C /* libPods-RNotes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNotes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5707A825C6A546E992798167 /* Lato-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-BlackItalic.ttf"; path = "../src/assets/fonts/Lato-BlackItalic.ttf"; sourceTree = "<group>"; };
+		5707A825C6A546E992798167 /* Lato-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-BlackItalic.ttf"; path = "../src/assets/fonts/Lato-BlackItalic.ttf"; sourceTree = "<group>"; };
 		7A1A2A2EEB65CDDE88C87D95 /* Pods-RNotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNotes.debug.xcconfig"; path = "Target Support Files/Pods-RNotes/Pods-RNotes.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RNotes/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		848CC544B35F48EAAD6A8D2C /* Lato-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.ttf"; path = "../src/assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
+		848CC544B35F48EAAD6A8D2C /* Lato-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.ttf"; path = "../src/assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
 		8CB194E77A6C4342BC36BED9 /* ChocoChici.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChocoChici.ttf; path = ../src/assets/fonts/ChocoChici.ttf; sourceTree = "<group>"; };
-		CB586B1E85B8442E9EF03572 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../src/assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
-		D803178760B94AB0B8AB71F8 /* Lato-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-BoldItalic.ttf"; path = "../src/assets/fonts/Lato-BoldItalic.ttf"; sourceTree = "<group>"; };
+		CB586B1E85B8442E9EF03572 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../src/assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
+		D803178760B94AB0B8AB71F8 /* Lato-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-BoldItalic.ttf"; path = "../src/assets/fonts/Lato-BoldItalic.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F4ED6120159B4429881BF84C /* Lato-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Italic.ttf"; path = "../src/assets/fonts/Lato-Italic.ttf"; sourceTree = "<group>"; };
-		F8426788FCCD4BA3BB9431A5 /* WildWorldBOLD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = WildWorldBOLD.ttf; path = ../src/assets/fonts/WildWorldBOLD.ttf; sourceTree = "<group>"; };
+		F4ED6120159B4429881BF84C /* Lato-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Italic.ttf"; path = "../src/assets/fonts/Lato-Italic.ttf"; sourceTree = "<group>"; };
+		F8426788FCCD4BA3BB9431A5 /* WildWorldBOLD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = WildWorldBOLD.ttf; path = ../src/assets/fonts/WildWorldBOLD.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,7 +232,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -273,6 +267,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				099317A5293F022800CA8619 /* ChocoChici.ttf in Resources */,
+				099317A6293F022B00CA8619 /* Lato-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,14 +279,6 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				F372506B0C0D442EAB4E6891 /* ChocoChici.ttf in Resources */,
-				BED2CEE7D96246CABAF6F06D /* GeraldinePersonalUseItalic.ttf in Resources */,
-				8BA1E9B17581495AB29D4BF2 /* Stanley.ttf in Resources */,
-				89CA4DD020FF4DB89542DCDF /* WildWorldBOLD.ttf in Resources */,
-				97F28BA9A64044A9892C4964 /* Lato-Black.ttf in Resources */,
-				A2950E9E041240848B95363F /* Lato-BlackItalic.ttf in Resources */,
-				1EAF46B67B55414784721213 /* Lato-Bold.ttf in Resources */,
-				2679390F0FD24230B173A4DD /* Lato-BoldItalic.ttf in Resources */,
-				ED72565D3B284B0F98CA6D9B /* Lato-Italic.ttf in Resources */,
 				1C114F1897154CB6A39A5EDF /* Lato-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -478,13 +466,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0D1BABA10083C7BB795C7969 /* Pods-RNotes-RNotesTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = RNotesTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -505,10 +494,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4D2BD777521DCB297267F96F /* Pods-RNotes-RNotesTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = RNotesTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -624,7 +614,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -682,7 +672,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
