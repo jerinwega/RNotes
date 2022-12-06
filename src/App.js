@@ -26,6 +26,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    // AsyncStorage.clear();
     SplashScreen.hide();
     findUser();
   }, [])

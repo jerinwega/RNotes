@@ -74,6 +74,7 @@ import DeleteAlert from "../common/DeleteAlert";
         py={3}
         rounded="3xl" 
         borderTopWidth={5}
+        opacity={isPressed ? 0.7 : 1}
         _dark={{ borderColor: borderColor, borderWidth: 1 }} 
         _light={{ borderColor: borderColor, borderWidth: 2, background: hashBgColor }}
         style={{ transform: [{ scale: isPressed ? 0.9 : 1 }] }}>

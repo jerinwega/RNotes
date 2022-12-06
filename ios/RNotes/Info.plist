@@ -61,6 +61,7 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Lato-Regular.ttf</string>
 		<string>ChocoChici.ttf</string>
+		<string>Lato-Black.ttf</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>

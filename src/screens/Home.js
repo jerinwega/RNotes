@@ -63,9 +63,10 @@ import NoteAlert from "../components/common/NoteAlert";
 
 
   useEffect(() => {
+    if (allNotes) {
       setNotes(allNotes);
+    }
   }, [allNotes])
-
 
   const findDayTimeGreet = () => {
     let newGreet = '';
@@ -88,7 +89,7 @@ import NoteAlert from "../components/common/NoteAlert";
   }
 
   const handleSort = () => {
-    if (get(notes, 'length') === 0) {
+    if (!get(notes, 'length')) {
       setShowNoteAlert(true);
      return;
     }
@@ -168,7 +169,7 @@ import NoteAlert from "../components/common/NoteAlert";
 
   const handlePriority = async (priority) => {
 
-    if (get(notes, 'length') === 0) {
+    if (!get(notes, 'length')) {
       setShowNoteAlert(true);
       return;
      }
@@ -299,7 +300,7 @@ const onRefresh = async () => {
         /> : null
         }
 
-      {!notes || get(notes, 'length') === 0 ? 
+      {!get(notes, 'length')? 
           <View flex={1}>
             <SkeletonLoader /> 
           </View>

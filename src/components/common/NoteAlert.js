@@ -7,8 +7,8 @@
  */
 
  import React from "react";
- import { AlertDialog, Text, Button, useColorMode } from "native-base";
-import { DARK_COLOR, FONT, LIGHT_COLOR } from "../../utils/constants";
+ import { AlertDialog, Text, Button } from "native-base";
+import { FONT } from "../../utils/constants";
 
  const NoteAlert = ({
     cancelRef,
@@ -16,7 +16,6 @@ import { DARK_COLOR, FONT, LIGHT_COLOR } from "../../utils/constants";
     onNoteAlertClose
  }) => {
 
-const { colorMode } = useColorMode();
 
   return (
     <AlertDialog  

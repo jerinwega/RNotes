@@ -50,7 +50,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
           <Input
             mx={6}
             mb={4}
-            fontSize={'68'}
+            fontSize={'72'}
             autoCorrect={false}
             autoFocus={false}
             value={user} 
