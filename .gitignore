@@ -5,7 +5,7 @@ android/app/src/debug/java/
 ios/Podfile.lock
 ios/RNotes.xcworkspace/
 ios/RNotes/LaunchScreen.storyboard
-
+/log
 
 # OSX
 #
