@@ -75,3 +75,6 @@ coverage/
 
 # CocoaPods
 /ios/Pods/
+
+android/java_pid85939.hprof
+android/java_pid7026.hprof
