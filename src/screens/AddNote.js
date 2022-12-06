@@ -111,6 +111,10 @@ const AddNote = ({
               </HStack>
               <HStack>
                 <Select 
+                _customDropdownIconProps={{
+                  color: startEndIconColor,
+                  size: 5
+                }}
                 selectedValue={priority} 
                 minWidth="150" 
                 textAlign={'center'}
@@ -193,7 +197,7 @@ const AddNote = ({
                   autoFocus={false}
                   autoCapitalize={'none'}
                   fontFamily={FONT.family}
-                  fontWeight={FONT.semibold}
+                  fontWeight={'600'}
                   fontSize={'22'} 
                   rounded={'3xl'}
                   px={4} 

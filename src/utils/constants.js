@@ -4,7 +4,7 @@ export const DARK_COLOR = '#19191A';
 // export const SECONDARY_COLOR = '#19191A';
 
 const FONT = {
-    family: 'Lato-Regular',
+    family: 'Lato',
     bold: '900',
     semibold: '600',
     italic: 'italic'
