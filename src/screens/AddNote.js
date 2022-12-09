@@ -215,12 +215,12 @@ const AddNote = ({
                 keyboardVerticalOffset={120}
               >
               <ScrollView 
-              flex={1} 
-              bounces 
-              keyboardShouldPersistTaps="handled" 
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ flexGrow: 1 }}
-              mx={5} pb={5} pt={2}>
+                flex={1} 
+                bounces 
+                keyboardShouldPersistTaps="handled" 
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+                mx={5} pb={5} pt={2}>
                 <TextArea 
                   flex={1}
                   autoCorrect={false} 

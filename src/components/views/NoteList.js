@@ -85,7 +85,7 @@ import DeleteAlert from "../common/DeleteAlert";
                   {moment(time).format('DD MMM YYYY')}
                 </Text>
               </View>
-              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} fontWeight={FONT.bold} pb={2} >{title}</Text>
+              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} fontWeight={FONT.bold} pb={2} >{title.trim()}</Text>
               <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} numberOfLines={4}>{trimmedDesc}</Text>
               </Box>   
           }}
