@@ -58,6 +58,8 @@ import DeleteAlert from "../common/DeleteAlert";
     navigation.navigate('Home', { allNotes: newNotes })
   }
 
+  const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
+
  return <>
       <Pressable
         onPress={() => navigation.navigate('ViewNotes', { viewedNote: item , allNotes })} 
@@ -84,7 +86,7 @@ import DeleteAlert from "../common/DeleteAlert";
                 </Text>
               </View>
               <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} fontWeight={FONT.bold} pb={2} >{title}</Text>
-              <Text fontSize={19} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} numberOfLines={4}>{description.trim()}</Text>
+              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} numberOfLines={4}>{trimmedDesc}</Text>
               </Box>   
           }}
         </Pressable>

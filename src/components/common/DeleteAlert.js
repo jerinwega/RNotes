@@ -14,24 +14,25 @@ import { FONT } from "../../utils/constants";
     cancelRef,
     isDeleteAlertOpen,
     handleDeleteAlert,
-    onDeleteAlertClose
+    onDeleteAlertClose,
+    isView
  }) => {
   return (
     <AlertDialog  
       _backdrop={{
         _dark: {
-          bg: 'dark.100'
+          bg: isView ? 'dark.200' : 'gray.900'
         },
         _light: {
-          bg: 'gray.900'
+          bg: 'dark.200'
         }
       }} 
       leastDestructiveRef={cancelRef} 
       isOpen={isDeleteAlertOpen} 
       size={'sm'}
-      shadow={4} 
+      shadow={4}
     >
-      <AlertDialog.Content borderRadius={'2xl'}>
+      <AlertDialog.Content borderRadius={'2xl'} borderWidth={1} borderColor={'red.500'}>
         <AlertDialog.Body py={5}>
           <Text color={'red.500'} fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={19} textAlign={'center'}>Delete Note !</Text>
           <Text fontFamily={FONT.family} fontWeight={FONT.semibold} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>

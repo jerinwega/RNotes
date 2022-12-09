@@ -70,7 +70,7 @@ if (isFirstLoad) {
 return (
   <NavigationContainer>
     <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager} >
-       <Stack.Navigator screenOptions={{ headerShown: false }}>
+       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
         <Stack.Screen name="Home">
         {(props) => <Home {...props} user={user} onClose={findUser} />}
         </Stack.Screen>

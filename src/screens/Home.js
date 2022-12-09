@@ -11,7 +11,7 @@
  import { 
   useColorMode, HStack, Center, Avatar, Button, 
   StatusBar, Box, IconButton, Text, Modal, FormControl,
-  Divider, Input, Icon, Menu, FlatList, ScrollView, View, Alert, VStack, Heading, CloseIcon, Pressable
+  Divider, Input, Icon, Menu, FlatList, View, Alert, VStack, Heading, CloseIcon, Pressable
 } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
@@ -27,7 +27,6 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NoteAlert from "../components/common/NoteAlert";
 
-
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
   const { width: deviceWidth } = Dimensions.get('window');
@@ -36,6 +35,7 @@ import NoteAlert from "../components/common/NoteAlert";
 
   const [sortBy, setSort] = useState('desc')
   const [search, setSearch] = useState('')
+  const [spinner, setSpinner] = useState(false);
   const [searchNotFound, setSearchNotFound] = useState(false);
   const [greet, setGreet] = useState('');
   const [notes, setNotes] = useState([]);
@@ -45,8 +45,6 @@ import NoteAlert from "../components/common/NoteAlert";
   const [showNoteAlert, setShowNoteAlert] = useState(false);
   const cancelRef = useRef(null);
 
-
-
   useEffect(() => {
     if (user) {
       setUpdatedUser(user);
@@ -54,11 +52,14 @@ import NoteAlert from "../components/common/NoteAlert";
   }, [user]);
   
   useEffect(() => {
-    findDayTimeGreet();
+    findDayTimeGreet();  
   }, [])
 
   useEffect(() => {
-    findNotes();
+    const unsubscribe = navigation.addListener('focus', () => {
+      findNotes();
+    });
+    return unsubscribe;
   }, [navigation])
 
 
@@ -85,7 +86,7 @@ import NoteAlert from "../components/common/NoteAlert";
 
   const findNotes = async () => {
     const result = await AsyncStorage.getItem('notes');
-    if(result !== null) setNotes(JSON.parse(result))
+    if (result !== null) setNotes(JSON.parse(result))
   }
 
   const handleSort = () => {
@@ -100,44 +101,45 @@ import NoteAlert from "../components/common/NoteAlert";
     }
   }
 
-
-
-   // . search back issue check
-
-
-
   const handleSearch = async (text) => {
+    setSpinner(true);
+    setSearch(text);
 
-    setSearchNotFound(false);
+    const refresh = await AsyncStorage.getItem('notes');
+    const refreshNotes = JSON.parse(refresh);
+
     if (!text.trim()) {
-      Keyboard.dismiss()
       setSearch('')
+      setSpinner(false);
       setSearchNotFound(false);
       return await findNotes();
     }
-    setSearch(text);
-    const searchResults = (notes || []).filter(note => {
-      if((get(note, 'title').toLowerCase()).includes(text.toLowerCase())) {
-        return note;
+    
+    if (get(refreshNotes, 'length')) {
+      const searchResults = (refreshNotes || []).filter(note => {
+        if (get(note, 'title').toLowerCase().includes(text.toLowerCase()) 
+        || get(note, 'description').toLowerCase().includes(text.toLowerCase())) {
+          return note;
+        }
+      });
+      if (get(searchResults, 'length')) {
+        setSpinner(false);
+        setSearchNotFound(false);
+        setNotes([...searchResults]);
+      } 
+      else {
+        setSpinner(false);
+        setSearchNotFound(true);
       }
-    });
-
-    console.log("search", searchResults.length)
-
-    if (get(searchResults, 'length')) {
-      console.log("hit")
-      setSearchNotFound(false);
-      setNotes([...searchResults]);
     } else {
-      console.log("hit1")
+      setSpinner(false);
       setSearchNotFound(true);
     }
   }
 
-
-
   const handleClearSearch = async () => {
-    Keyboard.dismiss()
+    Keyboard.dismiss();
+    setSpinner(false);
     setSearch('')
     setSearchNotFound(false);
     return await findNotes();
@@ -168,11 +170,11 @@ import NoteAlert from "../components/common/NoteAlert";
   }
 
   const handlePriority = async (priority) => {
-
     if (!get(notes, 'length')) {
       setShowNoteAlert(true);
       return;
      }
+
     let prorityNotes = [];
       switch(priority) {
         case 'high': {
@@ -238,11 +240,11 @@ const onRefresh = async () => {
           rounded={'3xl'}
           _backdrop={{ 
             _dark: {
-                bg: 'dark.100'
-              },
-            _light: {
               bg: 'gray.900'
-            } 
+            },
+            _light: {
+              bg: 'dark.200'
+            }
             }}
             onOpen={async () => await findNotes()}
             trigger={
@@ -280,7 +282,7 @@ const onRefresh = async () => {
     <Divider />
   </View>
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
-        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'19'} fontFamily={FONT.family} fontWeight={FONT.semibold} fontStyle={FONT.italic}>
+        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'20'} fontFamily={FONT.family} fontWeight={FONT.semibold} fontStyle={FONT.italic}>
           {`Good ${greet}, ${updatedUser}!`}
         </Text>
       {get(notes, 'length') ?
@@ -297,6 +299,7 @@ const onRefresh = async () => {
           autoFocus={false}
           autoCapitalize={'none'}
           selectionColor={colorMode === 'light' ? 'black': 'white'}
+          spinnerVisibility={spinner}
         /> : null
         }
 
@@ -347,10 +350,10 @@ const onRefresh = async () => {
       onClose={handleCloseUserModal} 
       _backdrop={{
         _dark: {
-          bg: 'dark.100'
+          bg: 'gray.900'
         },
         _light: {
-          bg: 'gray.900'
+          bg: 'dark.200'
         }
       }}
     >

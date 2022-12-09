@@ -64,7 +64,7 @@ import { FONT } from "../../utils/constants";
         );
     }
   return (
-    <ScrollView indicatorStyle={colorMode === 'light' ? 'black' : 'white'}>
+    <ScrollView bounces indicatorStyle={colorMode === 'light' ? 'black' : 'white'}>
         {skeletonRows}
     </ScrollView>
   );

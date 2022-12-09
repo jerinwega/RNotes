@@ -21,10 +21,10 @@ import { FONT } from "../../utils/constants";
     <AlertDialog  
       _backdrop={{
         _dark: {
-          bg: 'dark.100'
+          bg: 'gray.900'
         },
         _light: {
-          bg: 'gray.900'
+          bg: 'dark.200'
         }
       }} 
       leastDestructiveRef={cancelRef} 

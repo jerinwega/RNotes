@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
-import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View } from "native-base";
+import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View, KeyboardAvoidingView, ScrollView } from "native-base";
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { DARK_COLOR, LIGHT_COLOR, FONT } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
+import useGoBackHandler from '../components/common/CrossSwipeHandler';
 
 
 const AddNote = ({
@@ -24,6 +25,8 @@ const AddNote = ({
   const { isEdit } = get(route, 'params');
   const { data } = get(route, 'params');
 
+  const nextRef = useRef();
+
   useEffect(() => {
     if (isEdit) {
       setTitle(viewedNote.title);
@@ -31,6 +34,11 @@ const AddNote = ({
       setPriority(viewedNote.priority)
     }
   }, [])
+
+  useGoBackHandler(() => {
+      handleSubmit();
+      return true;
+  }, []);
 
 
   const handleChange = (value, name) => {
@@ -47,18 +55,21 @@ const AddNote = ({
 
   const handleSubmit = async () => {
     if (!title.trim() && !description.trim()) {
-      navigation.navigate('Home');
-      return;
-    }
-
-    const sameNote = (data || []).some(item => item.id === viewedNote.id)
-
-    if (sameNote && viewedNote.title === title && viewedNote.description === description && viewedNote.priority === priority) {
-      navigation.navigate('ViewNotes', { viewedNote: viewedNote , allNotes: data });
-      return;
+        if (isEdit) {
+          navigation.navigate('ViewNotes');
+          return;
+        } else {
+        navigation.navigate('Home');
+        return;
+      }
     }
     
     if (isEdit) {
+      const sameNote = (data || []).some(item => item.id === viewedNote.id)
+      if (sameNote && viewedNote.title === title && viewedNote.description === description && viewedNote.priority === priority) {
+        navigation.navigate('ViewNotes', { viewedNote: viewedNote , allNotes: data });
+        return;
+      }
       const editedNotes = (data || []).filter(item => {
         if (item.id === viewedNote.id) {
           item.title = title
@@ -69,8 +80,11 @@ const AddNote = ({
         }
         return item;
       });
-        await AsyncStorage.setItem('notes', JSON.stringify(editedNotes));
-        navigation.navigate('Home', { allNotes: editedNotes })
+
+      const newViewedNote = editedNotes.find(item => item.id === viewedNote.id);
+      await AsyncStorage.setItem('notes', JSON.stringify(editedNotes));
+      navigation.navigate('ViewNotes', { viewedNote: newViewedNote , allNotes: editedNotes });
+
     } else {
       const note = {
         id: Date.now(),
@@ -171,7 +185,7 @@ const AddNote = ({
 
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
-              <Box mx={5}>
+              <Box mx={5} pb={2}>
               <Input
                 py={3}
                 fontSize={'26'}
@@ -188,9 +202,25 @@ const AddNote = ({
                 _focus={{ selectionColor: startEndIconColor }} 
                 _dark={{ bg: 'black' }}
                 _light={{ bg: 'white' }} 
+                returnKeyType={'next'}
+                onSubmitEditing={() => {
+                  nextRef.current.focus();
+                }}
+                blurOnSubmit={false}
               />
               </Box>
-              <Box flex={1} mx={5} pb={6} pt={2}>
+              <KeyboardAvoidingView 
+                flex={1} 
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={120}
+              >
+              <ScrollView 
+              flex={1} 
+              bounces 
+              keyboardShouldPersistTaps="handled" 
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ flexGrow: 1 }}
+              mx={5} pb={5} pt={2}>
                 <TextArea 
                   flex={1}
                   autoCorrect={false} 
@@ -212,8 +242,10 @@ const AddNote = ({
                     }} 
                   value={description} 
                   onChangeText={(text) => handleChange(text, 'description')}
+                  ref={nextRef}
                 />
-              </Box>
+              </ScrollView>
+              </KeyboardAvoidingView>
               </View>
           </TouchableWithoutFeedback>
           </View>
