@@ -7,7 +7,7 @@
  */
 
  import React from "react";
- import { AlertDialog, Text, Button, Divider } from "native-base";
+ import { AlertDialog, Text, Button, Divider, useColorMode } from "native-base";
 import { FONT } from "../../utils/constants";
 
  const DeleteAlert = ({
@@ -17,6 +17,7 @@ import { FONT } from "../../utils/constants";
     onDeleteAlertClose,
     isView
  }) => {
+  const { colorMode } = useColorMode();
   return (
     <AlertDialog  
       _backdrop={{
@@ -32,7 +33,7 @@ import { FONT } from "../../utils/constants";
       size={'sm'}
       shadow={4}
     >
-      <AlertDialog.Content borderRadius={'2xl'} borderWidth={1} borderColor={'red.500'}>
+      <AlertDialog.Content borderRadius={'2xl'}>
         <AlertDialog.Body py={5}>
           <Text color={'red.500'} fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={19} textAlign={'center'}>Delete Note !</Text>
           <Text fontFamily={FONT.family} fontWeight={FONT.semibold} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
