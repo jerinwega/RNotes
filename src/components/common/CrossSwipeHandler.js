@@ -5,11 +5,11 @@ import { BackHandler } from 'react-native';
 function useGoBackHandler(onGoBackCallback, deps) {
     const navigation = useNavigation();
     useEffect(() => {
-       const androidSwipeBack = BackHandler.addEventListener('hardwareBackPress', onGoBackCallback);
-    const iosSwipeBack = navigation.addListener('gestureEnd', onGoBackCallback);
+        BackHandler.addEventListener('hardwareBackPress', onGoBackCallback);
+        navigation.addListener('gestureEnd', onGoBackCallback);
         return () => {
-            androidSwipeBack
-            iosSwipeBack
+            BackHandler.removeEventListener('hardwareBackPress', onGoBackCallback);
+            navigation.removeListener('gestureEnd', onGoBackCallback);
         };
     }, [navigation, onGoBackCallback, deps]);
 }
