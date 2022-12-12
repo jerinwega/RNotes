@@ -8,7 +8,8 @@
 
  import React from "react";
  import { AlertDialog, Text, Button } from "native-base";
-import { FONT } from "../../utils/constants";
+import { FONT, ANDROID } from "../../utils/constants";
+import { Platform } from "react-native";
 
  const NoteAlert = ({
     cancelRef,
@@ -16,6 +17,12 @@ import { FONT } from "../../utils/constants";
     onNoteAlertClose
  }) => {
 
+  const platform = Platform.OS;
+
+  let fontFamily = FONT.family;
+  if (platform === ANDROID) {
+    fontFamily = FONT.black;
+  }
 
   return (
     <AlertDialog  
@@ -31,13 +38,14 @@ import { FONT } from "../../utils/constants";
       isOpen={showNoteAlert} 
       size={'sm'}
       shadow={4} 
+      style={{ elevation: 5 }}
     >
       <AlertDialog.Content borderRadius={'2xl'}>
         <AlertDialog.Body p={6}>
-          <Text color={'blue.500'} fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={19} textAlign={'center'}>Add Note</Text>
+          <Text color={'blue.500'} fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={19} textAlign={'center'}>Add Note</Text>
         </AlertDialog.Body>
             <Button variant="outline" borderBottomWidth={0} borderLeftWidth={0} borderRightWidth={0} onPress={onNoteAlertClose} ref={cancelRef}>
-              <Text color={'blue.500'} fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={15}>OK</Text>
+              <Text color={'blue.500'} fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={15}>OK</Text>
             </Button>
       </AlertDialog.Content>
     </AlertDialog>

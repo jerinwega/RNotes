@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard } from 'react-native';
+import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard, Platform } from 'react-native';
 import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View, KeyboardAvoidingView, ScrollView } from "native-base";
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR, FONT } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR, FONT, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import useGoBackHandler from '../components/common/CrossSwipeHandler';
@@ -15,6 +15,13 @@ const AddNote = ({
   const { notes } = get(route, 'params');
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
+
+  const platform = Platform.OS;
+
+  let fontFamily = FONT.family;
+  if (platform === ANDROID) {
+    fontFamily = FONT.black;
+  }
 
   const [priority, setPriority] = useState('low');
   const [title, setTitle] = useState('');
@@ -132,7 +139,7 @@ const AddNote = ({
                 selectedValue={priority} 
                 minWidth="150" 
                 textAlign={'center'}
-                fontFamily={FONT.family}
+                fontFamily={fontFamily}
                 fontWeight={FONT.bold}
                 fontSize={18}
                 _selectedItem={{
@@ -150,7 +157,7 @@ const AddNote = ({
                 _item={{
                   _text: {
                     fontSize: 18,
-                    fontFamily: FONT.family,
+                    fontFamily: fontFamily,
                     fontWeight: FONT.bold,
                     color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR
                   }
@@ -173,6 +180,7 @@ const AddNote = ({
           </Center>
 
             <View style={{
+              elevation: 5,
               shadowColor: DARK_COLOR,
               shadowOpacity: 0.5,
               shadowRadius: 1,
@@ -189,7 +197,7 @@ const AddNote = ({
               <Input
                 py={3}
                 fontSize={'26'}
-                fontFamily={FONT.family}
+                fontFamily={fontFamily}
                 fontWeight={FONT.bold}
                 autoCorrect={false}
                 autoFocus={false}
@@ -211,7 +219,7 @@ const AddNote = ({
               </Box>
               <KeyboardAvoidingView 
                 flex={1} 
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                behavior={platform === ANDROID ? "height" : "padding" }
                 keyboardVerticalOffset={120}
               >
               <ScrollView 
@@ -226,8 +234,8 @@ const AddNote = ({
                   autoCorrect={false} 
                   autoFocus={false}
                   autoCapitalize={'none'}
-                  fontFamily={FONT.family}
-                  fontWeight={'600'}
+                  fontFamily={platform === ANDROID ? FONT.androidBold : FONT.family}
+                  fontWeight={FONT.semibold}
                   fontSize={'22'} 
                   rounded={'3xl'}
                   px={4} 

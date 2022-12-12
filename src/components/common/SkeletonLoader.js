@@ -7,13 +7,21 @@
  */
 
  import React from "react";
- import { VStack, Skeleton, Text, View, ScrollView, useColorMode, Pressable } from "native-base";
+ import { VStack, Skeleton, Text, View, ScrollView, useColorMode } from "native-base";
+ import { Platform } from "react-native";
  import { get } from 'lodash';
-import { FONT } from "../../utils/constants";
+import { ANDROID, FONT } from "../../utils/constants";
 
  const SkeletonLoader = () => {
 
-    const { colorMode } = useColorMode();
+const { colorMode } = useColorMode();
+
+const platform = Platform.OS;
+
+let fontFamily = FONT.family;
+if (platform === ANDROID) {
+  fontFamily = FONT.black;
+}
  const colors = ['red.100', 'yellow.100', 'green.100', 'coolGray.200'];
  const randomizeColors = colors[Math.floor(Math.random() * get(colors, 'length'))];
 
@@ -37,12 +45,12 @@ import { FONT } from "../../utils/constants";
                 >
                     <Skeleton h="16" startColor={randomizeColors} />
                     <Skeleton.Text isLoaded>
-                        <Text textAlign={'center'} opacity={0.6} 
-                        fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={"sm"} letterSpacing={0.3}>
-                            ADD NOTES
+                        <Text textAlign={'center'} opacity={0.4} 
+                        fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={"sm"} letterSpacing={0.3}>
+                            add notes
                         </Text>
                     </Skeleton.Text>
-                    <Skeleton.Text px="4" pb="3" startColor={randomizeColors} lines={3} alignItems="center" />
+                    <Skeleton.Text px="4" pb="3" startColor={randomizeColors} lines={3} alignItems="center"/>
                 </VStack>
             </View>
             <View style={{ width: '50%', paddingLeft: 10 }}>
@@ -52,12 +60,12 @@ import { FONT } from "../../utils/constants";
                 >
                     <Skeleton h="16" startColor={randomizeColors} />
                     <Skeleton.Text isLoaded>
-                        <Text textAlign={'center'} opacity={0.6} 
-                            fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={"sm"} letterSpacing={0.3}>
-                            ADD NOTES
+                        <Text textAlign={'center'} opacity={0.4} 
+                            fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={"sm"} letterSpacing={0.3}>
+                            add notes
                         </Text>
                     </Skeleton.Text>
-                    <Skeleton.Text px="4" pb="3" startColor={randomizeColors} lines={3} alignItems="center" />
+                    <Skeleton.Text px="4" pb="3" startColor={randomizeColors} lines={3} alignItems="center"/>
                 </VStack>
             </View>
         </View>

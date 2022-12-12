@@ -7,8 +7,8 @@
 
  import React, { useState, useRef } from "react";
  import { Text, View, useColorMode, Pressable, Box, AlertDialog, Button, Divider } from "native-base";
-import { Dimensions } from "react-native";
-import { DARK_COLOR, FONT, LIGHT_COLOR } from '../../utils/constants';
+import { Dimensions, Platform } from "react-native";
+import { DARK_COLOR, FONT, LIGHT_COLOR, ANDROID } from '../../utils/constants';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeleteAlert from "../common/DeleteAlert";
@@ -29,6 +29,14 @@ import DeleteAlert from "../common/DeleteAlert";
   const [noteID, setNoteID] = useState('');
 
   const cancelRef = useRef(null);
+
+  const platform = Platform.OS;
+
+  let fontFamily = FONT.family;
+  if (platform === ANDROID) {
+    fontFamily = FONT.black;
+  }
+
 
   let hashBgColor = '#dcfce7';
   let borderColor = 'green.200';
@@ -81,11 +89,11 @@ import DeleteAlert from "../common/DeleteAlert";
         _light={{ borderColor: borderColor, borderWidth: 2, background: hashBgColor }}
         style={{ transform: [{ scale: isPressed ? 0.9 : 1 }] }}>
             <View style={{ alignItems: 'flex-end' }}>
-                <Text pb={1} fontSize={13} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={FONT.family} fontStyle={FONT.italic} fontWeight={FONT.semibold} numberOfLines={1}>
+                <Text pb={1} fontSize={13} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={platform === ANDROID ? FONT.boldItalic : FONT.family} fontStyle={platform === ANDROID ? 'normal' : FONT.italic} fontWeight={FONT.semibold} numberOfLines={1}>
                   {moment(time).format('DD MMM YYYY')}
                 </Text>
               </View>
-              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} fontWeight={FONT.bold} pb={2} >{title.trim()}</Text>
+              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={fontFamily} fontWeight={FONT.bold} pb={2} >{title.trim()}</Text>
               <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} numberOfLines={4}>{trimmedDesc}</Text>
               </Box>   
           }}

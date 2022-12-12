@@ -7,7 +7,7 @@
  */
 
  import React, { useState } from "react";
- import { View, StyleSheet, Dimensions, Keyboard } from "react-native";
+ import { View, StyleSheet, Dimensions, Keyboard, Platform } from "react-native";
  import { useColorMode, HStack, Center, StatusBar, Box, IconButton, Input } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
@@ -15,7 +15,6 @@
 import { LIGHT_COLOR, DARK_COLOR, FONT } from '../utils/constants';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 
  const UserScreen = ({ onClose }) => {
 
@@ -27,7 +26,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     await AsyncStorage.setItem('user', user);
     await onClose();
   }
+  const platform = Platform.OS;
 
+  let fontFamily = FONT.family;
+  if (platform === ANDROID) {
+    fontFamily = FONT.black;
+  }
+  
   return (
     <>
     <StatusBar  barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
@@ -48,13 +53,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     <View style={[styles.container, { backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}>
     <Center h='4/5'>
           <Input
+            flex={1} // Android
             mx={6}
             mb={4}
             fontSize={'72'}
             autoCorrect={false}
             autoFocus={false}
             value={user} 
-            fontFamily={FONT.family}
+            fontFamily={fontFamily}
             fontWeight={FONT.bold}
             textAlign={'center'} 
             variant={'unstyled'} 
@@ -90,6 +96,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     width:56,
     height:56,
     borderRadius:100,
+    elevation: 5,
     shadowColor: DARK_COLOR,
     shadowOpacity: 0.5,
     shadowRadius: 2,

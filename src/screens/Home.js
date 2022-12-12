@@ -18,7 +18,7 @@
  import IonIcon from 'react-native-vector-icons/Ionicons';
  import { debounce } from 'lodash';
 import { get, orderBy } from 'lodash';
-import { LIGHT_COLOR, DARK_COLOR, FONT } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR, FONT, ANDROID } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
  import SkeletonLoader from '../components/common/SkeletonLoader'
@@ -44,6 +44,14 @@ import NoteAlert from "../components/common/NoteAlert";
   const [refreshState, setRefreshState] = useState(false);
   const [showNoteAlert, setShowNoteAlert] = useState(false);
   const cancelRef = useRef(null);
+
+
+  const platform = Platform.OS;
+
+  let fontFamily = FONT.family;
+  if (platform === ANDROID) {
+    fontFamily = FONT.black;
+  }
 
   useEffect(() => {
     if (user) {
@@ -205,7 +213,7 @@ const onRefresh = async () => {
       _dark={{ bg: DARK_COLOR }}
       _light={{ bg: LIGHT_COLOR }}
       >
-    <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
+    {platform !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
     <Box safeAreaTop />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" style={{ width: deviceWidth }}>
       <HStack>
@@ -216,7 +224,7 @@ const onRefresh = async () => {
           style={{ height: 64, width: 64 }}
         >
           <Avatar.Badge bg="green.500" />
-         <Text fontFamily={FONT.family} fontWeight={FONT.bold} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'36'}>
+         <Text fontFamily={fontFamily} fontWeight={FONT.bold} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'36'}>
           {avatar.substring(0,2)}
         </Text>
         </Avatar>
@@ -254,7 +262,7 @@ const onRefresh = async () => {
                   borderRadius="full"
                   />;
           }}>
-              <Menu.Group _title={{ fontFamily: FONT.family, fontWeight: FONT.bold }} title="Priority" m="auto">
+              <Menu.Group _title={{ fontFamily: fontFamily, fontWeight: FONT.bold }} title="Priority" m="auto">
                 <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.600" /></Menu.Item>
                 <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="yellow.600" /></Menu.Item>
                 <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.600" /></Menu.Item>
@@ -273,6 +281,7 @@ const onRefresh = async () => {
   
   <View style={{
     shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR,
+    elevation: 5,
     shadowOpacity: 0.9,
     shadowRadius: 2,
     shadowOffset: {
@@ -282,13 +291,13 @@ const onRefresh = async () => {
     <Divider />
   </View>
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
-        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'20'} fontFamily={FONT.family} fontWeight={FONT.semibold} fontStyle={FONT.italic}>
+        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'20'} fontFamily={platform === ANDROID ? FONT.boldItalic : FONT.family} fontWeight={FONT.semibold} fontStyle={platform === ANDROID ? 'normal' : FONT.italic}>
           {`Good ${greet}, ${updatedUser}!`}
         </Text>
       {get(notes, 'length') ?
         <SearchBar
           clearIconComponent={!search && <></>}
-          style={{ width: deviceWidth - 40, height: "6%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? 'white' : 'black' }}
+          style={[platform === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 40, height: "7%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
           fontSize={17}
           fontFamily={FONT.family}
@@ -356,6 +365,7 @@ const onRefresh = async () => {
           bg: 'dark.200'
         }
       }}
+      style={{ elevation : 5 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Modal.Content borderRadius={'2xl'}>
@@ -371,7 +381,7 @@ const onRefresh = async () => {
                 rounded={'3xl'}
                 textAlign={'center'}
                 fontSize={24}
-                fontFamily={FONT.family}
+                fontFamily={fontFamily}
                 fontWeight={FONT.bold}
                 autoCorrect={false}
                 autoFocus={false}
@@ -391,7 +401,7 @@ const onRefresh = async () => {
                 onPress={handleEditName}
                 borderRadius={'none'}
               >
-              <Text fontFamily={FONT.family} color={'green.500'} fontSize={'16'} fontWeight={FONT.bold}>
+              <Text fontFamily={fontFamily} color={'green.500'} fontSize={'16'} fontWeight={FONT.bold}>
                 SAVE        
               </Text>
               </Button>
@@ -409,7 +419,7 @@ const onRefresh = async () => {
 
  const styles = StyleSheet.create({
   fab: {
-    elevation: 3,
+    elevation: 5,
     alignItems:'center',
     justifyContent:'center',
     width:64,
@@ -426,6 +436,16 @@ const onRefresh = async () => {
       width: 1
     }
   },
+  androidSearchShadow: {
+    elevation: 5,
+    shadowColor: DARK_COLOR,
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    }
+  }
  });
 
  export default HomeScreen;

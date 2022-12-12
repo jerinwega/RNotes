@@ -7,8 +7,9 @@
  */
 
  import React from "react";
- import { AlertDialog, Text, Button, Divider, useColorMode } from "native-base";
-import { FONT } from "../../utils/constants";
+ import { AlertDialog, Text, Button, Divider } from "native-base";
+import { FONT, ANDROID } from "../../utils/constants";
+import { Platform } from "react-native";
 
  const DeleteAlert = ({
     cancelRef,
@@ -17,7 +18,12 @@ import { FONT } from "../../utils/constants";
     onDeleteAlertClose,
     isView
  }) => {
-  const { colorMode } = useColorMode();
+  const platform = Platform.OS;
+
+    let fontFamily = FONT.family;
+    if (platform === ANDROID) {
+      fontFamily = FONT.black;
+    }
   return (
     <AlertDialog  
       _backdrop={{
@@ -32,19 +38,20 @@ import { FONT } from "../../utils/constants";
       isOpen={isDeleteAlertOpen} 
       size={'sm'}
       shadow={4}
+      style={{ elevation: 5 }}
     >
       <AlertDialog.Content borderRadius={'2xl'}>
         <AlertDialog.Body py={5}>
-          <Text color={'red.500'} fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={19} textAlign={'center'}>Delete Note !</Text>
-          <Text fontFamily={FONT.family} fontWeight={FONT.semibold} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
+          <Text color={'red.500'} fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={19} textAlign={'center'}>Delete Note !</Text>
+          <Text fontFamily={platform === ANDROID ? FONT.androidBold : FONT.family} fontWeight={FONT.semibold} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
         </AlertDialog.Body>
           <Button.Group space={0}>
             <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={onDeleteAlertClose} ref={cancelRef}>
-              <Text color={'blue.500'} fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={15}>NO</Text>
+              <Text color={'blue.500'} fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={15}>NO</Text>
             </Button>
             <Divider orientation="vertical" />
             <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={handleDeleteAlert}>
-              <Text color={'red.500'} fontFamily={FONT.family} fontWeight={FONT.bold} fontSize={15}>YES</Text>
+              <Text color={'red.500'} fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={15}>YES</Text>
             </Button>
           </Button.Group>
       </AlertDialog.Content>

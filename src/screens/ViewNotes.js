@@ -7,11 +7,11 @@
  */
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, Platform } from 'react-native';
 import { Text, HStack, Box, StatusBar, Center, useColorMode, IconButton, View, ScrollView, Input, Icon, useToast } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, FONT, LIGHT_COLOR } from '../utils/constants';
+import { DARK_COLOR, FONT, LIGHT_COLOR, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
@@ -35,6 +35,13 @@ const ViewNotes = ({
   const timerRef = useRef(null);
 
   const toast = useToast();
+  const platform = Platform.OS;
+
+  let fontFamily = FONT.family;
+  if (platform === ANDROID) {
+    fontFamily = FONT.black;
+  }
+
 
     useEffect(() => {
       return () => clearTimeout(timerRef.current);
@@ -69,7 +76,7 @@ const ViewNotes = ({
         _title: {
           px: 2,
           py: 1,
-          fontFamily: FONT.family,
+          fontFamily: fontFamily,
           fontWeight: FONT.bold,
           fontSize: 16
         }
@@ -130,7 +137,7 @@ const ViewNotes = ({
 
           <View bg={colorMode === 'light' ? 'white' : 'black'} flex={1}>
           <View pt={5} pr={5}>
-              <Text opacity={0.6} mb={4} textAlign={'right'} fontFamily={FONT.family} fontWeight={FONT.semibold} fontSize={14}>             
+              <Text opacity={0.6} mb={4} textAlign={'right'} fontFamily={platform === ANDROID ? FONT.androidBold : FONT.family} fontWeight={FONT.semibold} fontSize={14}>             
                 {`${get(viewedNote, 'edited', false) ? "Updated At": "Created At"} :  ${moment(get(viewedNote, 'time', '')).format('DD/MM/YYYY - hh:mm A')}`}
               </Text>
           </View>
@@ -141,7 +148,7 @@ const ViewNotes = ({
                 isDisabled={true}
                 _disabled={{ opacity: 1 }}
                 fontSize={'30'}
-                fontFamily={FONT.family}
+                fontFamily={fontFamily}
                 fontWeight={FONT.bold}
                 value={get(viewedNote, 'title', '')} 
                 color={startEndIconColor}
@@ -158,7 +165,7 @@ const ViewNotes = ({
                   isDisabled={true}
                   _disabled={{ opacity: 1 }}
                   fontSize={'22'}
-                  fontFamily={FONT.family}
+                  fontFamily={platform === ANDROID ? FONT.androidBold : FONT.family}
                   fontWeight={FONT.semibold}
                   value={get(viewedNote, 'description', '')} 
                   _focus={{ selectionColor: colorMode === 'light' ? 'black' : 'white' }} 
@@ -170,11 +177,6 @@ const ViewNotes = ({
               _dark={{ bg: LIGHT_COLOR }}
               _light={{ bg: DARK_COLOR }}
               _pressed={{
-                //  _icon: {
-                //   name: "copy",
-                //   size: 25,
-                //   color: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR,
-                // },
               _dark: { bg: LIGHT_COLOR, opacity: 0.8 },
               _light: { bg: DARK_COLOR, opacity: 0.8 }
             }}
