@@ -16,18 +16,25 @@ export default function App() {
   const [isFirstLoad, setIsFirstLoad] = useState(false);
   
   const findUser = async () => {
-    const result = await AsyncStorage.getItem('user')
-    if (result === null) {
-       setIsFirstLoad(true);
-    } else {
-      setUser(result);
-      setIsFirstLoad(false);
+    try {
+      const result = await AsyncStorage.getItem('user')
+      if (result === null) {
+        setIsFirstLoad(true);
+        SplashScreen.hide();
+      } else {
+        setUser(result);
+        setIsFirstLoad(false);
+        SplashScreen.hide();
+      }
+    } catch(e) {
+      setIsFirstLoad(true);
+      SplashScreen.hide();
+
     }
   }
 
   useEffect(() => {
     // AsyncStorage.clear();
-    SplashScreen.hide();
     findUser();
   }, [])
 
@@ -71,7 +78,7 @@ return (
   <NavigationContainer>
     <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager}>
        <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home">
+       <Stack.Screen name="Home">
         {(props) => <Home {...props} user={user} onClose={findUser} />}
         </Stack.Screen>
         <Stack.Screen name="AddNote" component={AddNote} />
