@@ -16,9 +16,8 @@
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
- import { debounce } from 'lodash';
 import { get, orderBy } from 'lodash';
-import { LIGHT_COLOR, DARK_COLOR, FONT, ANDROID } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
  import SkeletonLoader from '../components/common/SkeletonLoader'
@@ -45,14 +44,6 @@ import NoteAlert from "../components/common/NoteAlert";
   const [showNoteAlert, setShowNoteAlert] = useState(false);
   const cancelRef = useRef(null);
 
-
-  const platform = Platform.OS;
-
-  let fontFamily = FONT.family;
-  if (platform === ANDROID) {
-    fontFamily = FONT.black;
-  }
-
   useEffect(() => {
     if (user) {
       setUpdatedUser(user);
@@ -74,6 +65,9 @@ import NoteAlert from "../components/common/NoteAlert";
   useEffect(() => {
     if (allNotes) {
       setNotes(allNotes);
+      setSearch('')
+      Keyboard.dismiss();
+      setSearchNotFound(false);
     }
   }, [allNotes])
 
@@ -98,6 +92,9 @@ import NoteAlert from "../components/common/NoteAlert";
   }
 
   const handleSort = () => {
+      setSearchNotFound(false);
+      setSearch('');
+      Keyboard.dismiss();
     if (!get(notes, 'length')) {
       setShowNoteAlert(true);
      return;
@@ -162,7 +159,7 @@ import NoteAlert from "../components/common/NoteAlert";
     Keyboard.dismiss();
     setShowUserModal(false);
     await AsyncStorage.setItem('user', updatedUser);
-    await onClose();
+    onClose();
     }
   }
 
@@ -178,6 +175,7 @@ import NoteAlert from "../components/common/NoteAlert";
   }
 
   const handlePriority = async (priority) => {
+      setSearch('');
     if (!get(notes, 'length')) {
       setShowNoteAlert(true);
       return;
@@ -198,14 +196,22 @@ import NoteAlert from "../components/common/NoteAlert";
     
     if (get(prorityNotes, 'length')) {
       setNotes([...prorityNotes]);
+    } else {
+      setSearchNotFound(true);
     }
 }
 
 const onRefresh = async () => {
   setRefreshState(true);
+  setSearch('');
+  Keyboard.dismiss();
   await findNotes();
   setRefreshState(false);
 }
+const lightColors = ['#fafaf9', '#ca7aff']; // black
+const randomizeLightColors = lightColors[Math.floor(Math.random() * get(lightColors, 'length'))];
+const darkColors = ['#19191A', '#bb5cfa']; // white
+const randomizeDarkColors = darkColors[Math.floor(Math.random() * get(darkColors, 'length'))];
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -213,7 +219,7 @@ const onRefresh = async () => {
       _dark={{ bg: DARK_COLOR }}
       _light={{ bg: LIGHT_COLOR }}
       >
-    {platform !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
+    {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
     <Box safeAreaTop />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" style={{ width: deviceWidth }}>
       <HStack>
@@ -224,14 +230,14 @@ const onRefresh = async () => {
           style={{ height: 64, width: 64 }}
         >
           <Avatar.Badge bg="green.500" />
-         <Text fontFamily={fontFamily} fontWeight={FONT.bold} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'36'}>
+         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'36'}>
           {avatar.substring(0,2)}
         </Text>
         </Avatar>
         </RNBounceable>
       </HStack>
         <HStack>
-          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="40" fontFamily = 'ChocoChici'>
+          <Text color={colorMode === 'light' ? randomizeDarkColors : randomizeLightColors} fontSize="40" fontFamily = 'ChocoChici'>
             RNotes
           </Text>
         </HStack>
@@ -254,7 +260,12 @@ const onRefresh = async () => {
               bg: 'dark.200'
             }
             }}
-            onOpen={async () => await findNotes()}
+            onOpen={async () => {
+              setSearchNotFound(false);
+              setSearch('');
+              Keyboard.dismiss();
+              await findNotes();
+            }}
             trigger={
               triggerProps => {
             return <IconButton {...triggerProps}
@@ -262,7 +273,7 @@ const onRefresh = async () => {
                   borderRadius="full"
                   />;
           }}>
-              <Menu.Group _title={{ fontFamily: fontFamily, fontWeight: FONT.bold }} title="Priority" m="auto">
+              <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
                 <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.600" /></Menu.Item>
                 <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="yellow.600" /></Menu.Item>
                 <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.600" /></Menu.Item>
@@ -291,18 +302,18 @@ const onRefresh = async () => {
     <Divider />
   </View>
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
-        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'20'} fontFamily={platform === ANDROID ? FONT.boldItalic : FONT.family} fontWeight={FONT.semibold} fontStyle={platform === ANDROID ? 'normal' : FONT.italic}>
+        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'20'} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
           {`Good ${greet}, ${updatedUser}!`}
         </Text>
       {get(notes, 'length') ?
         <SearchBar
           clearIconComponent={!search && <></>}
-          style={[platform === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 40, height: "7%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
+          style={[Platform.OS === ANDROID && styles.androidSearchShadow, { fontFamily: 'Lato-Regular', width: deviceWidth - 40, height: "7%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
           fontSize={17}
-          fontFamily={FONT.family}
           placeholder="Search"
-          onChangeText={debounce(handleSearch, 600)}
+          value={search}
+          onChangeText={handleSearch}
           onClearPress={handleClearSearch}
           autoCorrect={false}
           autoFocus={false}
@@ -318,9 +329,10 @@ const onRefresh = async () => {
           </View>
         :
         <View flex={1} px={5} py={6}>
-        {searchNotFound ? <NotFound /> :
+        {searchNotFound ? <NotFound findNotes={async () => await findNotes()} resetSearch={() => setSearch('')} resetPriority={() => setSearchNotFound(false)} /> :
           (
           <FlatList
+            onTouchStart={() => Keyboard.dismiss()}
             refreshControl={(
               <RefreshControl
                 refreshing={refreshState}
@@ -336,7 +348,7 @@ const onRefresh = async () => {
               const key = item.id;
               return key.toString()
             }}
-            renderItem={({item}) => <NoteList item={item} allNotes={notes} navigation={navigation} />}
+            renderItem={({item}) => <NoteList item={item} navigation={navigation} resetSearch={() => setSearch('')} />}
           />
           )
         }
@@ -346,7 +358,9 @@ const onRefresh = async () => {
       <RNBounceable  
         bounceEffectIn={0.6}
         style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
-        onPress={() => navigation.navigate('AddNote', { notes })}
+        onPress={() => {
+          navigation.navigate('AddNote', { isEdit: false })
+        }}
       >
         <FontAwesome5Icon solid size={30} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
       </ RNBounceable>
@@ -381,8 +395,8 @@ const onRefresh = async () => {
                 rounded={'3xl'}
                 textAlign={'center'}
                 fontSize={24}
-                fontFamily={fontFamily}
-                fontWeight={FONT.bold}
+                fontFamily={'mono'}
+                fontWeight={'900'}
                 autoCorrect={false}
                 autoFocus={false}
                 value={updatedUser}
@@ -401,7 +415,7 @@ const onRefresh = async () => {
                 onPress={handleEditName}
                 borderRadius={'none'}
               >
-              <Text fontFamily={fontFamily} color={'green.500'} fontSize={'16'} fontWeight={FONT.bold}>
+              <Text fontFamily={'mono'} color={'green.500'} fontSize={'16'} fontWeight={'900'}>
                 SAVE        
               </Text>
               </Button>

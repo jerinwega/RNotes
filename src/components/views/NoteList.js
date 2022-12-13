@@ -7,8 +7,8 @@
 
  import React, { useState, useRef } from "react";
  import { Text, View, useColorMode, Pressable, Box, AlertDialog, Button, Divider } from "native-base";
-import { Dimensions, Platform } from "react-native";
-import { DARK_COLOR, FONT, LIGHT_COLOR, ANDROID } from '../../utils/constants';
+import { Dimensions, Keyboard } from "react-native";
+import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeleteAlert from "../common/DeleteAlert";
@@ -16,7 +16,7 @@ import DeleteAlert from "../common/DeleteAlert";
  const NoteList = ({
   item,
   navigation,
-  allNotes
+  resetSearch,
  }) => {
   const { colorMode } = useColorMode();
 
@@ -30,14 +30,6 @@ import DeleteAlert from "../common/DeleteAlert";
 
   const cancelRef = useRef(null);
 
-  const platform = Platform.OS;
-
-  let fontFamily = FONT.family;
-  if (platform === ANDROID) {
-    fontFamily = FONT.black;
-  }
-
-
   let hashBgColor = '#dcfce7';
   let borderColor = 'green.200';
   if (priority === 'high') {
@@ -48,6 +40,7 @@ import DeleteAlert from "../common/DeleteAlert";
     hashBgColor = '#fef9c3';
     borderColor = 'yellow.200';
   }
+  
 
   const handleNoteLongPress = (id) => {
     setNoteID(id);
@@ -59,19 +52,31 @@ import DeleteAlert from "../common/DeleteAlert";
   }
 
   const handleDeleteAlert = async () => {
-    const newNotes = allNotes.filter(item => item.id !== noteID);
-    await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
-    setIsDeleteAlertOpen(false);
-    setNoteID('');
-    navigation.navigate('Home', { allNotes: newNotes })
+    let notes = [];
+    const result = await AsyncStorage.getItem('notes');
+    if (result !== null) {
+      notes = JSON.parse(result);
+    }
+      const newNotes = notes.filter(item => item.id !== noteID);
+      await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+      setIsDeleteAlertOpen(false);
+      setNoteID('');
+      navigation.navigate('Home', { allNotes: newNotes })
   }
 
   const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
 
  return <>
       <Pressable
-        onPress={() => navigation.navigate('ViewNotes', { viewedNote: item , allNotes })} 
-        onLongPress={() => handleNoteLongPress(id)}
+        onPress={() =>  {
+          Keyboard.dismiss();
+          resetSearch();
+          navigation.navigate('ViewNotes', { viewedNote: item })
+        }} 
+        onLongPress={() => {
+          Keyboard.dismiss();
+          handleNoteLongPress(id)
+        }}
       >
       {({
         isPressed
@@ -89,12 +94,12 @@ import DeleteAlert from "../common/DeleteAlert";
         _light={{ borderColor: borderColor, borderWidth: 2, background: hashBgColor }}
         style={{ transform: [{ scale: isPressed ? 0.9 : 1 }] }}>
             <View style={{ alignItems: 'flex-end' }}>
-                <Text pb={1} fontSize={13} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={platform === ANDROID ? FONT.boldItalic : FONT.family} fontStyle={platform === ANDROID ? 'normal' : FONT.italic} fontWeight={FONT.semibold} numberOfLines={1}>
+                <Text pb={1} fontSize={13} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'mono'} fontStyle={'italic'} fontWeight={'600'} numberOfLines={1}>
                   {moment(time).format('DD MMM YYYY')}
                 </Text>
               </View>
-              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={fontFamily} fontWeight={FONT.bold} pb={2} >{title.trim()}</Text>
-              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={FONT.family} numberOfLines={4}>{trimmedDesc}</Text>
+              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={'heading'} fontWeight={'900'} pb={2} >{title.trim()}</Text>
+              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={'body'} fontWeight={'400'} numberOfLines={4}>{trimmedDesc}</Text>
               </Box>   
           }}
         </Pressable>

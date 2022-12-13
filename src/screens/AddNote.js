@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard, Platform } from 'react-native';
 import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View, KeyboardAvoidingView, ScrollView } from "native-base";
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR, FONT, ANDROID } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import useGoBackHandler from '../components/common/CrossSwipeHandler';
@@ -12,28 +12,20 @@ const AddNote = ({
   navigation,
   route
 }) => { 
-  const { notes } = get(route, 'params');
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
-
-  const platform = Platform.OS;
-
-  let fontFamily = FONT.family;
-  if (platform === ANDROID) {
-    fontFamily = FONT.black;
-  }
 
   const [priority, setPriority] = useState('low');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
 
-  const { viewedNote } = get(route, 'params');
   const { isEdit } = get(route, 'params');
+  const { viewedNote } = get(route, 'params');
   const { data } = get(route, 'params');
 
   const nextRef = useRef();
-
+  
   useEffect(() => {
     if (isEdit) {
       setTitle(viewedNote.title);
@@ -72,13 +64,13 @@ const AddNote = ({
     }
     
     if (isEdit) {
-      const sameNote = (data || []).some(item => item.id === viewedNote.id)
-      if (sameNote && viewedNote.title === title && viewedNote.description === description && viewedNote.priority === priority) {
+      const sameNote = (data || []).some(item => item.id === get(viewedNote, 'id'))
+      if (sameNote && get(viewedNote, 'title') === title && get(viewedNote, 'description') === description && get(viewedNote, 'priority') === priority) {
         navigation.navigate('ViewNotes', { viewedNote: viewedNote , allNotes: data });
         return;
       }
       const editedNotes = (data || []).filter(item => {
-        if (item.id === viewedNote.id) {
+        if (item.id === get(viewedNote, 'id')) {
           item.title = title
           item.description = description
           item.time = Date.now()
@@ -87,22 +79,25 @@ const AddNote = ({
         }
         return item;
       });
-
-      const newViewedNote = editedNotes.find(item => item.id === viewedNote.id);
+      const newViewedNote = editedNotes.find(item => item.id === get(viewedNote, 'id'));
       await AsyncStorage.setItem('notes', JSON.stringify(editedNotes));
       navigation.navigate('ViewNotes', { viewedNote: newViewedNote , allNotes: editedNotes });
-
     } else {
-      const note = {
-        id: Date.now(),
-        title,
-        description,
-        priority,
-        time: Date.now()
-      }  
-      const allNotes = [...notes, note];
-      await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
-      navigation.navigate('Home', { allNotes })
+      let notes = [];
+      const result = await AsyncStorage.getItem('notes');
+      if (result !== null) {
+        notes = JSON.parse(result);
+      }
+        const note = {
+          id: Date.now(),
+          title,
+          description,
+          priority,
+          time: Date.now()
+        }  
+        const allNotes = [...notes, note];
+        await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
+        navigation.navigate('Home', { allNotes })
     }
   }
 
@@ -120,7 +115,7 @@ const AddNote = ({
               _dark={{ bg: DARK_COLOR }}
               _light={{ bg: LIGHT_COLOR }}
               >
-            <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
+           {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />}
             <Box safeAreaTop />
               <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="2" py="2" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
               <HStack>
@@ -130,7 +125,7 @@ const AddNote = ({
                   onPress={handleSubmit}
                   />  
               </HStack>
-              <HStack>
+            <HStack>
                 <Select 
                 _customDropdownIconProps={{
                   color: startEndIconColor,
@@ -139,8 +134,8 @@ const AddNote = ({
                 selectedValue={priority} 
                 minWidth="150" 
                 textAlign={'center'}
-                fontFamily={fontFamily}
-                fontWeight={FONT.bold}
+                fontFamily={'mono'}
+                fontWeight={'900'}
                 fontSize={18}
                 _selectedItem={{
                     background: startEndIconColor,
@@ -152,13 +147,14 @@ const AddNote = ({
                   bg: "black",
                 }}
                 borderColor={startEndIconColor}
+                borderWidth={2}
                 onValueChange={itemValue => handleChange(itemValue, 'priority')}
                 color={startEndIconColor}
                 _item={{
                   _text: {
                     fontSize: 18,
-                    fontFamily: fontFamily,
-                    fontWeight: FONT.bold,
+                    fontFamily: 'mono',
+                    fontWeight: '900',
                     color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR
                   }
                 }}
@@ -197,8 +193,8 @@ const AddNote = ({
               <Input
                 py={3}
                 fontSize={'26'}
-                fontFamily={fontFamily}
-                fontWeight={FONT.bold}
+                fontFamily={'heading'}
+                fontWeight={'900'}
                 autoCorrect={false}
                 autoFocus={false}
                 value={title} 
@@ -219,7 +215,7 @@ const AddNote = ({
               </Box>
               <KeyboardAvoidingView 
                 flex={1} 
-                behavior={platform === ANDROID ? "height" : "padding" }
+                behavior={Platform.OS === ANDROID ? "height" : "padding" }
                 keyboardVerticalOffset={120}
               >
               <ScrollView 
@@ -234,8 +230,8 @@ const AddNote = ({
                   autoCorrect={false} 
                   autoFocus={false}
                   autoCapitalize={'none'}
-                  fontFamily={platform === ANDROID ? FONT.androidBold : FONT.family}
-                  fontWeight={FONT.semibold}
+                  fontFamily={'body'}
+                  fontWeight={'600'}
                   fontSize={'22'} 
                   rounded={'3xl'}
                   px={4} 

@@ -11,7 +11,7 @@ import { Dimensions, StyleSheet, Platform } from 'react-native';
 import { Text, HStack, Box, StatusBar, Center, useColorMode, IconButton, View, ScrollView, Input, Icon, useToast } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, FONT, LIGHT_COLOR, ANDROID } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
@@ -25,34 +25,31 @@ const ViewNotes = ({
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
   const { viewedNote } = get(route, 'params');
-  const { allNotes } = get(route, 'params');
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [copyIconChange, setCopyIconChange] = useState(false);
-
+  const [notes, setNotes] = useState([]);
 
   const cancelRef = useRef(null);
   const timerRef = useRef(null);
-
   const toast = useToast();
-  const platform = Platform.OS;
-
-  let fontFamily = FONT.family;
-  if (platform === ANDROID) {
-    fontFamily = FONT.black;
-  }
-
 
     useEffect(() => {
+      findNotes();
       return () => clearTimeout(timerRef.current);
     }, []);
+
+    const findNotes = async () => {
+      const result = await AsyncStorage.getItem('notes');
+      if (result !== null) setNotes(JSON.parse(result))
+    }
 
     const onDeleteAlertClose = () => {
       setIsDeleteAlertOpen(false);
     }
 
     const handleDeleteAlert = async () => {
-      const newNotes = allNotes.filter(item => item.id !== get(viewedNote, 'id'));
+      const newNotes = notes.filter(item => item.id !== get(viewedNote, 'id'));
       await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
       setIsDeleteAlertOpen(false);
       navigation.navigate('Home', { allNotes: newNotes })
@@ -76,8 +73,8 @@ const ViewNotes = ({
         _title: {
           px: 2,
           py: 1,
-          fontFamily: fontFamily,
-          fontWeight: FONT.bold,
+          fontFamily: 'mono',
+          fontWeight: '900',
           fontSize: 16
         }
       });
@@ -104,7 +101,7 @@ const ViewNotes = ({
               _dark={{ bg: DARK_COLOR }}
               _light={{ bg: hashBgColor }}
               >
-            <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />
+          {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
             <Box safeAreaTop />
               <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: hashBgColor }}  px="2" py="2" 
               justifyContent="space-between" 
@@ -129,7 +126,7 @@ const ViewNotes = ({
               <IconButton 
                   icon={<FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} solid size={24} />}
                   borderRadius="full"
-                  onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: allNotes })}
+                  onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes })}
                   />
             </HStack>
             </HStack>
@@ -137,7 +134,7 @@ const ViewNotes = ({
 
           <View bg={colorMode === 'light' ? 'white' : 'black'} flex={1}>
           <View pt={5} pr={5}>
-              <Text opacity={0.6} mb={4} textAlign={'right'} fontFamily={platform === ANDROID ? FONT.androidBold : FONT.family} fontWeight={FONT.semibold} fontSize={14}>             
+              <Text opacity={0.6} mb={4} textAlign={'right'} fontFamily={'mono'} fontWeight={'600'} fontSize={14}>             
                 {`${get(viewedNote, 'edited', false) ? "Updated At": "Created At"} :  ${moment(get(viewedNote, 'time', '')).format('DD/MM/YYYY - hh:mm A')}`}
               </Text>
           </View>
@@ -148,8 +145,8 @@ const ViewNotes = ({
                 isDisabled={true}
                 _disabled={{ opacity: 1 }}
                 fontSize={'30'}
-                fontFamily={fontFamily}
-                fontWeight={FONT.bold}
+                fontFamily={'heading'}
+                fontWeight={'900'}
                 value={get(viewedNote, 'title', '')} 
                 color={startEndIconColor}
                 _focus={{ selectionColor: startEndIconColor }} 
@@ -165,8 +162,8 @@ const ViewNotes = ({
                   isDisabled={true}
                   _disabled={{ opacity: 1 }}
                   fontSize={'22'}
-                  fontFamily={platform === ANDROID ? FONT.androidBold : FONT.family}
-                  fontWeight={FONT.semibold}
+                  fontFamily={'body'}
+                  fontWeight={'600'}
                   value={get(viewedNote, 'description', '')} 
                   _focus={{ selectionColor: colorMode === 'light' ? 'black' : 'white' }} 
                 />

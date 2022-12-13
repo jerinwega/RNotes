@@ -29,7 +29,6 @@ export default function App() {
     } catch(e) {
       setIsFirstLoad(true);
       SplashScreen.hide();
-
     }
   }
 
@@ -38,9 +37,6 @@ export default function App() {
     findUser();
   }, [])
 
-const config = {
-    useSystemColorMode: true
-}
 
 const mode = {
     strictMode: 'warn',
@@ -64,11 +60,39 @@ const colorModeManager = {
     },
   };
 
-const extendedTheme = extendTheme({ config })
+
+const theme = extendTheme({
+  config: {
+    useSystemColorMode: true,
+  },
+  fontConfig: {
+    Lato: {
+    
+      400: {
+        normal: "Lato-Regular",
+      },
+    
+      600: {
+        normal: "Lato-Bold",
+        italic: "Lato-BoldItalic",
+      },
+      900: {
+        normal: 'Lato-Black',
+      },
+    },
+  },
+
+  fonts: {
+    heading: "Lato",
+    body: "Lato",
+    mono: "Lato",
+  },
+});
+
 
 if (isFirstLoad) {
  return  (
- <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager}>
+ <NativeBaseProvider config={mode} theme={theme}>
     <User onClose={findUser} />
   </NativeBaseProvider>
  );
@@ -76,7 +100,7 @@ if (isFirstLoad) {
 
 return (
   <NavigationContainer>
-    <NativeBaseProvider  config={mode} theme={extendedTheme} colorModeManager={colorModeManager}>
+    <NativeBaseProvider config={mode} theme={theme} colorModeManager={colorModeManager}>
        <Stack.Navigator screenOptions={{ headerShown: false }}>
        <Stack.Screen name="Home">
         {(props) => <Home {...props} user={user} onClose={findUser} />}

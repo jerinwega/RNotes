@@ -7,25 +7,34 @@
  */
 
  import React from "react";
- import { Text, View, Center, useColorMode } from "native-base";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import { DARK_COLOR, LIGHT_COLOR, FONT, ANDROID } from "../../utils/constants";
-import { Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
+ import { Text, Center, Button, Image } from "native-base";
+import { TouchableWithoutFeedback, Keyboard } from "react-native";
+import NoDataImage from '../../assets/images/NoData.png'
 
- const NotFound = () => {
-    const { colorMode } = useColorMode();
-    const platform = Platform.OS;
-
-    let fontFamily = FONT.family;
-    if (platform === ANDROID) {
-      fontFamily = FONT.black;
-    }
+ const NotFound = ({
+  resetPriority,
+  resetSearch,
+  findNotes
+ }) => {
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} flex={1} opacity={0.8}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} flex={1}>
         <Center h='4/5'>
-        <FontAwesome5Icon name="frown" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={128} solid />
-        <Text mt={3} fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={28}>Note Not Found !</Text>
+        <Image 
+          size={320}
+          source={NoDataImage}
+          alt="Notes Not Found !" />
+        <Text fontFamily={'heading'} fontWeight={'900'} fontSize={30}>Oops!</Text>
+        <Text fontFamily={'heading'} fontWeight={'900'} fontSize={20}>Notes Not Found</Text>
+        <Button mt={2} variant={'ghost'} rounded={'full'} onPress={() => {
+          resetSearch();
+          resetPriority();
+          findNotes();
+        }}>
+          <Text fontFamily={'mono'} color={'blue.500'} fontWeight={'600'} fontSize={16}>
+            Clear Filters
+          </Text>
+          </Button>
         </Center>
     </TouchableWithoutFeedback>
   );

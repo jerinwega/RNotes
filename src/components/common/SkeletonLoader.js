@@ -8,20 +8,12 @@
 
  import React from "react";
  import { VStack, Skeleton, Text, View, ScrollView, useColorMode } from "native-base";
- import { Platform } from "react-native";
  import { get } from 'lodash';
-import { ANDROID, FONT } from "../../utils/constants";
 
  const SkeletonLoader = () => {
 
 const { colorMode } = useColorMode();
 
-const platform = Platform.OS;
-
-let fontFamily = FONT.family;
-if (platform === ANDROID) {
-  fontFamily = FONT.black;
-}
  const colors = ['red.100', 'yellow.100', 'green.100', 'coolGray.200'];
  const randomizeColors = colors[Math.floor(Math.random() * get(colors, 'length'))];
 
@@ -46,7 +38,7 @@ if (platform === ANDROID) {
                     <Skeleton h="16" startColor={randomizeColors} />
                     <Skeleton.Text isLoaded>
                         <Text textAlign={'center'} opacity={0.4} 
-                        fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={"sm"} letterSpacing={0.3}>
+                        fontFamily={'body'} fontWeight={'900'} fontSize={"sm"} letterSpacing={0.3}>
                             add notes
                         </Text>
                     </Skeleton.Text>
@@ -61,7 +53,7 @@ if (platform === ANDROID) {
                     <Skeleton h="16" startColor={randomizeColors} />
                     <Skeleton.Text isLoaded>
                         <Text textAlign={'center'} opacity={0.4} 
-                            fontFamily={fontFamily} fontWeight={FONT.bold} fontSize={"sm"} letterSpacing={0.3}>
+                            fontFamily={'body'} fontWeight={'900'} fontSize={"sm"} letterSpacing={0.3}>
                             add notes
                         </Text>
                     </Skeleton.Text>

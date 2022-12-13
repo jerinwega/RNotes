@@ -6,13 +6,14 @@
  * @flow strict-local
  */
 
- import React, { useState } from "react";
- import { View, StyleSheet, Dimensions, Keyboard, Platform, TouchableWithoutFeedback } from "react-native";
- import { useColorMode, HStack, Center, StatusBar, Box, IconButton, Input } from "native-base";
+ import React, { useEffect, useState } from "react";
+ import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, Platform } from "react-native";
+ import { useColorMode, HStack, Center, StatusBar, Box, IconButton, Input, View } from "native-base";
+ import Spinner from "react-native-spinkit";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
-import { LIGHT_COLOR, DARK_COLOR, FONT, ANDROID } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -20,22 +21,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
   const { colorMode, toggleColorMode } = useColorMode();
   const [user, setUser] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleUser = async () => {
+    setIsLoading(true);
     Keyboard.dismiss();
     await AsyncStorage.setItem('user', user);
-    await onClose();
-  }
-  const platform = Platform.OS;
-
-  let fontFamily = FONT.family;
-  if (platform === ANDROID) {
-    fontFamily = FONT.black;
+    onClose();
+    setIsLoading(false);
   }
   
   return (
     <>
-    {platform !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
+    {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
     <Box safeAreaTop  _dark={{ bg: 'black' }} _light={{ bg: 'white' }} />
     <HStack 
       _dark={{ bg: 'black' }} 
@@ -56,28 +54,29 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
           <Input
             flex={0.2}
             mx={6}
-            mb={4}
+            mb={isLoading ? 12 : 4}
             fontSize={'72'}
             autoCorrect={false}
             autoFocus={false}
             value={user} 
-            fontFamily={fontFamily}
-            fontWeight={FONT.bold}
+            fontFamily={'heading'}
+            fontWeight={'900'}
             textAlign={'center'} 
             variant={'unstyled'} 
             placeholder="Name"
             _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }}
             onChangeText={(user) => setUser(user)}
           />
-        {user.trim() ?
+        {user.trim() && !isLoading ?
         <RNBounceable
             bounceEffectIn={0.7}
             style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
             onPress={handleUser}
         >
-            <FontAwesome5Icon solid size={30} name="arrow-right" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+          <FontAwesome5Icon solid size={30} name="arrow-right" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
         </ RNBounceable>
-        : null }
+        : <Spinner size={40} type="WanderingCubes" color={colorMode === 'light' ? "#19191a" : "#fdfdfd" } isVisible={isLoading}/>
+      }
       </Center>
       </View>
       </TouchableWithoutFeedback>
@@ -105,7 +104,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     shadowOffset: {
       height: 1,
       width: 1
-    }
+    },
   },
  });
  
