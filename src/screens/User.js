@@ -69,7 +69,7 @@ import StyledStatusBar from "../components/common/StyledStatusBar";
             _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }}
             onChangeText={(user) => setUser(user)}
           />
-        {user.trim() && !isLoading ?
+        {(user.trim() && !isLoading) ?
         <RNBounceable
             bounceEffectIn={0.7}
             style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
