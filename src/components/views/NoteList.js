@@ -32,17 +32,17 @@ import DeleteAlert from "../common/DeleteAlert";
 
   let hashBgColor = '#dcfce7';
   let borderColor = 'green.200';
-  let borderDarkColor = 'green.500';
+  let borderDarkColor = 'green.600';
 
   if (priority === 'high') {
     hashBgColor = '#fee2e2';
     borderColor = 'red.200';
-    borderDarkColor = 'red.500';
+    borderDarkColor = 'red.600';
   }
   if (priority === 'medium') {
     hashBgColor = '#fef9c3';
     borderColor = 'yellow.200';
-    borderDarkColor = 'yellow.500';
+    borderDarkColor = 'yellow.600';
   }
   
 

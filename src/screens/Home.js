@@ -271,9 +271,9 @@ const onRefresh = async () => {
                   />;
           }}>
               <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
-                <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.500" /></Menu.Item>
-                <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="yellow.500" /></Menu.Item>
-                <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.500" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.600" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="yellow.600" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
           <IconButton 
