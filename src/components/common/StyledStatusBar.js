@@ -46,8 +46,6 @@ if (colorMode === 'dark') {
   statusBarStyle = "light-content";
 } 
 
-console.log(statusBarStyle);
-
  return (
   <StatusBar barStyle={statusBarStyle} backgroundColor={statusBarBackground}/>
  );
