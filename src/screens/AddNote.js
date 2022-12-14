@@ -6,6 +6,7 @@ import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import useGoBackHandler from '../components/common/CrossSwipeHandler';
+import StyledStatusBar from '../components/common/StyledStatusBar';
 
 
 const AddNote = ({
@@ -115,7 +116,7 @@ const AddNote = ({
               _dark={{ bg: DARK_COLOR }}
               _light={{ bg: LIGHT_COLOR }}
               >
-           {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} />}
+            <StyledStatusBar />
             <Box safeAreaTop />
               <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="2" py="2" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
               <HStack>

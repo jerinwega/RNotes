@@ -18,23 +18,24 @@ export default function App() {
   const findUser = async () => {
     try {
       const result = await AsyncStorage.getItem('user')
-      if (result === null) {
-        setIsFirstLoad(true);
-        SplashScreen.hide();
-      } else {
-        setUser(result);
-        setIsFirstLoad(false);
-        SplashScreen.hide();
-      }
+        if (result === null) {
+          setIsFirstLoad(true);
+          SplashScreen.hide();
+        } else {
+          setUser(result);
+          setIsFirstLoad(false);
+          SplashScreen.hide();
+        }
     } catch(e) {
       setIsFirstLoad(true);
       SplashScreen.hide();
     }
   }
+  
 
   useEffect(() => {
     // AsyncStorage.clear();
-    findUser();
+    findUser();                    
   }, [])
 
 

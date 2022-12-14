@@ -32,13 +32,17 @@ import DeleteAlert from "../common/DeleteAlert";
 
   let hashBgColor = '#dcfce7';
   let borderColor = 'green.200';
+  let borderDarkColor = 'green.500';
+
   if (priority === 'high') {
-    hashBgColor = '#fee2e2'
+    hashBgColor = '#fee2e2';
     borderColor = 'red.200';
+    borderDarkColor = 'red.500';
   }
   if (priority === 'medium') {
     hashBgColor = '#fef9c3';
     borderColor = 'yellow.200';
+    borderDarkColor = 'yellow.500';
   }
   
 
@@ -90,7 +94,7 @@ import DeleteAlert from "../common/DeleteAlert";
         rounded="3xl" 
         borderTopWidth={5}
         opacity={isPressed ? 0.7 : 1}
-        _dark={{ borderColor: borderColor, borderWidth: 1 }} 
+        _dark={{ borderColor: borderDarkColor, borderWidth: 1 }} 
         _light={{ borderColor: borderColor, borderWidth: 2, background: hashBgColor }}
         style={{ transform: [{ scale: isPressed ? 0.9 : 1 }] }}>
             <View style={{ alignItems: 'flex-end' }}>
@@ -98,8 +102,8 @@ import DeleteAlert from "../common/DeleteAlert";
                   {moment(time).format('DD MMM YYYY')}
                 </Text>
               </View>
-              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={'heading'} fontWeight={'900'} pb={2} >{title.trim()}</Text>
-              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderColor} fontFamily={'body'} fontWeight={'400'} numberOfLines={4}>{trimmedDesc}</Text>
+              <Text numberOfLines={1} fontSize={20} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={2} >{title.trim()}</Text>
+              <Text fontSize={18} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'body'} fontWeight={'400'} numberOfLines={4}>{trimmedDesc}</Text>
               </Box>   
           }}
         </Pressable>

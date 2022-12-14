@@ -25,6 +25,7 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
  import NotFound from "../components/views/NotFound";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NoteAlert from "../components/common/NoteAlert";
+import StyledStatusBar from "../components/common/StyledStatusBar";
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
@@ -208,10 +209,7 @@ const onRefresh = async () => {
   await findNotes();
   setRefreshState(false);
 }
-const lightColors = ['#fafaf9', '#ca7aff']; // black
-const randomizeLightColors = lightColors[Math.floor(Math.random() * get(lightColors, 'length'))];
-const darkColors = ['#19191A', '#bb5cfa']; // white
-const randomizeDarkColors = darkColors[Math.floor(Math.random() * get(darkColors, 'length'))];
+
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -219,7 +217,7 @@ const randomizeDarkColors = darkColors[Math.floor(Math.random() * get(darkColors
       _dark={{ bg: DARK_COLOR }}
       _light={{ bg: LIGHT_COLOR }}
       >
-    {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
+    <StyledStatusBar />
     <Box safeAreaTop />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" style={{ width: deviceWidth }}>
       <HStack>
@@ -237,7 +235,7 @@ const randomizeDarkColors = darkColors[Math.floor(Math.random() * get(darkColors
         </RNBounceable>
       </HStack>
         <HStack>
-          <Text color={colorMode === 'light' ? randomizeDarkColors : randomizeLightColors} fontSize="40" fontFamily = 'ChocoChici'>
+          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="40" fontFamily = 'ChocoChici'>
             RNotes
           </Text>
         </HStack>

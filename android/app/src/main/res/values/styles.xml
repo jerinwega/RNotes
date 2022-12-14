@@ -8,6 +8,7 @@
 
     <style name="LightTheme" parent="AppTheme">
         <item name="launchImage">@drawable/splash_light</item>
+        <item name="colorPrimary">@color/status_bar_color</item>
     </style>
     <style name="DarkTheme" parent="AppTheme">
         <item name="launchImage">@drawable/splash_dark</item>

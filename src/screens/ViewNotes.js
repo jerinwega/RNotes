@@ -17,6 +17,7 @@ import { get } from 'lodash';
 import moment from 'moment';
 import DeleteAlert from "../components/common/DeleteAlert";
 import Clipboard from '@react-native-clipboard/clipboard';
+import StyledStatusBar from '../components/common/StyledStatusBar';
 
 const ViewNotes = ({
   navigation,
@@ -101,7 +102,7 @@ const ViewNotes = ({
               _dark={{ bg: DARK_COLOR }}
               _light={{ bg: hashBgColor }}
               >
-          {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
+            <StyledStatusBar hashBgColor={hashBgColor}  />
             <Box safeAreaTop />
               <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: hashBgColor }}  px="2" py="2" 
               justifyContent="space-between" 

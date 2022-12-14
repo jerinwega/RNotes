@@ -16,6 +16,7 @@
 import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import StyledStatusBar from "../components/common/StyledStatusBar";
 
  const UserScreen = ({ onClose }) => {
 
@@ -23,17 +24,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
   const [user, setUser] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+
   const handleUser = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
     await AsyncStorage.setItem('user', user);
-    onClose();
+    await onClose();
     setIsLoading(false);
   }
   
   return (
     <>
-    {Platform.OS !== ANDROID && <StatusBar barStyle={colorMode === 'light' ? "dark-content" : "light-content"} /> }
+    <StyledStatusBar userScreen />
     <Box safeAreaTop  _dark={{ bg: 'black' }} _light={{ bg: 'white' }} />
     <HStack 
       _dark={{ bg: 'black' }} 
