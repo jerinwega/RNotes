@@ -6,14 +6,14 @@
  * @flow strict-local
  */
 
- import React, { useEffect, useState } from "react";
- import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, Platform } from "react-native";
- import { useColorMode, HStack, Center, StatusBar, Box, IconButton, Input, View } from "native-base";
+ import React, { useState } from "react";
+ import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
+ import { useColorMode, HStack, Center, Box, IconButton, Input, View } from "native-base";
  import Spinner from "react-native-spinkit";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
-import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledStatusBar from "../components/common/StyledStatusBar";

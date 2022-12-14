@@ -7,11 +7,11 @@
  */
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, Platform } from 'react-native';
-import { Text, HStack, Box, StatusBar, Center, useColorMode, IconButton, View, ScrollView, Input, Icon, useToast } from "native-base";
+import { Dimensions, StyleSheet } from 'react-native';
+import { Text, HStack, Box, Center, useColorMode, IconButton, View, ScrollView, Input, Icon, useToast } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';

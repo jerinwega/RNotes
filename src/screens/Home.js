@@ -9,9 +9,8 @@
  import React, { useEffect, useState, useRef } from "react";
  import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl, Platform } from "react-native";
  import { 
-  useColorMode, HStack, Center, Avatar, Button, 
-  StatusBar, Box, IconButton, Text, Modal, FormControl,
-  Divider, Input, Icon, Menu, FlatList, View, Alert, VStack, Heading, CloseIcon, Pressable
+  useColorMode, HStack, Center, Avatar, Button, Box, IconButton, Text, Modal, FormControl,
+  Divider, Input, Icon, Menu, FlatList, View
 } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';

@@ -6,7 +6,7 @@
  */
 
  import React, { useState, useRef } from "react";
- import { Text, View, useColorMode, Pressable, Box, AlertDialog, Button, Divider } from "native-base";
+ import { Text, View, useColorMode, Pressable, Box } from "native-base";
 import { Dimensions, Keyboard } from "react-native";
 import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
 import moment from 'moment';

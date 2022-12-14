@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { TextInput, Dimensions, TouchableWithoutFeedback, StyleSheet, Keyboard, Platform } from 'react-native';
-import { Text, HStack, Heading, Divider, Select, Box, StatusBar, Center, useColorMode, IconButton, TextArea, Input, View, KeyboardAvoidingView, ScrollView } from "native-base";
+import { Dimensions, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
+import { HStack, Divider, Select, Box, Center, useColorMode, IconButton, TextArea, Input, View, KeyboardAvoidingView, ScrollView } from "native-base";
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
