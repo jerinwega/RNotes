@@ -218,33 +218,37 @@ const onRefresh = async () => {
       >
     <StyledStatusBar />
     <Box safeAreaTop />
-    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent="space-between" style={{ width: deviceWidth }}>
+    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" alignItems={"center"} style={{ width: deviceWidth }}>
       <HStack>
       <RNBounceable bounceEffectIn={0.8} onPress={() => setShowUserModal(true)}>
         <Avatar 
+        alignItems={'center'}
+        justifyContent='center'
         _dark={{ bg: LIGHT_COLOR }}
         _light={{ bg: DARK_COLOR }}
           style={{ height: 64, width: 64 }}
         >
           <Avatar.Badge bg="green.500" />
-         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'36'}>
+         <Text fontFamily={'heading'} textAlign='center' fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'35'}>
           {avatar.substring(0,2)}
         </Text>
         </Avatar>
         </RNBounceable>
       </HStack>
-        <HStack>
-          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="40" fontFamily = 'ChocoChici'>
+        <HStack px={4}>
+          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="44" fontFamily = 'ChocoChici'>
             RNotes
           </Text>
         </HStack>
-        <HStack alignItems={'center'}>
+        <HStack>
           <IconButton 
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={25} solid /> 
           : <OctIcon name="sun" color={LIGHT_COLOR} size={25} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
+        </HStack>
+        <HStack>
           <Menu
           w="24" 
           placement={'bottom'} 
@@ -268,7 +272,7 @@ const onRefresh = async () => {
             return <IconButton {...triggerProps}
                   icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid />} 
                   borderRadius="full"
-                  />;
+              />;
           }}>
               <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
                 <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.600" /></Menu.Item>
@@ -276,6 +280,8 @@ const onRefresh = async () => {
                 <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
+            </HStack>
+            <HStack>
           <IconButton 
           icon={sortBy === 'desc' ? 
           <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={23} solid /> 

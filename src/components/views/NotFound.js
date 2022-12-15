@@ -31,7 +31,7 @@ import { ANDROID } from "../../utils/constants";
         </Center>
     </TouchableWithoutFeedback>
     <Center>
-     <Button mt={Platform.OS === ANDROID ? 6 : 4} px={4} py={1} variant={'ghost'} rounded={'full'} onPress={() => {
+     <Button mt={Platform.OS === ANDROID ? 6 : 4} px={4} py={2} variant={'ghost'} rounded={'full'} onPress={() => {
         resetSearch();
         resetPriority();
         findNotes();
