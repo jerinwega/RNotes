@@ -11,13 +11,14 @@ import { Dimensions, StyleSheet } from 'react-native';
 import { Text, HStack, Box, Center, useColorMode, IconButton, View, ScrollView, Input, Icon, useToast } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
+import { ANDROID, DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
 import DeleteAlert from "../components/common/DeleteAlert";
 import Clipboard from '@react-native-clipboard/clipboard';
 import StyledStatusBar from '../components/common/StyledStatusBar';
+import { scaledFont } from '../components/common/Scale';
 
 const ViewNotes = ({
   navigation,
@@ -76,7 +77,7 @@ const ViewNotes = ({
           py: 1,
           fontFamily: 'mono',
           fontWeight: '900',
-          fontSize: 16
+          fontSize: scaledFont(14)
         }
       });
     }
@@ -113,19 +114,19 @@ const ViewNotes = ({
               >
             <HStack>
               <IconButton 
-                  icon={<IonIcon name="arrow-back-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={36} />}
+                  icon={<IonIcon name="arrow-back-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(36)} />}
                   borderRadius="full"
                   onPress={() => navigation.goBack()}
                   />  
             </HStack>
             <HStack space={4}>
               <IconButton 
-                  icon={<FontAwesome5Icon color={'#dc2626'} name="trash-alt" size={24} solid />}
+                  icon={<FontAwesome5Icon color={'#dc2626'} name="trash-alt" size={scaledFont(22)} solid />}
                   borderRadius="full"
                   onPress={() => setIsDeleteAlertOpen(true)}
                   />
               <IconButton 
-                  icon={<FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} solid size={24} />}
+                  icon={<FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} solid size={scaledFont(22)} />}
                   borderRadius="full"
                   onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes })}
                   />
@@ -135,39 +136,58 @@ const ViewNotes = ({
 
           <View bg={colorMode === 'light' ? 'white' : 'black'} flex={1}>
           <View pt={5} pr={5}>
-              <Text opacity={0.6} mb={4} textAlign={'right'} fontFamily={'mono'} fontWeight={'600'} fontSize={14}>             
+              <Text opacity={0.7} mb={3} textAlign={'right'} fontFamily={'mono'} fontWeight={'600'} fontSize={scaledFont(14)}>             
                 {`${get(viewedNote, 'edited', false) ? "Updated At": "Created At"} :  ${moment(get(viewedNote, 'time', '')).format('DD/MM/YYYY - hh:mm A')}`}
               </Text>
           </View>
-            <View pb={2} px={5}>
-              <Input
-                multiline={true}
+            <View pb={2} px={Platform.OS === ANDROID ? 7 : 5}>
+           {Platform.OS === ANDROID ?  
+           <Text 
+            selectable 
+            selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
+            color={startEndIconColor} 
+            fontSize={scaledFont(30)} 
+            fontFamily={'heading'}
+            fontWeight={'900'}>             
+                {get(viewedNote, 'title', '')}
+              </Text> 
+           : <Input
+                editable={false}
+                multiline
                 variant={'unstyled'}
-                isDisabled={true}
-                _disabled={{ opacity: 1 }}
-                fontSize={'30'}
+                fontSize={scaledFont(30)}
                 fontFamily={'heading'}
                 fontWeight={'900'}
                 value={get(viewedNote, 'title', '')} 
                 color={startEndIconColor}
-                _focus={{ selectionColor: startEndIconColor }} 
               />
+           }
           </View>
-            
-            <ScrollView bounces flex={1} contentContainerStyle={{ flexGrow: 1 }} indicatorStyle={colorMode === 'light' ? 'black' : 'white'} >
-              <View px={5} pb={2}>
-                <Input
-                  scrollEnabled={false}
-                  multiline={true}
-                  variant={'unstyled'}
-                  isDisabled={true}
-                  _disabled={{ opacity: 1 }}
-                  fontSize={'22'}
-                  fontFamily={'body'}
-                  fontWeight={'600'}
-                  value={get(viewedNote, 'description', '')} 
-                  _focus={{ selectionColor: colorMode === 'light' ? 'black' : 'white' }} 
-                />
+            <ScrollView bounces contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+              <View px={Platform.OS === ANDROID ? 8 : 6} pb={2}>
+
+              {Platform.OS === ANDROID ?  
+           <Text 
+            selectable 
+            selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
+            fontSize={scaledFont(20)} 
+            fontFamily={'body'}
+            fontWeight={'600'}>             
+                {get(viewedNote, 'description', '')}
+              </Text> 
+           : <Input
+              scrollEnabled={false}
+              editable={false}
+              multiline
+              variant={'unstyled'}
+              fontSize={scaledFont(22)}
+              fontFamily={'body'}
+              fontWeight={'600'}
+              value={get(viewedNote, 'description', '')} 
+         />
+              }
+
+    
               </View>
             </ScrollView>
             <IconButton 
@@ -180,8 +200,8 @@ const ViewNotes = ({
             }}
               rounded={'full'}
               style={styles.clipBoard}
-              icon={copyIconChange ? <Icon textAlign={'center'} as={IonIcon} name="copy" size={25} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
-              : <Icon textAlign={'center'} as={IonIcon} name="copy-outline" size={25} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />}
+              icon={copyIconChange ? <Icon textAlign={'center'} as={IonIcon} name="copy" size={scaledFont(22)} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+              : <Icon textAlign={'center'} as={IonIcon} name="copy-outline" size={scaledFont(22)} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />}
               onPress={copyToClipboard}
           />
             </View>

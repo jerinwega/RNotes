@@ -9,6 +9,7 @@
  import React from "react";
  import { VStack, Skeleton, Text, View, ScrollView, useColorMode } from "native-base";
  import { get } from 'lodash';
+ import { scaledFont } from "./Scale";
 
  const SkeletonLoader = () => {
 
@@ -30,33 +31,33 @@ const { colorMode } = useColorMode();
                 flexDirection: 'row',
                 paddingRight: 20,
                 paddingLeft: 20,
-                paddingBottom: 20
+                paddingBottom: 18
             }} 
         >
-            <View style={{ width: '50%', paddingRight: 10 }}>
+            <View style={{ width: '50%', paddingRight: 8 }}>
                 <VStack overflow="hidden" borderWidth={1} rounded="3xl" space={4} 
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}
                 >
                     <Skeleton h="16" startColor={colorMode === 'light' ? randomizeLightColors : randomizeDarkColors} />
                     <Skeleton.Text isLoaded>
-                        <Text textAlign={'center'} opacity={0.4} 
-                        fontFamily={'body'} fontWeight={'900'} fontSize={"sm"} letterSpacing={0.3}>
+                        <Text textAlign={'center'} opacity={0.3} 
+                        fontFamily={'body'} fontWeight={'900'} fontSize={scaledFont(14)} letterSpacing={0.3}>
                             add notes
                         </Text>
                     </Skeleton.Text>
                     <Skeleton.Text px="4" pb="3" startColor={colorMode === 'light' ? randomizeLightColors : randomizeDarkColors} lines={3} alignItems="center"/>
                 </VStack>
             </View>
-            <View style={{ width: '50%', paddingLeft: 10 }}>
+            <View style={{ width: '50%', paddingLeft: 8 }}>
                 <VStack overflow="hidden" borderWidth={1} rounded="3xl" space={4}
                     _dark={{ borderColor: "coolGray.700" }} 
                     _light={{ borderColor: "coolGray.200" }}
                 >
                     <Skeleton h="16" startColor={colorMode === 'light' ? randomizeLightColors : randomizeDarkColors} />
                     <Skeleton.Text isLoaded>
-                        <Text textAlign={'center'} opacity={0.4} 
-                            fontFamily={'body'} fontWeight={'900'} fontSize={"sm"} letterSpacing={0.3}>
+                        <Text textAlign={'center'} opacity={0.3} 
+                            fontFamily={'body'} fontWeight={'900'} fontSize={scaledFont(14)} letterSpacing={0.3}>
                             add notes
                         </Text>
                     </Skeleton.Text>
@@ -67,7 +68,8 @@ const { colorMode } = useColorMode();
         );
     }
   return (
-    <ScrollView bounces indicatorStyle={colorMode === 'light' ? 'black' : 'white'}>
+    <ScrollView bounces showsVerticalScrollIndicator={false}
+    >
         {skeletonRows}
     </ScrollView>
   );

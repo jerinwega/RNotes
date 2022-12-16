@@ -8,6 +8,7 @@
 
  import React from "react";
  import { AlertDialog, Text, Button, Divider } from "native-base";
+ import { scaledFont } from "./Scale";
 
  const DeleteAlert = ({
     cancelRef,
@@ -34,16 +35,16 @@
     >
       <AlertDialog.Content borderRadius={'2xl'}>
         <AlertDialog.Body py={5}>
-          <Text color={'red.500'} fontFamily={'heading'} fontWeight={'900'} fontSize={19} textAlign={'center'}>Delete Note !</Text>
-          <Text fontFamily={'body'} fontWeight={'600'} fontSize={15} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
+          <Text color={'red.500'} fontFamily={'heading'} fontWeight={'900'} fontSize={scaledFont(18)} textAlign={'center'}>Delete Note !</Text>
+          <Text fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(14)} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
         </AlertDialog.Body>
           <Button.Group space={0}>
             <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={onDeleteAlertClose} ref={cancelRef}>
-              <Text color={'blue.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={15}>NO</Text>
+              <Text color={'blue.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>NO</Text>
             </Button>
             <Divider orientation="vertical" />
             <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={handleDeleteAlert}>
-              <Text color={'red.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={15}>YES</Text>
+              <Text color={'red.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>YES</Text>
             </Button>
           </Button.Group>
       </AlertDialog.Content>

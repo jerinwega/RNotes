@@ -25,6 +25,7 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NoteAlert from "../components/common/NoteAlert";
 import StyledStatusBar from "../components/common/StyledStatusBar";
+import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale'
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
@@ -218,39 +219,36 @@ const onRefresh = async () => {
       >
     <StyledStatusBar />
     <Box safeAreaTop />
-    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" alignItems={"center"} style={{ width: deviceWidth }}>
+    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent={'space-between'} alignItems="center" style={{ width: deviceWidth }}>
       <HStack>
       <RNBounceable bounceEffectIn={0.8} onPress={() => setShowUserModal(true)}>
-        <Avatar 
-        alignItems={'center'}
-        justifyContent='center'
+        <Avatar
         _dark={{ bg: LIGHT_COLOR }}
         _light={{ bg: DARK_COLOR }}
-          style={{ height: 64, width: 64 }}
+          style={{  width:scaledFont(60),
+            height: scaledFont(60) }}
         >
           <Avatar.Badge bg="green.500" />
-         <Text fontFamily={'heading'} textAlign='center' fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={'35'}>
-          {avatar.substring(0,2)}
+         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={scaledFont(34)}>
+          {avatar.substring(0,1)}
         </Text>
         </Avatar>
         </RNBounceable>
       </HStack>
-        <HStack px={4}>
-          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize="44" fontFamily = 'ChocoChici'>
+        <HStack>
+          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(43)} fontFamily = 'ChocoChici'>
             RNotes
           </Text>
         </HStack>
         <HStack>
           <IconButton 
-          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={25} solid /> 
-          : <OctIcon name="sun" color={LIGHT_COLOR} size={25} solid />} 
+          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(22)} solid /> 
+          : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(22)} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
-        </HStack>
-        <HStack>
           <Menu
-          w="24" 
+          w={scaledWidth(80)}
           placement={'bottom'} 
           rounded={'3xl'}
           _backdrop={{ 
@@ -270,22 +268,20 @@ const onRefresh = async () => {
             trigger={
               triggerProps => {
             return <IconButton {...triggerProps}
-                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid />} 
+                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} solid />} 
                   borderRadius="full"
               />;
           }}>
               <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
-                <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="red.600" /></Menu.Item>
-                <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="yellow.600" /></Menu.Item>
-                <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={25} color="green.600" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
+                <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
-            </HStack>
-            <HStack>
           <IconButton 
           icon={sortBy === 'desc' ? 
-          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={23} solid /> 
-          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={23} solid /> } 
+          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(20)} solid /> 
+          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(20)} solid /> } 
           borderRadius="full"
           onPress={handleSort}
           />
@@ -293,27 +289,20 @@ const onRefresh = async () => {
     </HStack>
   </Center>
   
-  <View style={{
-    shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR,
-    elevation: 5,
-    shadowOpacity: 0.9,
-    shadowRadius: 2,
-    shadowOffset: {
-      height: 1,
-      width: 1
-    } }}>
-    <Divider />
+  <View style={{ elevation: 5 }}>
+    <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
   </View>
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
-        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={'20'} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
-          {`Good ${greet}, ${updatedUser}!`}
+        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(19)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
+          {`Good ${greet}, `}
+          <Text color={colorMode === 'light' ? '#c05eff' : '#cb7bff' }>{updatedUser}!</Text>
         </Text>
       {get(notes, 'length') ?
         <SearchBar
           clearIconComponent={!search ? <></> : null}
-          style={[Platform.OS === ANDROID && styles.androidSearchShadow, { fontFamily: 'Lato-Regular', width: deviceWidth - 40, height: "7%", borderRadius: 20,  backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
+          style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 40, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
-          fontSize={17}
+          fontSize={Platform.OS === ANDROID ? scaledFont(13) : scaledFont(16)}
           placeholder="Search"
           value={search}
           onChangeText={handleSearch}
@@ -323,6 +312,7 @@ const onRefresh = async () => {
           autoCapitalize={'none'}
           selectionColor={colorMode === 'light' ? 'black': 'white'}
           spinnerVisibility={spinner}
+          textInputStyle={{ fontFamily: 'Lato-Regular'}}
         /> : null
         }
 
@@ -365,13 +355,14 @@ const onRefresh = async () => {
           navigation.navigate('AddNote', { isEdit: false })
         }}
       >
-        <FontAwesome5Icon solid size={30} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+        <FontAwesome5Icon solid size={scaledFont(34)} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
       </ RNBounceable>
 
     </View>
     
     <Modal 
       shadow={4} 
+      size={'sm'}
       isOpen={showUserModal} 
       onClose={handleCloseUserModal} 
       _backdrop={{
@@ -389,15 +380,15 @@ const onRefresh = async () => {
           <Modal.CloseButton 
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
-            <Modal.Header borderBottomWidth={1}>
-              <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={25} solid /> 
+            <Modal.Header>
+              <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} solid /> 
           </Modal.Header>
           <Modal.Body>
-          <FormControl mt={2} px={2}>
+          <FormControl px={1}>
               <Input 
                 rounded={'3xl'}
                 textAlign={'center'}
-                fontSize={24}
+                fontSize={scaledFont(20)}
                 fontFamily={'mono'}
                 fontWeight={'900'}
                 autoCorrect={false}
@@ -418,7 +409,7 @@ const onRefresh = async () => {
                 onPress={handleEditName}
                 borderRadius={'none'}
               >
-              <Text fontFamily={'mono'} color={'green.500'} fontSize={'16'} fontWeight={'900'}>
+              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(14)} fontWeight={'900'}>
                 SAVE        
               </Text>
               </Button>
@@ -439,8 +430,8 @@ const onRefresh = async () => {
     elevation: 5,
     alignItems:'center',
     justifyContent:'center',
-    width:64,
-    height:64,
+    width:scaledFont(60),
+    height: scaledFont(60),
     position: 'absolute',                                          
     bottom: 35,                                                    
     right: 20,

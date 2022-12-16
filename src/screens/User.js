@@ -17,6 +17,8 @@ import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledStatusBar from "../components/common/StyledStatusBar";
+import { scaledFont } from "../components/common/Scale";
+
 
  const UserScreen = ({ onClose }) => {
 
@@ -45,7 +47,7 @@ import StyledStatusBar from "../components/common/StyledStatusBar";
       style={{ width: deviceWidth }}>
          <IconButton 
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={26} solid /> 
-          : <OctIcon name="sun" color={LIGHT_COLOR} size={25} solid />} 
+          : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(25)} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
@@ -54,10 +56,10 @@ import StyledStatusBar from "../components/common/StyledStatusBar";
     <View style={[styles.container, { backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}>
     <Center h='4/5'>
           <Input
-            flex={0.2}
+            flex={0.3}
             mx={6}
-            mb={isLoading ? 12 : 4}
-            fontSize={'72'}
+            mb={isLoading ? 8 : 4}
+            fontSize={scaledFont(72)}
             autoCorrect={false}
             autoFocus={false}
             value={user} 
@@ -75,10 +77,10 @@ import StyledStatusBar from "../components/common/StyledStatusBar";
             style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
             onPress={handleUser}
         >
-          <FontAwesome5Icon solid size={30} name="arrow-right" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+          <FontAwesome5Icon solid size={scaledFont(30)} name="arrow-right" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
         </ RNBounceable>
-        : <Spinner size={40} type="WanderingCubes" color={colorMode === 'light' ? "#19191a" : "#fdfdfd" } isVisible={isLoading}/>
-      }
+          : <Spinner size={scaledFont(40)} type="WanderingCubes" color={colorMode === 'light' ? "#c066fa" : "#cb7bff" } isVisible={isLoading}/>
+        }
       </Center>
       </View>
       </TouchableWithoutFeedback>
@@ -96,8 +98,8 @@ import StyledStatusBar from "../components/common/StyledStatusBar";
     elevation: 3,
     alignItems:'center',
     justifyContent:'center',
-    width:56,
-    height:56,
+    width:scaledFont(62),
+    height: scaledFont(62),
     borderRadius:100,
     elevation: 5,
     shadowColor: DARK_COLOR,
