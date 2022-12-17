@@ -10,7 +10,7 @@
  import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl, Platform } from "react-native";
  import { 
   useColorMode, HStack, Center, Avatar, Button, Box, IconButton, Text, Modal, FormControl,
-  Divider, Input, Icon, Menu, FlatList, View
+  Divider, Input, Icon, Menu, FlatList, View, useToast
 } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
@@ -23,7 +23,6 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
  import NoteList from '../components/views/NoteList';
  import NotFound from "../components/views/NotFound";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NoteAlert from "../components/common/NoteAlert";
 import StyledStatusBar from "../components/common/StyledStatusBar";
 import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale'
 
@@ -32,7 +31,8 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode, toggleColorMode } = useColorMode();
   const { allNotes } = get(route, 'params', []);
-
+  const { saveNote } = get(route, 'params', false);
+  const { deleteNote } = get(route, 'params', false);
   const [sortBy, setSort] = useState('desc')
   const [search, setSearch] = useState('')
   const [spinner, setSpinner] = useState(false);
@@ -42,8 +42,10 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
   const [showUserModal, setShowUserModal] = useState(false);
   const [updatedUser, setUpdatedUser] = useState('');
   const [refreshState, setRefreshState] = useState(false);
-  const [showNoteAlert, setShowNoteAlert] = useState(false);
-  const cancelRef = useRef(null);
+  const sortToast = useToast();
+  const saveToast = useToast();
+  const deleteToast = useToast();
+  const priorityToast = useToast();
 
   useEffect(() => {
     if (user) {
@@ -69,6 +71,48 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
       setSearch('')
       Keyboard.dismiss();
       setSearchNotFound(false);
+    }
+    if (saveNote) {
+      const id = "saveToast";
+      if (!saveToast.isActive(id)) {
+        saveToast.show({
+          id,
+          title: "Saved",
+          placement: "bottom",
+          duration: 2000,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(16),
+            color: colorMode === 'light' ? 'success.400' : "success.600"
+          }
+        });
+      }
+    }
+    if (deleteNote) {
+      const id = "deleteToast";
+      if (!deleteToast.isActive(id)) {
+        deleteToast.show({
+          id,
+          title: "Deleted",
+          placement: "bottom",
+          duration: 2000,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(16),
+            color: colorMode === 'light' ? 'danger.400' : "danger.600"
+          }
+        });
+      }
     }
   }, [allNotes])
 
@@ -97,7 +141,25 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
       setSearch('');
       Keyboard.dismiss();
     if (!get(notes, 'length')) {
-      setShowNoteAlert(true);
+      const id = "sortToast";
+      if (!sortToast.isActive(id)) {
+        sortToast.show({
+          id,
+          title: "Add Note",
+          placement: "bottom",
+          duration: 1500,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(16),
+            color: colorMode === 'light' ? 'warning.400' : "warning.500"
+          }
+        });
+      }
      return;
     }
     if (sortBy === 'desc') {
@@ -178,7 +240,25 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
   const handlePriority = async (priority) => {
       setSearch('');
     if (!get(notes, 'length')) {
-      setShowNoteAlert(true);
+      const id = "priorityToast";
+      if (!priorityToast.isActive(id)) {
+        priorityToast.show({
+          id,
+          title: "Add Note",
+          placement: "bottom",
+          duration: 1500,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(16),
+            color: colorMode === 'light' ? 'warning.400' : "warning.500"
+          }
+        });
+      }
       return;
      }
 
@@ -241,7 +321,7 @@ const onRefresh = async () => {
           </Text>
         </HStack>
         <HStack>
-          <IconButton 
+          <IconButton
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(22)} solid /> 
           : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(22)} solid />} 
           borderRadius="full"
@@ -416,11 +496,6 @@ const onRefresh = async () => {
         </Modal.Content>
         </TouchableWithoutFeedback>
       </Modal>
-      <NoteAlert 
-        showNoteAlert={showNoteAlert} 
-        cancelRef={cancelRef}
-        onNoteAlertClose={() => setShowNoteAlert(false)} 
-      />
   </View>
   )
  }

@@ -66,7 +66,7 @@ import { scaledFont } from "../common/Scale";
       await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
       setIsDeleteAlertOpen(false);
       setNoteID('');
-      navigation.navigate('Home', { allNotes: newNotes })
+      navigation.navigate('Home', { allNotes: newNotes, deleteNote: true })
   }
 
   const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
@@ -93,7 +93,7 @@ import { scaledFont } from "../common/Scale";
         px={4} 
         py={3}
         rounded="3xl" 
-        justifyContent={!trimmedDesc ? "center" : 'space-between'}
+        justifyContent={!trimmedDesc ? "center" : 'flex-start'}
         borderTopWidth={5}
         opacity={isPressed ? 0.7 : 1}
         _dark={{ borderColor: borderDarkColor, borderWidth: 1 }} 
@@ -105,7 +105,7 @@ import { scaledFont } from "../common/Scale";
                 </Text>
               </View>
               <View mt={6}>
-              <Text style={{ textAlign: !trimmedDesc ? 'center' : 'auto' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(22) : scaledFont(20)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
+              <Text style={{ textAlign: !trimmedDesc ? 'center' : 'left' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(22) : scaledFont(20)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
               <Text fontSize={scaledFont(18)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'body'} fontWeight={'400'} numberOfLines={4}>{trimmedDesc}</Text>
               </View>
               </Box>   

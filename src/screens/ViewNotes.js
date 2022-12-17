@@ -19,6 +19,8 @@ import DeleteAlert from "../components/common/DeleteAlert";
 import Clipboard from '@react-native-clipboard/clipboard';
 import StyledStatusBar from '../components/common/StyledStatusBar';
 import { scaledFont } from '../components/common/Scale';
+import { getDisabledBtnColor } from '../components/common/utils';
+
 
 const ViewNotes = ({
   navigation,
@@ -27,19 +29,46 @@ const ViewNotes = ({
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
   const { viewedNote } = get(route, 'params');
-
+  const { editNote }  = get(route, 'params', false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [copyIconChange, setCopyIconChange] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const cancelRef = useRef(null);
   const timerRef = useRef(null);
   const toast = useToast();
+  const editToast = useToast();
 
     useEffect(() => {
       findNotes();
       return () => clearTimeout(timerRef.current);
     }, []);
+
+
+    useEffect(() => {
+      if (typeof editNote === 'boolean') {
+        const id = "editToast";
+        if (!editToast.isActive(id)) {
+          editToast.show({
+            id,
+            title: "Saved",
+            placement: "bottom",
+            duration: 2000,
+            rounded: '3xl',
+            bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+            _title: {
+              px: 6,
+              py: 0,
+              fontFamily: 'mono',
+              fontWeight: '900',
+              fontSize: scaledFont(16),
+              color: colorMode === 'light' ? 'success.400' : "success.600"
+            }
+          });
+        }
+      }
+    }, [editNote])
 
     const findNotes = async () => {
       const result = await AsyncStorage.getItem('notes');
@@ -54,7 +83,7 @@ const ViewNotes = ({
       const newNotes = notes.filter(item => item.id !== get(viewedNote, 'id'));
       await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
       setIsDeleteAlertOpen(false);
-      navigation.navigate('Home', { allNotes: newNotes })
+      navigation.navigate('Home', { allNotes: newNotes, deleteNote: true })
     }
 
     const copyToClipboard = () => {
@@ -67,17 +96,18 @@ const ViewNotes = ({
       if (!toast.isActive(id)) {
       toast.show({
         id,
-        title: "Copied to clipboard",
+        title: get(viewedNote, 'description') ? 'Copied to clipboard' : 'Nothing to copy',
         placement: "bottom",
         duration: 1500,
         rounded: '3xl',
-        bg: 'blue.500',
+        bg: get(viewedNote, 'description') ? 'blue.500':  colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
         _title: {
           px: 2,
           py: 1,
           fontFamily: 'mono',
           fontWeight: '900',
-          fontSize: scaledFont(14)
+          fontSize: scaledFont(14),
+          color: get(viewedNote, 'description') ? LIGHT_COLOR : 'warning.400'
         }
       });
     }
@@ -96,7 +126,6 @@ const ViewNotes = ({
         hashBgColor = '#fee2e2'
         borderColor = 'red.200';
     }
-
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
             <Center
@@ -114,9 +143,18 @@ const ViewNotes = ({
               >
             <HStack>
               <IconButton 
-                  icon={<IonIcon name="arrow-back-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(36)} />}
+                  disabled={btnDisabled}
+                  icon={<IonIcon name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
-                  onPress={() => navigation.goBack()}
+                  onPress={async () => {
+                     setBtnDisabled(true);
+                     if (navigation.canGoBack()) {
+                      await navigation.goBack()
+                     } else {
+                        await navigation.navigate('Home')
+                      }
+                    setBtnDisabled(false); 
+                  }}
                   />  
             </HStack>
             <HStack space={4}>
@@ -128,7 +166,7 @@ const ViewNotes = ({
               <IconButton 
                   icon={<FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} solid size={scaledFont(22)} />}
                   borderRadius="full"
-                  onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes })}
+                  onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
                   />
             </HStack>
             </HStack>

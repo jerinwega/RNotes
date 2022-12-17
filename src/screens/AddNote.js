@@ -7,7 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import useGoBackHandler from '../components/common/CrossSwipeHandler';
 import StyledStatusBar from '../components/common/StyledStatusBar';
-import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale';
+import { scaledFont, scaledWidth } from '../components/common/Scale';
+import { getDisabledBtnColor, useDebounce } from '../components/common/utils';
 
 
 const AddNote = ({
@@ -20,13 +21,17 @@ const AddNote = ({
   const [priority, setPriority] = useState('low');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
 
   const { isEdit } = get(route, 'params');
   const { viewedNote } = get(route, 'params');
+  const { editNote } = get(route, 'params');
   const { data } = get(route, 'params');
-
   const nextRef = useRef();
+
+  const { debounce } = useDebounce();
+
   
   useEffect(() => {
     if (isEdit) {
@@ -55,6 +60,7 @@ const AddNote = ({
   }
 
   const handleSubmit = async () => {
+    setBtnDisabled(true);
     if (!title.trim() && !description.trim()) {
         if (isEdit) {
           navigation.navigate('ViewNotes');
@@ -68,7 +74,7 @@ const AddNote = ({
     if (isEdit) {
       const sameNote = (data || []).some(item => item.id === get(viewedNote, 'id'))
       if (sameNote && get(viewedNote, 'title') === title && get(viewedNote, 'description') === description && get(viewedNote, 'priority') === priority) {
-        navigation.navigate('ViewNotes', { viewedNote: viewedNote , allNotes: data });
+        navigation.navigate('ViewNotes', { viewedNote: viewedNote });
         return;
       }
       const editedNotes = (data || []).filter(item => {
@@ -83,7 +89,8 @@ const AddNote = ({
       });
       const newViewedNote = editedNotes.find(item => item.id === get(viewedNote, 'id'));
       await AsyncStorage.setItem('notes', JSON.stringify(editedNotes));
-      navigation.navigate('ViewNotes', { viewedNote: newViewedNote , allNotes: editedNotes });
+      navigation.navigate('ViewNotes', { viewedNote: newViewedNote, editNote: !editNote });
+      setBtnDisabled(false);
     } else {
       let notes = [];
       const result = await AsyncStorage.getItem('notes');
@@ -99,7 +106,8 @@ const AddNote = ({
         }  
         const allNotes = [...notes, note];
         await AsyncStorage.setItem('notes', JSON.stringify(allNotes));
-        navigation.navigate('Home', { allNotes })
+        navigation.navigate('Home', { allNotes, saveNote: true });
+        setBtnDisabled(false);
     }
   }
 
@@ -109,7 +117,6 @@ const AddNote = ({
     } else if (priority === 'high') {
       startEndIconColor = '#dc2626';
     }
-
    
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
@@ -122,9 +129,10 @@ const AddNote = ({
               <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="2" py="2" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
               <HStack>
               <IconButton 
-                  icon={<IonIcon name="arrow-back-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(36)} />}
+                  disabled={btnDisabled}
+                  icon={<IonIcon name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
-                  onPress={handleSubmit}
+                  onPress={() => debounce(handleSubmit)}
                   />  
               </HStack>
             <HStack>
@@ -169,9 +177,10 @@ const AddNote = ({
             </HStack>
             <HStack>
               <IconButton 
-                  icon={<IonIcon name="checkmark-circle-outline" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(36)} />}
+                 disabled={btnDisabled}
+                  icon={<IonIcon name="checkmark-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
-                  onPress={handleSubmit}
+                  onPress={() => debounce(handleSubmit)}
                   />
             </HStack>
             </HStack>

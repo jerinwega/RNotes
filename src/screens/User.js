@@ -6,9 +6,9 @@
  * @flow strict-local
  */
 
- import React, { useState } from "react";
+ import React, { useState, useRef, useEffect } from "react";
  import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
- import { useColorMode, HStack, Center, Box, IconButton, Input, View } from "native-base";
+ import { useColorMode, HStack, Text, Box, IconButton, Input, View } from "native-base";
  import Spinner from "react-native-spinkit";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
@@ -25,14 +25,21 @@ import { scaledFont } from "../components/common/Scale";
   const { colorMode, toggleColorMode } = useColorMode();
   const [user, setUser] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const userRef = useRef(null);
+
+  useEffect(() => {
+    return () => clearTimeout(userRef.current);
+  }, []);
 
 
   const handleUser = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
-    await AsyncStorage.setItem('user', user);
-    await onClose();
-    setIsLoading(false);
+    userRef.current = setTimeout(async () => {
+      await AsyncStorage.setItem('user', user);
+      await onClose();
+      setIsLoading(false);
+    }, 1000);
   }
   
   return (
@@ -40,6 +47,7 @@ import { scaledFont } from "../components/common/Scale";
     <StyledStatusBar userScreen />
     <Box safeAreaTop  _dark={{ bg: 'black' }} _light={{ bg: 'white' }} />
     <HStack 
+      zIndex={2}
       _dark={{ bg: 'black' }} 
       _light={{ bg: 'white' }} 
       px="6" py="4" 
@@ -54,11 +62,9 @@ import { scaledFont } from "../components/common/Scale";
     </HStack>
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <View style={[styles.container, { backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}>
-    <Center h='4/5'>
           <Input
-            flex={0.3}
-            mx={6}
-            mb={isLoading ? 8 : 4}
+            p={0}
+            mb={4}
             fontSize={scaledFont(72)}
             autoCorrect={false}
             autoFocus={false}
@@ -66,10 +72,12 @@ import { scaledFont } from "../components/common/Scale";
             fontFamily={'heading'}
             fontWeight={'900'}
             textAlign={'center'} 
+            alignSelf={'center'}
+            textAlignVertical={'center'}
             variant={'unstyled'} 
             placeholder="Name"
-            _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }}
             onChangeText={(user) => setUser(user)}
+            caretHidden={true}
           />
         {(user.trim() && !isLoading) ?
         <RNBounceable
@@ -79,9 +87,10 @@ import { scaledFont } from "../components/common/Scale";
         >
           <FontAwesome5Icon solid size={scaledFont(30)} name="arrow-right" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
         </ RNBounceable>
-          : <Spinner size={scaledFont(40)} type="WanderingCubes" color={colorMode === 'light' ? "#c066fa" : "#cb7bff" } isVisible={isLoading}/>
+          : <Spinner style={{ position: "absolute" }} size={scaledFont(150)} type="Pulse" color={colorMode === 'light' ? "#c05eff" : "#cb7bff" } isVisible={isLoading}>
+            <Text color={'white'}>efwefwef</Text>
+          </Spinner>
         }
-      </Center>
       </View>
       </TouchableWithoutFeedback>
     </>
@@ -92,7 +101,15 @@ import { scaledFont } from "../components/common/Scale";
  const styles = StyleSheet.create({
     container: {
       width: deviceWidth,
-      flex: 1
+      flex: 1,
+      position: 'absolute', 
+      top: 0,
+      left: 0, 
+      right: 0,
+      bottom: 0, 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      zIndex: 1
     },
     fab: {
     elevation: 3,
