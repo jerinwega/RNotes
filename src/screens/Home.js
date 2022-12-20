@@ -544,7 +544,7 @@ const handleNotePress = (note) => {
           placement={'bottom'} 
           rounded={'3xl'}
           pb={0}
-          pt={1}
+          pt={0}
           _backdrop={{ 
             _dark: {
               bg: 'gray.900'
@@ -719,7 +719,7 @@ const handleNotePress = (note) => {
       style={{ elevation : 5 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content borderRadius={'2xl'}>
+        <Modal.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255,255,255, 0.1)'}>
           <Modal.CloseButton 
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
