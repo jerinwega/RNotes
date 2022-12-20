@@ -7,8 +7,9 @@
  */
 
  import React from "react";
- import { AlertDialog, Text, Button, Divider } from "native-base";
+ import { AlertDialog, Text, Button, useColorMode } from "native-base";
  import { scaledFont } from "./Scale";
+import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
 
  const DeleteAlert = ({
     cancelRef,
@@ -17,6 +18,7 @@
     onDeleteAlertClose,
     isView,
  }) => {
+  const { colorMode } = useColorMode();
   return (
     <AlertDialog 
       _backdrop={{
@@ -33,17 +35,16 @@
       shadow={4}
       style={{ elevation: 5 }}
     >
-      <AlertDialog.Content borderRadius={'2xl'}>
+      <AlertDialog.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>
         <AlertDialog.Body py={5}>
           <Text color={'red.500'} fontFamily={'heading'} fontWeight={'900'} fontSize={scaledFont(18)} textAlign={'center'}>Delete Note !</Text>
           <Text fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(14)} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
         </AlertDialog.Body>
           <Button.Group space={0}>
-            <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={onDeleteAlertClose} ref={cancelRef}>
+            <Button borderRadius={'none'} width={'50%'} variant="ghost" onPress={onDeleteAlertClose} ref={cancelRef}>
               <Text color={'blue.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>NO</Text>
             </Button>
-            <Divider orientation="vertical" />
-            <Button borderRightWidth={0} borderLeftWidth={0} borderBottomWidth={0} borderRadius={'none'} width={'50%'} variant="outline" onPress={handleDeleteAlert}>
+            <Button  borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleDeleteAlert}>
               <Text color={'red.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>YES</Text>
             </Button>
           </Button.Group>

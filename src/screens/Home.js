@@ -27,6 +27,9 @@ import StyledStatusBar from "../components/common/StyledStatusBar";
 import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale'
 import DeleteAlert from "../components/common/DeleteAlert";
 import Share from 'react-native-share';
+import HeartModal from '../components/common/HeartModal';
+import moment from "moment";
+import { isSameDayAndMonth } from '../components/common/utils';
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
@@ -47,6 +50,7 @@ import Share from 'react-native-share';
   const [selectedItems, setSelectedItems] = useState([]);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [deleteNoteToast, setDeleteNoteToast] = useState(false);  
+  const [openHeart, setOpenHeart] = useState(false);  
 
   const sortToast = useToast();
   const saveToast = useToast();
@@ -55,6 +59,8 @@ import Share from 'react-native-share';
   const shareToast = useToast();
   const cancelRef = useRef(null);
   const anim = useRef(new Animated.Value(0));
+  const animLove = useRef(new Animated.Value(0));
+
 
   useEffect(() => {
     if (user) {
@@ -404,12 +410,11 @@ const handleNotePress = (note) => {
         });
       }
     }
-  } catch(err) {
-    err && console.log(err);      
-    setSelectedItems([]);
+    } catch(err) {
+      err && console.log(err);      
+      setSelectedItems([]);
+    }
   }
-  }
-
 
   const shake = useCallback(() => {
     // makes the sequence loop
@@ -440,6 +445,34 @@ const handleNotePress = (note) => {
     ).start();
   }, []);
 
+  const shakeHeart = useCallback(() => {
+    // makes the sequence loop
+    Animated.loop(
+      // runs the animation array in sequence
+      Animated.sequence([
+        // shift element to the left by 2 units
+        Animated.timing(animLove.current, {
+          toValue: -2,
+          duration: 50,
+          useNativeDriver: true
+        }),
+        // shift element to the right by 2 units
+        Animated.timing(animLove.current, {
+          toValue: 2,
+          duration: 50,
+          useNativeDriver: true
+        }),
+        // bring the element back to its original position
+        Animated.timing(animLove.current, {
+          toValue: 0,
+          duration: 50,
+          useNativeDriver: true
+        }),
+      ]),
+      // loops the above animation config 2 times
+      { iterations: 2 }
+    ).start();
+  }, []);
 
 
   let homeFabStyle = '';
@@ -454,6 +487,19 @@ const handleNotePress = (note) => {
       homeFabStyle = LIGHT_COLOR;
   }
 
+  const today = moment(moment().format('YYYY-MM-DD'));
+  const bday = moment('1997-10-25');
+  const aday = moment('2022-09-18');
+  const birthdayCheck = isSameDayAndMonth(today, bday);
+  const anniversaryCheck = isSameDayAndMonth(today, aday);
+
+
+  const conditionsForLove = (updatedUser.trim().toLowerCase() === 'ja'
+  || updatedUser.trim().toLowerCase() === 'rani'
+  || updatedUser.trim().toLowerCase() === 'jerin'
+  || updatedUser.trim().toLowerCase() === 'rani varghese'
+  || updatedUser.trim().toLowerCase() === 'ponnu')
+  && (birthdayCheck || anniversaryCheck);
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
     <Center
@@ -497,6 +543,8 @@ const handleNotePress = (note) => {
           w={scaledWidth(80)}
           placement={'bottom'} 
           rounded={'3xl'}
+          pb={0}
+          pt={1}
           _backdrop={{ 
             _dark: {
               bg: 'gray.900'
@@ -522,7 +570,7 @@ const handleNotePress = (note) => {
               <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
                 <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
                 <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
-                <Menu.Item onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
+                <Menu.Item pb={3}  borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
           <IconButton 
@@ -608,7 +656,6 @@ const handleNotePress = (note) => {
       </TouchableWithoutFeedback>
       }      
 
-      {/* // android issue */}
       <Animated.View style={[styles.fabView, { transform: [{ translateX: anim.current }] } ]}>
       <RNBounceable  
         bounceEffectIn={0.6}
@@ -640,6 +687,20 @@ const handleNotePress = (note) => {
         </ RNBounceable>
       : null }
 
+      {conditionsForLove ? 
+    <Animated.View style={[styles.loveView, { transform: [{ translateX: animLove.current }] } ]}>
+       <RNBounceable  
+          bounceEffectIn={0.6}
+          style={[ styles.love, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
+          onPress={() => {
+            shakeHeart();
+            setOpenHeart(true);
+          }}
+        >
+        <FontAwesome5Icon style={{ marginTop: 4 }} color={'red'} name="heart" size={scaledFont(22)} solid />
+     </ RNBounceable>
+     </Animated.View> 
+      : null }
     </View>
     
     <Modal 
@@ -704,6 +765,12 @@ const handleNotePress = (note) => {
         handleDeleteAlert={handleDeleteMultipleNotes}
         onDeleteAlertClose={onDeleteAlertClose} 
       />
+      <HeartModal 
+        showHeartModal={openHeart}
+        handleClose={() => { 
+          setOpenHeart(false); 
+        }}
+      />
   </View>
   )
  }
@@ -744,6 +811,30 @@ const handleNotePress = (note) => {
     position: 'absolute',                                          
     bottom: 35,                                                    
     right: 100,
+    borderRadius:100,
+    shadowColor: DARK_COLOR,
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 1
+    }
+  },
+  loveView: {
+    zIndex: 1,
+    width:scaledFont(40),
+    height: scaledFont(40),
+    position: 'absolute',                                          
+    bottom: 35,                                                    
+    left: 20,
+  },
+  love: {
+    zIndex: 1,
+    elevation: 5,
+    width:scaledFont(40),
+    height: scaledFont(40),
+    alignItems:'center',
+    justifyContent:'center',
     borderRadius:100,
     shadowColor: DARK_COLOR,
     shadowOpacity: 0.5,

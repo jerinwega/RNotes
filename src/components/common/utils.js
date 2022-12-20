@@ -23,6 +23,10 @@ export const getDisabledBtnColor = (mode, isDisabled) => {
 }
 
 
+export const isSameDayAndMonth = (d1,d2) => {
+  return d1.date() === d2 .date() && d1.month() === d2.month()
+}
+
 export const useDebounce = () => {
   const busy = useRef(false);
 

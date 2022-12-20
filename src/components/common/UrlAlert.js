@@ -65,10 +65,10 @@ const UrlAlert = ({
       style={{ elevation : 5 }}
     >
         <Modal.Content borderRadius={'2xl'}>
-        <Modal.Header borderBottomWidth={0} pt={3} pb={0}>
+        <Modal.Header borderBottomWidth={0} ml={3} pt={6} pb={0}>
             <Text fontSize={scaledFont(18)} fontFamily={'mono'} fontWeight={'900'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>Go To</Text>
         </Modal.Header>
-          <Modal.Body ml={3} pb={5}>
+          <Modal.Body ml={3} pb={6}>
           <Text fontSize={scaledFont(16)} fontFamily={'mono'} fontWeight={'600'} style={styles.urlStyle}>{url}</Text>
           </Modal.Body>
             <Button.Group space={0}>
