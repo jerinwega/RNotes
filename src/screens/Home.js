@@ -6,8 +6,8 @@
  * @flow strict-local
  */
 
- import React, { useEffect, useState, useRef } from "react";
- import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl, Platform } from "react-native";
+ import React, { useEffect, useState, useRef, useCallback } from "react";
+ import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl, Platform, Animated } from "react-native";
  import { 
   useColorMode, HStack, Center, Avatar, Button, Box, IconButton, Text, Modal, FormControl,
   Divider, Input, Icon, Menu, FlatList, View, useToast
@@ -25,6 +25,8 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledStatusBar from "../components/common/StyledStatusBar";
 import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale'
+import DeleteAlert from "../components/common/DeleteAlert";
+import Share from 'react-native-share';
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
@@ -42,10 +44,17 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
   const [showUserModal, setShowUserModal] = useState(false);
   const [updatedUser, setUpdatedUser] = useState('');
   const [refreshState, setRefreshState] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [deleteNoteToast, setDeleteNoteToast] = useState(false);  
+
   const sortToast = useToast();
   const saveToast = useToast();
   const deleteToast = useToast();
   const priorityToast = useToast();
+  const shareToast = useToast();
+  const cancelRef = useRef(null);
+  const anim = useRef(new Animated.Value(0));
 
   useEffect(() => {
     if (user) {
@@ -79,16 +88,16 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
           id,
           title: "Saved",
           placement: "bottom",
-          duration: 2000,
+          duration: 1500,
           rounded: '3xl',
-          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          bg: colorMode === 'light' ? 'success.500' : LIGHT_COLOR,
           _title: {
             px: 6,
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
             fontSize: scaledFont(16),
-            color: colorMode === 'light' ? 'success.400' : "success.600"
+            color: colorMode === 'light' ? LIGHT_COLOR : "success.600"
           }
         });
       }
@@ -100,21 +109,45 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
           id,
           title: "Deleted",
           placement: "bottom",
-          duration: 2000,
+          duration: 1500,
           rounded: '3xl',
-          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          bg: colorMode === 'light' ? 'error.500' : LIGHT_COLOR,
           _title: {
             px: 6,
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
             fontSize: scaledFont(16),
-            color: colorMode === 'light' ? 'danger.400' : "danger.600"
+            color: colorMode === 'light' ? LIGHT_COLOR : "error.600"
           }
         });
       }
     }
-  }, [allNotes])
+  }, [allNotes]);
+
+  useEffect(() => {
+    if (deleteNoteToast) {
+      const id = "deleteToast";
+      if (!deleteToast.isActive(id)) {
+        deleteToast.show({
+          id,
+          title: "Deleted",
+          placement: "bottom",
+          duration: 1500,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'error.500' : LIGHT_COLOR,
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(16),
+            color: colorMode === 'light' ? LIGHT_COLOR : "error.600"
+          }
+        });
+      }
+    }
+  }, [deleteNoteToast])
 
   const findDayTimeGreet = () => {
     let newGreet = '';
@@ -149,14 +182,14 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
           placement: "bottom",
           duration: 1500,
           rounded: '3xl',
-          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
           _title: {
             px: 6,
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
             fontSize: scaledFont(16),
-            color: colorMode === 'light' ? 'warning.400' : "warning.500"
+            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
           }
         });
       }
@@ -172,7 +205,7 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
   const handleSearch = async (text) => {
     setSpinner(true);
     setSearch(text);
-
+    setSelectedItems([]);
     const refresh = await AsyncStorage.getItem('notes');
     const refreshNotes = JSON.parse(refresh);
 
@@ -248,14 +281,14 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
           placement: "bottom",
           duration: 1500,
           rounded: '3xl',
-          bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
           _title: {
             px: 6,
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
             fontSize: scaledFont(16),
-            color: colorMode === 'light' ? 'warning.400' : "warning.500"
+            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
           }
         });
       }
@@ -285,11 +318,141 @@ import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scal
 const onRefresh = async () => {
   setRefreshState(true);
   setSearch('');
+  // setSelectedItems([]);
   Keyboard.dismiss();
   await findNotes();
   setRefreshState(false);
 }
 
+const selectNotes = (note) => {
+  shake();
+  Keyboard.dismiss();
+  if (selectedItems.includes(note.id)) {
+    const newNoteSelected = selectedItems.filter(noteID => noteID !== note.id);
+    return setSelectedItems(newNoteSelected);
+  }
+  setSelectedItems([...selectedItems, note.id])
+}
+
+const handleNotePress = (note) => {
+  Keyboard.dismiss();
+   if (get(selectedItems, 'length')) {
+    return selectNotes(note);
+  } else {
+    setSearch('');
+    navigation.navigate('ViewNotes', { viewedNote: note })
+  }
+}
+
+  const getSelectedNote = (note) => selectedItems.includes(note.id);
+
+
+  const onDeleteAlertClose = () => {
+    setIsDeleteAlertOpen(false);
+    setSelectedItems([]);
+  }
+
+
+  const handleDeleteMultipleNotes = async () => {
+    let refreshNotes = [];
+    const result = await AsyncStorage.getItem('notes');
+    if (result !== null) {
+      refreshNotes = JSON.parse(result);
+    }
+      const newNotes = refreshNotes.filter(item => !selectedItems.includes(item.id));
+      await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+      setNotes(newNotes);
+
+      setDeleteNoteToast(true);
+      setIsDeleteAlertOpen(false);
+      setSelectedItems([]);
+  }
+
+  const handleShare = async () => {
+    const selectedNote = notes.find(item => item.id === selectedItems[0]);
+    const shareOption = {
+      message: `${selectedNote.title}\n${selectedNote.description}`,
+      excludedActivityTypes: [
+        'com.apple.UIKit.activity.AirDrop',
+        'com.apple.UIKit.activity.Print',
+      ]
+    };
+  try {
+    const shareResponse = await Share.open(shareOption);
+
+    if (get(shareResponse, 'success')) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems([]);
+      const id = "shareToast";
+      if (!shareToast.isActive(id)) {
+        shareToast.show({
+          id,
+          title: "Unable to Share",
+          placement: "bottom",
+          duration: 1500,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(16),
+            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
+          }
+        });
+      }
+    }
+  } catch(err) {
+    err && console.log(err);      
+    setSelectedItems([]);
+  }
+  }
+
+
+  const shake = useCallback(() => {
+    // makes the sequence loop
+    Animated.loop(
+      // runs the animation array in sequence
+      Animated.sequence([
+        // shift element to the left by 2 units
+        Animated.timing(anim.current, {
+          toValue: -2,
+          duration: 50,
+          useNativeDriver: true
+        }),
+        // shift element to the right by 2 units
+        Animated.timing(anim.current, {
+          toValue: 2,
+          duration: 50,
+          useNativeDriver: true
+        }),
+        // bring the element back to its original position
+        Animated.timing(anim.current, {
+          toValue: 0,
+          duration: 50,
+          useNativeDriver: true
+        }),
+      ]),
+      // loops the above animation config 2 times
+      { iterations: 2 }
+    ).start();
+  }, []);
+
+
+
+  let homeFabStyle = '';
+  
+  if (colorMode === 'light') {
+    if (get(selectedItems, 'length')) {
+      homeFabStyle = 'red';
+    } else {
+      homeFabStyle = DARK_COLOR;
+    }
+  } else {
+      homeFabStyle = LIGHT_COLOR;
+  }
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -301,7 +464,10 @@ const onRefresh = async () => {
     <Box safeAreaTop />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent={'space-between'} alignItems="center" style={{ width: deviceWidth }}>
       <HStack>
-      <RNBounceable bounceEffectIn={0.8} onPress={() => setShowUserModal(true)}>
+      <RNBounceable bounceEffectIn={0.8} onPress={() => {
+        setShowUserModal(true)
+        setSelectedItems([]);
+      }}>
         <Avatar
         _dark={{ bg: LIGHT_COLOR }}
         _light={{ bg: DARK_COLOR }}
@@ -341,6 +507,7 @@ const onRefresh = async () => {
             }}
             onOpen={async () => {
               setSearchNotFound(false);
+              setSelectedItems([]);
               setSearch('');
               Keyboard.dismiss();
               await findNotes();
@@ -372,6 +539,7 @@ const onRefresh = async () => {
   <View style={{ elevation: 5 }}>
     <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
   </View>
+
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
         <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(19)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
           {`Good ${greet}, `}
@@ -380,7 +548,7 @@ const onRefresh = async () => {
       {get(notes, 'length') ?
         <SearchBar
           clearIconComponent={!search ? <></> : null}
-          style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 40, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
+          style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 30, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
           fontSize={Platform.OS === ANDROID ? scaledFont(13) : scaledFont(16)}
           placeholder="Search"
@@ -396,47 +564,81 @@ const onRefresh = async () => {
         /> : null
         }
 
-      {!get(notes, 'length')? 
+      {!get(notes, 'length') ? 
           <View flex={1}>
             <SkeletonLoader /> 
           </View>
         :
-        <View flex={1} px={5} py={6}>
-        {searchNotFound ? <NotFound findNotes={async () => await findNotes()} resetSearch={() => setSearch('')} resetPriority={() => setSearchNotFound(false)} /> :
-          (
-          <FlatList
-            onTouchStart={() => Keyboard.dismiss()}
-            refreshControl={(
-              <RefreshControl
-                refreshing={refreshState}
-                onRefresh={onRefresh}
-                tintColor={colorMode=== 'light' ? DARK_COLOR : LIGHT_COLOR}
+        <TouchableWithoutFeedback onPress={() => {
+          Keyboard.dismiss()
+            setSelectedItems([]);
+        }}>
+        <View flex={1} px={4} py={6}>
+        {searchNotFound ? <NotFound findNotes={async () => await findNotes()} resetSearch={() => setSearch('')} resetPriority={() => setSearchNotFound(false)} /> 
+        : ( <FlatList
+              refreshControl={(
+                <RefreshControl
+                  refreshing={refreshState}
+                  onRefresh={onRefresh}
+                  tintColor={colorMode=== 'light' ? DARK_COLOR : LIGHT_COLOR}
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+              data={sortedNotes(notes)} 
+              numColumns={2}
+              columnWrapperStyle={{ justifyContent: 'space-between' }}
+              keyExtractor={item => { 
+                const key = item.id;
+                return key.toString()
+              }}
+              renderItem={({item}) => 
+              <NoteList 
+                onPress={() => handleNotePress(item)}
+                onLongPress={() => selectNotes(item)} 
+                item={item} 
+                navigation={navigation} 
+                selected={getSelectedNote(item)}
               />
-            )}
-            showsVerticalScrollIndicator={false}
-            data={sortedNotes(notes)} 
-            numColumns={2}
-            columnWrapperStyle={{ justifyContent: 'space-between' }}
-            keyExtractor={item => { 
-              const key = item.id;
-              return key.toString()
-            }}
-            renderItem={({item}) => <NoteList item={item} navigation={navigation} resetSearch={() => setSearch('')} />}
+            }
           />
           )
         }
+        
         </View>
+      </TouchableWithoutFeedback>
       }      
-      
+
+      {/* // android issue */}
+      <Animated.View style={[styles.fabView, { transform: [{ translateX: anim.current }] } ]}>
       <RNBounceable  
         bounceEffectIn={0.6}
-        style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
+        style={[styles.fab, { backgroundColor: homeFabStyle }]} 
         onPress={() => {
+          if (get(selectedItems, 'length')) {
+            return (
+              setIsDeleteAlertOpen(true),
+              setDeleteNoteToast(false)
+            )
+          }
           navigation.navigate('AddNote', { isEdit: false })
         }}
       >
-        <FontAwesome5Icon solid size={scaledFont(34)} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+      {get(selectedItems, 'length') ? 
+          <FontAwesome5Icon color={colorMode === 'light' ? LIGHT_COLOR :'red'} name="trash-alt" size={scaledFont(34)} solid />
+          :  
+          <FontAwesome5Icon solid size={scaledFont(34)} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } /> }
       </ RNBounceable>
+      </Animated.View> 
+
+      {get(selectedItems, 'length') === 1 ? 
+        <RNBounceable  
+          bounceEffectIn={0.6}
+          style={[ styles.share, { backgroundColor: colorMode === 'light' ? '#2563eb' : LIGHT_COLOR } ]} 
+          onPress={handleShare}
+        >
+           <FontAwesome5Icon style={{ marginRight: 3}} color={colorMode === 'light' ? LIGHT_COLOR : '#2563eb' } name="share-alt" size={scaledFont(25)} solid />
+        </ RNBounceable>
+      : null }
 
     </View>
     
@@ -496,20 +698,52 @@ const onRefresh = async () => {
         </Modal.Content>
         </TouchableWithoutFeedback>
       </Modal>
+      <DeleteAlert 
+        isDeleteAlertOpen={isDeleteAlertOpen} 
+        cancelRef={cancelRef}
+        handleDeleteAlert={handleDeleteMultipleNotes}
+        onDeleteAlertClose={onDeleteAlertClose} 
+      />
   </View>
   )
  }
 
  const styles = StyleSheet.create({
+  fabView: {
+    zIndex: 1,
+    width:scaledFont(60),
+    height: scaledFont(60),
+    position: 'absolute',                                          
+    bottom: 35,                                                    
+    right: 20,
+
+  },
   fab: {
     elevation: 5,
     alignItems:'center',
     justifyContent:'center',
     width:scaledFont(60),
     height: scaledFont(60),
+    borderRadius:100,
+    shadowColor: DARK_COLOR,
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 1
+    },
+    zIndex: 1,
+  },
+  share: {
+    zIndex: 1,
+    elevation: 5,
+    alignItems:'center',
+    justifyContent:'center',
+    width:scaledFont(50),
+    height: scaledFont(50),
     position: 'absolute',                                          
     bottom: 35,                                                    
-    right: 20,
+    right: 100,
     borderRadius:100,
     shadowColor: DARK_COLOR,
     shadowOpacity: 0.5,

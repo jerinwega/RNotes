@@ -8,10 +8,10 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
-import { Text, HStack, Box, Center, useColorMode, IconButton, View, ScrollView, Input, Icon, useToast } from "native-base";
+import { Text, HStack, Box, Center, useColorMode, IconButton, View, ScrollView, Icon, useToast } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { ANDROID, DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
@@ -20,7 +20,9 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import StyledStatusBar from '../components/common/StyledStatusBar';
 import { scaledFont } from '../components/common/Scale';
 import { getDisabledBtnColor } from '../components/common/utils';
-
+import Hyperlink from 'react-native-hyperlink';
+import UrlAlert from '../components/common/UrlAlert';
+import Share from 'react-native-share';
 
 const ViewNotes = ({
   navigation,
@@ -34,11 +36,14 @@ const ViewNotes = ({
   const [copyIconChange, setCopyIconChange] = useState(false);
   const [notes, setNotes] = useState([]);
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [showUrlAlert, setShowUrlAlert] = useState(false);
+  const [url, setUrl] = useState('');
 
   const cancelRef = useRef(null);
   const timerRef = useRef(null);
   const toast = useToast();
   const editToast = useToast();
+  const shareToast = useToast();
 
     useEffect(() => {
       findNotes();
@@ -54,16 +59,16 @@ const ViewNotes = ({
             id,
             title: "Saved",
             placement: "bottom",
-            duration: 2000,
+            duration: 1500,
             rounded: '3xl',
-            bg: colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+            bg: colorMode === 'light' ? 'success.500' : LIGHT_COLOR,
             _title: {
               px: 6,
               py: 0,
               fontFamily: 'mono',
               fontWeight: '900',
               fontSize: scaledFont(16),
-              color: colorMode === 'light' ? 'success.400' : "success.600"
+              color: colorMode === 'light' ? LIGHT_COLOR : "success.600"
             }
           });
         }
@@ -100,19 +105,63 @@ const ViewNotes = ({
         placement: "bottom",
         duration: 1500,
         rounded: '3xl',
-        bg: get(viewedNote, 'description') ? 'blue.500':  colorMode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255,255,255, 0.9)',
+        bg: colorMode === 'light' ? get(viewedNote, 'description') ? 'blue.500': 'warning.500' : LIGHT_COLOR,
         _title: {
           px: 2,
           py: 1,
           fontFamily: 'mono',
           fontWeight: '900',
-          fontSize: scaledFont(14),
-          color: get(viewedNote, 'description') ? LIGHT_COLOR : 'warning.400'
+          fontSize: scaledFont(16),
+          color: colorMode === 'light' ? LIGHT_COLOR : get(viewedNote, 'description') ? 'blue.500' : 'warning.500'
         }
       });
     }
       Clipboard.setString(get(viewedNote, 'description', ''));
     }
+
+    handleUrlClick = (url) => {
+      setUrl(url);
+      setShowUrlAlert(true);
+    }
+
+
+    const handleShare = async () => {
+      const shareOption = {
+        message: `${viewedNote.title}\n${viewedNote.description}`,
+        excludedActivityTypes: [
+          'com.apple.UIKit.activity.AirDrop',
+          'com.apple.UIKit.activity.Print',
+        ]
+      };
+      await Share.open(shareOption)
+      .then((res) => {
+        if (!get(res, 'success')) {
+          const id = "shareToast";
+          if (!shareToast.isActive(id)) {
+            shareToast.show({
+              id,
+              title: "Unable to Share",
+              placement: "bottom",
+              duration: 1500,
+              rounded: '3xl',
+              bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
+              _title: {
+                px: 6,
+                py: 0,
+                fontFamily: 'mono',
+                fontWeight: '900',
+                fontSize: scaledFont(16),
+                color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
+              }
+            });
+        }
+      }
+      })
+      .catch((err) => {
+        err && console.log(err);
+      });
+    }
+
 
     let startEndIconColor = '#16a34a';
     let hashBgColor = '#dcfce7';
@@ -126,6 +175,7 @@ const ViewNotes = ({
         hashBgColor = '#fee2e2'
         borderColor = 'red.200';
     }
+
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
             <Center
@@ -158,6 +208,11 @@ const ViewNotes = ({
                   />  
             </HStack>
             <HStack space={4}>
+            <IconButton 
+                  icon={<FontAwesome5Icon style={{ marginRight:3 }} color={'#2563eb' } name="share-alt" size={scaledFont(22)} solid />}
+                  borderRadius="full"
+                  onPress={handleShare}
+                  />
               <IconButton 
                   icon={<FontAwesome5Icon color={'#dc2626'} name="trash-alt" size={scaledFont(22)} solid />}
                   borderRadius="full"
@@ -178,54 +233,42 @@ const ViewNotes = ({
                 {`${get(viewedNote, 'edited', false) ? "Updated At": "Created At"} :  ${moment(get(viewedNote, 'time', '')).format('DD/MM/YYYY - hh:mm A')}`}
               </Text>
           </View>
-            <View pb={2} px={Platform.OS === ANDROID ? 7 : 5}>
-           {Platform.OS === ANDROID ?  
-           <Text 
-            selectable 
-            selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
-            color={startEndIconColor} 
-            fontSize={scaledFont(30)} 
-            fontFamily={'heading'}
-            fontWeight={'900'}>             
-                {get(viewedNote, 'title', '')}
-              </Text> 
-           : <Input
-                editable={false}
-                multiline
-                variant={'unstyled'}
-                fontSize={scaledFont(30)}
-                fontFamily={'heading'}
-                fontWeight={'900'}
-                value={get(viewedNote, 'title', '')} 
-                color={startEndIconColor}
-              />
-           }
+            <View pb={3} px={7}>
+              <Hyperlink              
+                onPress={(url)=> handleUrlClick(url)}
+                linkStyle={styles.urlStyle}
+              >
+              <View>
+                <Text 
+                  selectable 
+                  selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
+                  color={startEndIconColor} 
+                  fontSize={scaledFont(30)} 
+                  fontFamily={'heading'}
+                  fontWeight={'900'}>             
+                  {get(viewedNote, 'title', '')}
+                  </Text> 
+              </View>
+
+              </Hyperlink>
           </View>
             <ScrollView bounces contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-              <View px={Platform.OS === ANDROID ? 8 : 6} pb={2}>
-
-              {Platform.OS === ANDROID ?  
-           <Text 
-            selectable 
-            selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
-            fontSize={scaledFont(20)} 
-            fontFamily={'body'}
-            fontWeight={'600'}>             
-                {get(viewedNote, 'description', '')}
-              </Text> 
-           : <Input
-              scrollEnabled={false}
-              editable={false}
-              multiline
-              variant={'unstyled'}
-              fontSize={scaledFont(22)}
-              fontFamily={'body'}
-              fontWeight={'600'}
-              value={get(viewedNote, 'description', '')} 
-         />
-              }
-
-    
+              <View px={8} pb={2}>     
+                <Hyperlink
+                  onPress={(url)=> handleUrlClick(url)}
+                  linkStyle={styles.urlStyle}
+                >
+                <View>
+                  <Text 
+                    selectable 
+                    selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
+                    fontSize={scaledFont(20)} 
+                    fontFamily={'body'}
+                    fontWeight={'600'}>             
+                        {get(viewedNote, 'description', '')}
+                  </Text> 
+                </View>
+                </Hyperlink>
               </View>
             </ScrollView>
             <IconButton 
@@ -250,6 +293,14 @@ const ViewNotes = ({
               onDeleteAlertClose={onDeleteAlertClose} 
               isView
           />
+          <UrlAlert 
+              showUrl={showUrlAlert}
+              handleClose={() => { 
+                setShowUrlAlert(false); 
+                setUrl('');
+              }}
+              url={url}
+          />
           </View>
         ); 
     }
@@ -263,5 +314,9 @@ const ViewNotes = ({
     bottom: 20,                                                    
     right: 15,
   },
+  urlStyle: {
+    color: '#41B2F3',
+    textDecorationLine: 'underline',
+  }
  });
 export default ViewNotes;
