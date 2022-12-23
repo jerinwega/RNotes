@@ -174,6 +174,10 @@ const ViewNotes = ({
         startEndIconColor = '#dc2626';
         hashBgColor = '#fee2e2'
         borderColor = 'red.200';
+    } else if (get(viewedNote, 'priority') === 'confidential') {
+        startEndIconColor = '#2563eb';
+        hashBgColor = '#dbeafe'
+        borderColor = 'blue.200';
     }
 
         return (
@@ -281,8 +285,8 @@ const ViewNotes = ({
             }}
               rounded={'full'}
               style={styles.clipBoard}
-              icon={copyIconChange ? <Icon textAlign={'center'} as={IonIcon} name="copy" size={scaledFont(22)} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
-              : <Icon textAlign={'center'} as={IonIcon} name="copy-outline" size={scaledFont(22)} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />}
+              icon={copyIconChange ? <Icon textAlign={'center'} as={IonIcon} name="copy" size={scaledFont(26)} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+              : <Icon textAlign={'center'} as={IonIcon} name="copy-outline" size={scaledFont(26)} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />}
               onPress={copyToClipboard}
           />
             </View>
@@ -312,7 +316,7 @@ const ViewNotes = ({
     justifyContent:'center',
     position: 'absolute',                                          
     bottom: 20,                                                    
-    right: 15,
+    right: 20,
   },
   urlStyle: {
     color: '#41B2F3',

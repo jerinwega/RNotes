@@ -7,7 +7,7 @@
 
  import React from "react";
  import { Text, View, useColorMode, Box } from "native-base";
-import { Dimensions, TouchableOpacity } from "react-native";
+import { Dimensions, TouchableOpacity, StyleSheet } from "react-native";
 import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
 import moment from 'moment';
 import { scaledFont } from "../common/Scale";
@@ -26,6 +26,12 @@ import { scaledFont } from "../common/Scale";
   let hashBgColor = '#dcfce7';
   let borderColor = 'green.200';
   let borderDarkColor = 'green.400';
+
+  if (priority === 'confidential') {
+    hashBgColor = '#dbeafe';
+    borderColor = 'blue.200';
+    borderDarkColor = 'blue.400';
+  }
 
   if (priority === 'high') {
     hashBgColor = '#fee2e2';
@@ -63,9 +69,37 @@ import { scaledFont } from "../common/Scale";
               </View>
               <View mt={6}>
               <Text style={{ textAlign: !trimmedDesc ? 'center' : 'left' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(22) : scaledFont(20)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
-              <Text fontSize={scaledFont(18)} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'body'} fontWeight={'400'} numberOfLines={4}>{trimmedDesc}</Text>
+              <Text 
+                fontSize={scaledFont(18)} 
+                style={priority === 'confidential' ? colorMode === 'light' ? styles.lightNote : styles.darkNote : {}}
+                fontFamily={'body'} 
+                fontWeight={'400'} 
+                numberOfLines={4}>{trimmedDesc}</Text>
               </View>
+
+        
               </Box>   
         </TouchableOpacity>
  }
+
+ const styles = StyleSheet.create({
+  lightNote: {
+    opacity: 0.1,
+    textShadowColor: DARK_COLOR,
+    textShadowOffset: {
+      width: -5,
+      height: 0,
+    },
+    textShadowRadius: 0.1,
+  },
+  darkNote: {
+    opacity: 0.1,
+    textShadowColor: LIGHT_COLOR,
+    textShadowOffset: {
+      width: -5,
+      height: 0,
+    },
+    textShadowRadius: 0.1,
+  }
+});
  export default NoteList;

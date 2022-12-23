@@ -224,8 +224,12 @@ import { isSameDayAndMonth } from '../components/common/utils';
     
     if (get(refreshNotes, 'length')) {
       const searchResults = (refreshNotes || []).filter(note => {
+
+        const formatedDate = moment(get(note, 'time')).format('DD MMM YYYY');
+
         if (get(note, 'title').toLowerCase().includes(text.toLowerCase()) 
-        || get(note, 'description').toLowerCase().includes(text.toLowerCase())) {
+        || get(note, 'description').toLowerCase().includes(text.toLowerCase())
+        || formatedDate.toLowerCase().includes(text.toLowerCase())) {
           return note;
         }
       });
@@ -302,15 +306,23 @@ import { isSameDayAndMonth } from '../components/common/utils';
      }
 
     let prorityNotes = [];
+
       switch(priority) {
+        case 'confidential': {
+          prorityNotes = (notes || []).filter(note => note.priority === priority);
+          break;
+        }
         case 'high': {
           prorityNotes = (notes || []).filter(note => note.priority === priority);
+          break;
         }
         case 'medium': {
           prorityNotes = (notes || []).filter(note => note.priority === priority);
+          break;
         }
         case 'low': {
           prorityNotes = (notes || []).filter(note => note.priority === priority);
+          break;
         }
       }
     
@@ -500,6 +512,7 @@ const handleNotePress = (note) => {
   || updatedUser.trim().toLowerCase() === 'rani varghese'
   || updatedUser.trim().toLowerCase() === 'ponnu')
   && (birthdayCheck || anniversaryCheck);
+
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
     <Center
@@ -540,7 +553,7 @@ const handleNotePress = (note) => {
           onPress={toggleColorMode}
           />
           <Menu
-          w={scaledWidth(80)}
+          w={scaledWidth(90)}
           placement={'bottom'} 
           rounded={'3xl'}
           pb={0}
@@ -568,9 +581,10 @@ const handleNotePress = (note) => {
               />;
           }}>
               <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
-                <Menu.Item onPress={() => handlePriority('high')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
-                <Menu.Item onPress={() => handlePriority('medium')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
-                <Menu.Item pb={3}  borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
+                <Menu.Item py={3} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="blue.600" /></Menu.Item>
+                <Menu.Item py={3} onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
+                <Menu.Item py={3} onPress={() => handlePriority('medium')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
+                <Menu.Item py={3} borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
           <IconButton 
@@ -598,17 +612,21 @@ const handleNotePress = (note) => {
           clearIconComponent={!search ? <></> : null}
           style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 30, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
-          fontSize={Platform.OS === ANDROID ? scaledFont(13) : scaledFont(16)}
+          fontSize={scaledFont(16)}
           placeholder="Search"
           value={search}
           onChangeText={handleSearch}
           onClearPress={handleClearSearch}
+          accessibilityLabel="Search"
+          accessibilityHint="Search Notes"
           autoCorrect={false}
           autoFocus={false}
           autoCapitalize={'none'}
           selectionColor={colorMode === 'light' ? 'black': 'white'}
           spinnerVisibility={spinner}
-          textInputStyle={{ fontFamily: 'Lato-Regular'}}
+          textInputStyle={{ fontFamily: 'Lato-Bold' }}
+          searchIconImageStyle={{ width: scaledWidth(16), height: scaledHeight(16) }}
+          clearIconImageStyle={{ width: scaledWidth(14), height: scaledHeight(14) }}
         /> : null
         }
 
@@ -705,7 +723,7 @@ const handleNotePress = (note) => {
     
     <Modal 
       shadow={4} 
-      size={'sm'}
+      size={'md'}
       isOpen={showUserModal} 
       onClose={handleCloseUserModal} 
       _backdrop={{
@@ -719,7 +737,7 @@ const handleNotePress = (note) => {
       style={{ elevation : 5 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
           <Modal.CloseButton 
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
@@ -731,7 +749,7 @@ const handleNotePress = (note) => {
               <Input 
                 rounded={'3xl'}
                 textAlign={'center'}
-                fontSize={scaledFont(20)}
+                fontSize={scaledFont(22)}
                 fontFamily={'mono'}
                 fontWeight={'900'}
                 autoCorrect={false}
@@ -746,13 +764,13 @@ const handleNotePress = (note) => {
             </FormControl>
           </Modal.Body>
               <Button
-                padding={3}
+                py={4}
                 width={'full'}
                 variant="ghost" 
                 onPress={handleEditName}
                 borderRadius={'none'}
               >
-              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(14)} fontWeight={'900'}>
+              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(15)} fontWeight={'900'}>
                 SAVE        
               </Text>
               </Button>

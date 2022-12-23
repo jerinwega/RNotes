@@ -21,8 +21,10 @@ const UrlAlert = ({
     const urlToast = useToast();
 
     const handleUrl = async () => {
+      try {
         const checkLink = await Linking.canOpenURL(url);
         if (checkLink) {
+          console.log("hit1")
             await Linking.openURL(url);
             handleClose();
         } else {
@@ -47,6 +49,28 @@ const UrlAlert = ({
             });
             }
         }
+      } catch(err) {
+          handleClose();
+            const id = "urlToast";
+            if (!urlToast.isActive(id)) {
+                urlToast.show({
+            id,
+            title: 'Invalid Link',
+            placement: "bottom",
+            duration: 1500,
+            rounded: '3xl',
+            bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
+            _title: {
+                px: 2,
+                py: 1,
+                fontFamily: 'mono',
+                fontWeight: '900',
+                fontSize: scaledFont(16),
+                color: colorMode === "light" ? LIGHT_COLOR : 'warning.500'
+            }
+            });
+          }
+      }
     }
  return (
     <Modal 
@@ -64,7 +88,7 @@ const UrlAlert = ({
       }}
       style={{ elevation : 5 }}
     >
-        <Modal.Content borderRadius={'2xl'}>
+        <Modal.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.Header borderBottomWidth={0} ml={3} pt={6} pb={0}>
             <Text fontSize={scaledFont(18)} fontFamily={'mono'} fontWeight={'900'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>Go To</Text>
         </Modal.Header>
@@ -72,10 +96,10 @@ const UrlAlert = ({
           <Text fontSize={scaledFont(16)} fontFamily={'mono'} fontWeight={'600'} style={styles.urlStyle}>{url}</Text>
           </Modal.Body>
             <Button.Group space={0}>
-           <Button p={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleClose}>
+           <Button py={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleClose}>
              <Text color={'red.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>CANCEL</Text>
            </Button>
-           <Button p={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleUrl}>
+           <Button py={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleUrl}>
              <Text color={'blue.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>OK</Text>
            </Button>
          </Button.Group>

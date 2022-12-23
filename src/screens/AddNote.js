@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Dimensions, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import { HStack, Divider, Select, Box, Center, useColorMode, IconButton, TextArea, Input, View, KeyboardAvoidingView, ScrollView } from "native-base";
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
@@ -9,6 +10,8 @@ import useGoBackHandler from '../components/common/CrossSwipeHandler';
 import StyledStatusBar from '../components/common/StyledStatusBar';
 import { scaledFont, scaledWidth } from '../components/common/Scale';
 import { getDisabledBtnColor, useDebounce } from '../components/common/utils';
+import InfoModal from '../components/common/InfoModal';
+
 
 
 const AddNote = ({
@@ -22,6 +25,7 @@ const AddNote = ({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [openInfo, setOpenInfo] = useState(false)
 
 
   const { isEdit } = get(route, 'params');
@@ -112,10 +116,16 @@ const AddNote = ({
   }
 
   let startEndIconColor = '#16a34a';
+  let startEndIconColorLight = '#bbf7d0'
     if (priority === 'medium') {
       startEndIconColor = '#ca8a04';
+      startEndIconColorLight = '#fef08a';
     } else if (priority === 'high') {
       startEndIconColor = '#dc2626';
+      startEndIconColorLight = '#fecaca';
+    } else if (priority === 'confidential') {
+      startEndIconColor = '#2563eb';
+      startEndIconColorLight = '#bfdbfe';
     }
    
         return (
@@ -142,13 +152,14 @@ const AddNote = ({
                   size: 5
                 }}
                 selectedValue={priority} 
-                minWidth={scaledWidth(140)}
+                minWidth={scaledWidth(170)}
                 textAlign={'center'}
                 fontFamily={'mono'}
                 fontWeight={'900'}
                 fontSize={scaledFont(16)}
                 _selectedItem={{
-                    background: startEndIconColor,
+                    rounded: '2xl',
+                    background: colorMode === 'light' ? startEndIconColorLight : startEndIconColor,
                 }}
                 _light={{
                   bg: "white",
@@ -170,10 +181,19 @@ const AddNote = ({
                 }}
                 variant="rounded"
               >
-                  <Select.Item  alignItems={'center'} label="HIGH" value="high"/>
-                  <Select.Item  alignItems={'center'} label=" MEDIUM" value="medium" />
-                  <Select.Item  alignItems={'center'} label=" LOW" value="low" />
+                  <Select.Item  alignItems={'center'} rounded={'2xl'} label="CONFIDENTIAL" value="confidential"/>
+                  <Select.Item  alignItems={'center'} rounded={'2xl'} label="HIGH" value="high"/>
+                  <Select.Item  alignItems={'center'} rounded={'2xl'} label=" MEDIUM" value="medium" />
+                  <Select.Item  alignItems={'center'} rounded={'2xl'} label=" LOW" value="low" />
                   </Select>
+            </HStack>
+            <HStack>
+            <IconButton 
+                  icon={<EntypoIcon name="info-with-circle" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(24)} />}
+                  borderRadius="full" 
+                  onPress={() => setOpenInfo(true)}
+
+                  />
             </HStack>
             <HStack>
               <IconButton 
@@ -205,6 +225,9 @@ const AddNote = ({
                 textAlign={'center'}
                 rounded={'3xl'}
                 placeholder="Title"
+                accessibilityRole={'none'}
+                accessibilityLabel={"Title"}
+                accessibilityHint={"Add Title for the note"}                
                 color={startEndIconColor}
                 onChangeText={(text) => handleChange(text, 'title')}
                 _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : startEndIconColor }} 
@@ -239,8 +262,11 @@ const AddNote = ({
                   fontSize={scaledFont(20)} 
                   rounded={'3xl'}
                   px={4} 
-                  py={4} 
-                  placeholder="ideas..."
+                  py={4}
+                  accessibilityRole={'none'}
+                  accessibilityLabel={"Description"}
+                  accessibilityHint={"Add Description"}
+                  placeholder="ideas"
                   _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : colorMode === 'light' ? 'black': 'white' }} 
                   _light={{
                       bg: 'white',
@@ -256,6 +282,12 @@ const AddNote = ({
               </KeyboardAvoidingView>
               </View>
           </TouchableWithoutFeedback>
+          <InfoModal 
+          showInfoModal={openInfo}
+          handleClose={() => { 
+            setOpenInfo(false); 
+          }}
+      />
           </View>
         ); 
     }

@@ -31,20 +31,20 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
       }} 
       leastDestructiveRef={cancelRef} 
       isOpen={isDeleteAlertOpen} 
-      size={'sm'}
+      size={'md'}
       shadow={4}
       style={{ elevation: 5 }}
     >
-      <AlertDialog.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255,255,255, 0.1)'}> 
+      <AlertDialog.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}> 
         <AlertDialog.Body py={5}>
           <Text color={'red.500'} fontFamily={'heading'} fontWeight={'900'} fontSize={scaledFont(18)} textAlign={'center'}>Delete Note !</Text>
           <Text fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(14)} textAlign={'center'} mt={3}>Are you sure to delete this note ?</Text>
         </AlertDialog.Body>
           <Button.Group space={0}>
-            <Button borderRadius={'none'} width={'50%'} variant="ghost" onPress={onDeleteAlertClose} ref={cancelRef}>
+            <Button py={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={onDeleteAlertClose} ref={cancelRef}>
               <Text color={'blue.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>NO</Text>
             </Button>
-            <Button  borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleDeleteAlert}>
+            <Button py={3}  borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleDeleteAlert}>
               <Text color={'red.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>YES</Text>
             </Button>
           </Button.Group>

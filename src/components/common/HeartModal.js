@@ -61,11 +61,11 @@ const HeartModal = ({
       }}
       style={{ elevation : 5 }}
     >
-        <Modal.Content borderRadius={'3xl'} padding={3}>
+        <Modal.Content borderRadius={'3xl'} padding={3} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.CloseButton 
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
-          <Modal.Body mt={8} mb={subFrag ? 6 : 0}>
+          <Modal.Body mt={6} mb={subFrag ? 6 : 0}>
           <Text mb={subFrag ? 2 : 0} textAlign={'center'} fontSize={scaledFont(18)} fontFamily={'mono'} fontWeight={'900'}>{LoveMessageFrag}</Text>
           <Text textAlign={'center'} fontSize={scaledFont(16)} fontFamily={'mono'} fontWeight={'600'}>{subFrag}</Text>
 
