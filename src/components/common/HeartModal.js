@@ -63,6 +63,7 @@ const HeartModal = ({
     >
         <Modal.Content borderRadius={'3xl'} padding={3} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.CloseButton 
+            accessibilityLabel={'Close button'}
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
           <Modal.Body mt={6} mb={subFrag ? 6 : 0}>

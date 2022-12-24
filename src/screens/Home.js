@@ -547,12 +547,16 @@ const handleNotePress = (note) => {
         </HStack>
         <HStack>
           <IconButton
+          accessibilityLabel={'Switch color mode button'}
+          accessibilityHint="Theme Change"
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(22)} solid /> 
           : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(22)} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
           <Menu
+          accessibilityLabel="priority menu"
+          accessibilityHint="sort by priority"
           w={scaledWidth(90)}
           placement={'bottom'} 
           rounded={'3xl'}
@@ -576,18 +580,21 @@ const handleNotePress = (note) => {
             trigger={
               triggerProps => {
             return <IconButton {...triggerProps}
+                  accessibilityLabel={'Priority sort button'}
                   icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} solid />} 
                   borderRadius="full"
               />;
           }}>
               <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
-                <Menu.Item py={3} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="blue.600" /></Menu.Item>
-                <Menu.Item py={3} onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
-                <Menu.Item py={3} onPress={() => handlePriority('medium')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
-                <Menu.Item py={3} borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option confidential'} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="blue.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option high'}onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option medium'}onPress={() => handlePriority('medium')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
+                <Menu.Item py={3}accessibilityLabel={'option low'} borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
           <IconButton 
+          accessibilityLabel={'date sort button'}
+          accessibilityHint="sort"
           icon={sortBy === 'desc' ? 
           <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(20)} solid /> 
           : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(20)} solid /> } 
@@ -598,7 +605,7 @@ const handleNotePress = (note) => {
     </HStack>
   </Center>
   
-  <View style={{ elevation: 5 }}>
+  <View style={{ elevation: 5 }} accessibilityLabel={'Divider'}>
     <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
   </View>
 
@@ -639,7 +646,7 @@ const handleNotePress = (note) => {
           Keyboard.dismiss()
             setSelectedItems([]);
         }}>
-        <View flex={1} px={4} py={6}>
+        <View flex={1} px={4} py={6} accessibilityLabel={'Notes'} accessibilityHint={'Note List'}>
         {searchNotFound ? <NotFound findNotes={async () => await findNotes()} resetSearch={() => setSearch('')} resetPriority={() => setSearchNotFound(false)} /> 
         : ( <FlatList
               refreshControl={(
@@ -739,6 +746,8 @@ const handleNotePress = (note) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Modal.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
           <Modal.CloseButton 
+            accessibilityLabel="Close Button"
+            accessibilityHint="Close Modal"
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
             <Modal.Header>
@@ -755,6 +764,8 @@ const handleNotePress = (note) => {
                 autoCorrect={false}
                 autoFocus={false}
                 value={updatedUser}
+                accessibilityLabel={'Edit Name'}
+                accessibilityHint="Edit Name Field"
                 onChangeText={(value) => setUpdatedUser(value)}
                 placeholder="Name"
                 _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }}

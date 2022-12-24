@@ -197,6 +197,7 @@ const ViewNotes = ({
               >
             <HStack>
               <IconButton 
+                accessibilityLabel={'Back button'}
                   disabled={btnDisabled}
                   icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
@@ -213,16 +214,19 @@ const ViewNotes = ({
             </HStack>
             <HStack space={4}>
             <IconButton 
+            accessibilityLabel={'share button'}
                   icon={<FontAwesome5Icon style={{ marginRight:3 }} color={'#2563eb' } name="share-alt" size={scaledFont(22)} solid />}
                   borderRadius="full"
                   onPress={handleShare}
                   />
               <IconButton 
+              accessibilityLabel={'delete button'}
                   icon={<FontAwesome5Icon color={'#dc2626'} name="trash-alt" size={scaledFont(22)} solid />}
                   borderRadius="full"
                   onPress={() => setIsDeleteAlertOpen(true)}
                   />
               <IconButton 
+              accessibilityLabel={'edit button'}
                   icon={<FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} solid size={scaledFont(22)} />}
                   borderRadius="full"
                   onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
@@ -244,6 +248,7 @@ const ViewNotes = ({
               >
               <View>
               {get(viewedNote, 'title') ? <Text 
+                   accessibilityLabel='note title'
                   selectable 
                   selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
                   color={startEndIconColor} 
@@ -273,6 +278,7 @@ const ViewNotes = ({
                 >
                 <View>
                 {get(viewedNote, 'description') ? <Text 
+                    accessibilityLabel='note description'
                     selectable 
                     selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
                     fontSize={scaledFont(20)} 
@@ -294,6 +300,7 @@ const ViewNotes = ({
               </View>
             </ScrollView>
             <IconButton 
+            accessibilityLabel={'copy to clipboard button'}
               variant={'ghost'}
               _dark={{ bg: LIGHT_COLOR }}
               _light={{ bg: DARK_COLOR }}

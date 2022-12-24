@@ -51,6 +51,8 @@ import { scaledFont } from "../common/Scale";
         onLongPress={onLongPress}
       >
       <Box 
+        accessibilityLabel={'Note'}
+        accessibilityHint={'Note View'}
         flex={1}
         w={deviceWidth / 2 - 3}
         mb={3} 
@@ -63,21 +65,20 @@ import { scaledFont } from "../common/Scale";
         _light={{ borderColor: borderColor, borderWidth: 2, background: selected ? 'rgba(0, 0, 0, 0.1)' : hashBgColor }}
       >
             <View px={4} py={3} style={{ position: 'absolute', top: 0, right: 0 }}>
-                <Text fontSize={scaledFont(13)} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'mono'} fontStyle={'italic'} fontWeight={'600'} numberOfLines={1}>
+                <Text accessibilityLabel={'Date'} fontSize={scaledFont(13)} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontFamily={'mono'} fontStyle={'italic'} fontWeight={'600'} numberOfLines={1}>
                   {moment(time).format('DD MMM YYYY')}
                 </Text>
               </View>
               <View mt={6}>
-              <Text style={{ textAlign: !trimmedDesc ? 'center' : 'left' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(22) : scaledFont(20)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
-              <Text 
+              <Text accessibilityLabel={'title'} style={{ textAlign: !trimmedDesc ? 'center' : 'left' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(22) : scaledFont(20)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
+              <Text
+                accessibilityLabel={'description'} 
                 fontSize={scaledFont(18)} 
                 style={priority === 'confidential' ? colorMode === 'light' ? styles.lightNote : styles.darkNote : {}}
                 fontFamily={'body'} 
                 fontWeight={'400'} 
                 numberOfLines={4}>{trimmedDesc}</Text>
               </View>
-
-        
               </Box>   
         </TouchableOpacity>
  }

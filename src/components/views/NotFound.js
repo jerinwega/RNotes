@@ -31,7 +31,10 @@ import { ANDROID, LIGHT_COLOR } from '../../utils/constants'
         <Text mb={1} fontFamily={'heading'} fontWeight={'900'} fontSize={scaledFont(18)}>Notes Not Found</Text>
         </Center>
       <Center>
-      <Button _pressed={{ bg: colorMode==='light' ? 'gray.200' : 'dark.100'}} mt={2} px={6} py={2} variant={'outline'} rounded={'full'} onPress={() => {
+      <Button
+        accessibilityHint="clear all filters"
+        accessibilityLabel="clear filters button"
+       _pressed={{ bg: colorMode==='light' ? 'gray.200' : 'dark.100'}} mt={2} px={6} py={2} variant={'outline'} rounded={'full'} onPress={() => {
           resetSearch();
           resetPriority();
           findNotes();

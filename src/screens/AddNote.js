@@ -139,6 +139,7 @@ const AddNote = ({
               <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="2" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
               <HStack>
               <IconButton 
+              accessibilityLabel={'back button'}
                   disabled={btnDisabled}
                   icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
@@ -147,6 +148,8 @@ const AddNote = ({
               </HStack>
             <HStack>
                 <Select 
+                accessibilityLabel="Select Priority"
+                accessibilityHint="select from dropdown"
                 _customDropdownIconProps={{
                   color: startEndIconColor,
                   size: 5
@@ -189,6 +192,7 @@ const AddNote = ({
             </HStack>
             <HStack>
             <IconButton 
+            accessibilityLabel={'information button'}
               opacity={0.6}
                   icon={<EntypoIcon name="info-with-circle" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(24)} />}
                   borderRadius="full" 
@@ -198,6 +202,7 @@ const AddNote = ({
             </HStack>
             <HStack>
               <IconButton 
+              accessibilityLabel={'submit button'}
                  disabled={btnDisabled}
                   icon={<IonIcon style={{ marginLeft: 3 }} name="checkmark-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
@@ -227,7 +232,7 @@ const AddNote = ({
                 rounded={'3xl'}
                 placeholder="Title"
                 accessibilityRole={'none'}
-                accessibilityLabel={"Title"}
+                accessibilityLabel={"Title Field"}
                 accessibilityHint={"Add Title for the note"}                
                 color={startEndIconColor}
                 onChangeText={(text) => handleChange(text, 'title')}
@@ -265,7 +270,7 @@ const AddNote = ({
                   px={4} 
                   py={4}
                   accessibilityRole={'none'}
-                  accessibilityLabel={"Description"}
+                  accessibilityLabel={"Description Field"}
                   accessibilityHint={"Add Description"}
                   placeholder="ideas"
                   _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : colorMode === 'light' ? 'black': 'white' }} 

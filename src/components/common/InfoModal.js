@@ -92,6 +92,7 @@ const InfoModal = ({
     >
         <Modal.Content bg={colorMode==='light' ? LIGHT_COLOR : Platform.OS === ANDROID ? 'rgba(18,18,19,255)' : DARK_COLOR} pt={12} borderRadius={'3xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.CloseButton 
+        accessibilityLabel={'close button'}
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
           <Modal.Body>

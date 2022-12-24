@@ -54,9 +54,9 @@ import { scaledFont } from "../components/common/Scale";
       justifyContent="flex-end" 
       style={{ width: deviceWidth }}>
          <IconButton 
-          accessibilityLabel={colorMode === 'light' ? 'Light Mode' : 'Dark Mode'}
+          accessibilityLabel={'Switch color mode button'}
           accessibilityHint="Theme Change"
-          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={26} solid /> 
+          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(26)} solid /> 
           : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(25)} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
@@ -77,7 +77,7 @@ import { scaledFont } from "../components/common/Scale";
             alignSelf={'center'}
             textAlignVertical={'center'}
             variant={'unstyled'} 
-            accessibilityLabel="Name"
+            accessibilityLabel="Name Field"
             accessibilityHint="Enter Name"
             placeholder="Name"
             onChangeText={(user) => setUser(user)}
@@ -85,13 +85,16 @@ import { scaledFont } from "../components/common/Scale";
           />
         {(user.trim() && !isLoading) ?
         <RNBounceable
-          accessibilityLabel="Submit"
-          accessibilityHint="Name Submitted"
+            accessibilityLabel="Submit Button"
+            accessibilityHint="Submit Name"
             bounceEffectIn={0.7}
             style={[ styles.fab, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } ]} 
             onPress={handleUser}
         >
-          <FontAwesome5Icon solid size={scaledFont(30)} name="arrow-right" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
+          <FontAwesome5Icon  
+            accessibilityLabel="Submit button"
+            accessibilityHint="Submit Name"
+             solid size={scaledFont(30)} name="arrow-right" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } />
         </ RNBounceable>
           : 
           <Spinner style={{ position: "absolute" }} size={scaledFont(200)} type="Pulse" color={colorMode === 'light' ? "#c05eff" : "#cb7bff" } isVisible={isLoading} />
