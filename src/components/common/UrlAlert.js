@@ -24,7 +24,6 @@ const UrlAlert = ({
       try {
         const checkLink = await Linking.canOpenURL(url);
         if (checkLink) {
-          console.log("hit1")
             await Linking.openURL(url);
             handleClose();
         } else {

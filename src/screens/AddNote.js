@@ -136,11 +136,11 @@ const AddNote = ({
               >
             <StyledStatusBar />
             <Box safeAreaTop />
-              <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="2" py="2" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
+              <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="2" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
               <HStack>
               <IconButton 
                   disabled={btnDisabled}
-                  icon={<IonIcon name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
+                  icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
                   onPress={() => debounce(handleSubmit)}
                   />  
@@ -189,6 +189,7 @@ const AddNote = ({
             </HStack>
             <HStack>
             <IconButton 
+              opacity={0.6}
                   icon={<EntypoIcon name="info-with-circle" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(24)} />}
                   borderRadius="full" 
                   onPress={() => setOpenInfo(true)}
@@ -198,7 +199,7 @@ const AddNote = ({
             <HStack>
               <IconButton 
                  disabled={btnDisabled}
-                  icon={<IonIcon name="checkmark-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
+                  icon={<IonIcon style={{ marginLeft: 3 }} name="checkmark-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
                   onPress={() => debounce(handleSubmit)}
                   />

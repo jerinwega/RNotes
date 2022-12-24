@@ -198,7 +198,7 @@ const ViewNotes = ({
             <HStack>
               <IconButton 
                   disabled={btnDisabled}
-                  icon={<IonIcon name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
+                  icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
                   borderRadius="full"
                   onPress={async () => {
                      setBtnDisabled(true);
@@ -243,7 +243,7 @@ const ViewNotes = ({
                 linkStyle={styles.urlStyle}
               >
               <View>
-                <Text 
+              {get(viewedNote, 'title') ? <Text 
                   selectable 
                   selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
                   color={startEndIconColor} 
@@ -252,6 +252,15 @@ const ViewNotes = ({
                   fontWeight={'900'}>             
                   {get(viewedNote, 'title', '')}
                   </Text> 
+                  : 
+                  <Text color={colorMode === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'}  
+                    fontSize={scaledFont(30)} 
+                    fontFamily={'heading'}
+                    fontWeight={'900'}
+                  >
+                    No Title
+                  </Text>
+                  }
               </View>
 
               </Hyperlink>
@@ -263,7 +272,7 @@ const ViewNotes = ({
                   linkStyle={styles.urlStyle}
                 >
                 <View>
-                  <Text 
+                {get(viewedNote, 'description') ? <Text 
                     selectable 
                     selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
                     fontSize={scaledFont(20)} 
@@ -271,6 +280,15 @@ const ViewNotes = ({
                     fontWeight={'600'}>             
                         {get(viewedNote, 'description', '')}
                   </Text> 
+                  :
+                  
+                  <Text color={colorMode === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'} 
+                      fontSize={scaledFont(20)} 
+                      fontFamily={'body'}
+                      fontWeight={'600'}
+                  >
+                    No Description
+                  </Text> }
                 </View>
                 </Hyperlink>
               </View>
