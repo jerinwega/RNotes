@@ -20,7 +20,7 @@ import confidentialDark from '../../assets/images/confidentialDark.png'
 import listDark from '../../assets/images/listDark.png'
 import dropDownDark from '../../assets/images/dropDownDark.png'
 import Swiper from 'react-native-swiper'
-import { color } from "react-native-reanimated";
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 
 
@@ -90,14 +90,22 @@ const InfoModal = ({
       }}
       style={{ elevation : 5 }}
     >
-        <Modal.Content bg={colorMode==='light' ? LIGHT_COLOR : Platform.OS === ANDROID ? 'rgba(18,18,19,255)' : DARK_COLOR} pt={12} borderRadius={'3xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content 
+          bg={colorMode==='light' ? LIGHT_COLOR : Platform.OS === ANDROID ? 'rgba(18,18,19,255)' : DARK_COLOR}
+          borderRadius={'3xl'}
+          borderWidth={1} 
+          borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.CloseButton 
-        accessibilityLabel={'close button'}
-            _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
-            borderRadius={'full'} />
-          <Modal.Body>
-          <Swiper style={{ height: Platform.OS === ANDROID ? scaledHeight(340) : scaledHeight(300) }}
-          dot={colorMode === 'light' ? null
+          accessibilityLabel={'close button'}
+          _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
+          borderRadius={'full'} />
+        <Modal.Header bg={colorMode==='light' ? LIGHT_COLOR : Platform.OS === ANDROID ? 'rgba(18,18,19,255)' : DARK_COLOR}>
+            <IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(24)} /> 
+          </Modal.Header>
+          <Modal.Body pt={8} pb={0}>
+          <Swiper style={{ height: Platform.OS === ANDROID ? scaledHeight(330) : scaledHeight(300) }}
+          dot={
+          colorMode === 'light' ? null
           : <View 
           style={{
            backgroundColor:'rgba(255,255,255,0.4)',

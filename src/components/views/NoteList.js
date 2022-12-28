@@ -85,7 +85,7 @@ import { scaledFont } from "../common/Scale";
 
  const styles = StyleSheet.create({
   lightNote: {
-    opacity: 0.1,
+    opacity: 0.03,
     textShadowColor: DARK_COLOR,
     textShadowOffset: {
       width: -5,
@@ -94,7 +94,7 @@ import { scaledFont } from "../common/Scale";
     textShadowRadius: 0.1,
   },
   darkNote: {
-    opacity: 0.1,
+    opacity: 0.03,
     textShadowColor: LIGHT_COLOR,
     textShadowOffset: {
       width: -5,

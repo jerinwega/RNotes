@@ -8,6 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen'
+import { Platform } from 'react-native';
+import { ANDROID } from './utils/constants';
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(false);
 
 const Stack = createStackNavigator();
 
@@ -99,10 +104,16 @@ if (isFirstLoad) {
  );
 }
 
+
 return (
   <NavigationContainer>
     <NativeBaseProvider config={mode} theme={theme} colorModeManager={colorModeManager}>
-       <Stack.Navigator screenOptions={{ headerShown: false }}>
+       <Stack.Navigator 
+        screenOptions={{ 
+          headerShown: false, 
+          presentation: Platform.OS === ANDROID ? 'transparentModal' : 'modal'
+        }}
+       >
        <Stack.Screen name="Home">
         {(props) => <Home {...props} user={user} onClose={findUser} />}
         </Stack.Screen>

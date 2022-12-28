@@ -581,7 +581,7 @@ const handleNotePress = (note) => {
               triggerProps => {
             return <IconButton {...triggerProps}
                   accessibilityLabel={'Priority sort button'}
-                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} solid />} 
+                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} />} 
                   borderRadius="full"
               />;
           }}>
