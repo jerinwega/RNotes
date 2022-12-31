@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 public class MainActivity extends ReactActivity {
    @Override
     protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(null);
       switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_YES:
                 setTheme(R.style.DarkTheme);
@@ -22,7 +23,6 @@ public class MainActivity extends ReactActivity {
                 setTheme(R.style.LightTheme);
                 SplashScreen.show(this, R.style.LightTheme, true);
         }
-        super.onCreate(savedInstanceState);
     }
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule

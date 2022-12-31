@@ -135,13 +135,13 @@ const AddNote = ({
               _light={{ bg: LIGHT_COLOR }}
               >
             <StyledStatusBar />
-            <Box safeAreaTop />
-              <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="1" py="2" justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
+            {/* <Box safeAreaTop /> */}
+              <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="2" py={2} justifyContent="space-between" alignItems="center" style={{ width: deviceWidth }}>
               <HStack>
               <IconButton 
-              accessibilityLabel={'back button'}
+                  accessibilityLabel={'back button'}
                   disabled={btnDisabled}
-                  icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
+                  icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(34)} />}
                   borderRadius="full"
                   onPress={() => debounce(handleSubmit)}
                   />  
@@ -155,11 +155,12 @@ const AddNote = ({
                   size: 5
                 }}
                 selectedValue={priority} 
-                minWidth={scaledWidth(170)}
+                minW={scaledWidth(150)}
+                h={scaledFont(39)}
                 textAlign={'center'}
                 fontFamily={'mono'}
                 fontWeight={'900'}
-                fontSize={scaledFont(16)}
+                fontSize={scaledFont(16 - get(priority, 'length', 0) * 0.3)}
                 _selectedItem={{
                     rounded: '2xl',
                     background: colorMode === 'light' ? startEndIconColorLight : startEndIconColor,
@@ -175,6 +176,7 @@ const AddNote = ({
                 onValueChange={itemValue => handleChange(itemValue, 'priority')}
                 color={startEndIconColor}
                 _item={{
+                  py: 3,
                   _text: {
                     fontSize: scaledFont(16),
                     fontFamily: 'mono',
@@ -194,9 +196,12 @@ const AddNote = ({
             <IconButton 
             accessibilityLabel={'information button'}
               opacity={0.6}
-                  icon={<EntypoIcon name="info-with-circle" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(24)} />}
+                  icon={<EntypoIcon name="info-with-circle" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} />}
                   borderRadius="full" 
-                  onPress={() => setOpenInfo(true)}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    setOpenInfo(true);
+                  }}
 
                   />
             </HStack>
@@ -204,7 +209,7 @@ const AddNote = ({
               <IconButton 
               accessibilityLabel={'submit button'}
                  disabled={btnDisabled}
-                  icon={<IonIcon style={{ marginLeft: 3 }} name="checkmark-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
+                  icon={<IonIcon style={{ marginLeft: 3 }} name="checkmark-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(33)} />}
                   borderRadius="full"
                   onPress={() => debounce(handleSubmit)}
                   />
@@ -225,7 +230,7 @@ const AddNote = ({
                 fontSize={scaledFont(24)}
                 fontFamily={'heading'}
                 fontWeight={'900'}
-                autoCorrect={false}
+                spellCheck={false}
                 autoFocus={false}
                 value={title} 
                 textAlign={'center'}
@@ -247,7 +252,7 @@ const AddNote = ({
               />
               </Box>
               <KeyboardAvoidingView 
-                flex={1} 
+                flex={1}
                 behavior={Platform.OS === ANDROID ? "height" : "padding" }
                 keyboardVerticalOffset={125}
               >
@@ -260,7 +265,7 @@ const AddNote = ({
                 mx={5} pb={5} pt={2}>
                 <TextArea 
                   flex={1}
-                  autoCorrect={false} 
+                  spellCheck={false}
                   autoFocus={false}
                   autoCapitalize={'none'}
                   fontFamily={'body'}
@@ -289,11 +294,11 @@ const AddNote = ({
               </View>
           </TouchableWithoutFeedback>
           <InfoModal 
-          showInfoModal={openInfo}
-          handleClose={() => { 
-            setOpenInfo(false); 
-          }}
-      />
+            showInfoModal={openInfo}
+            handleClose={() => { 
+              setOpenInfo(false); 
+            }}
+          />
           </View>
         ); 
     }

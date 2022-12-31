@@ -7,11 +7,10 @@
  */
 
  import React from "react";
- import { Text, Center, Button, Image, View, useColorMode } from "native-base";
-import { Platform } from "react-native";
+ import { Text, Center, Button, Image, useColorMode, ScrollView } from "native-base";
+import { Keyboard } from "react-native";
 import NoDataImage from '../../assets/images/NoData.png'
 import { scaledFont } from "../common/Scale";
-import { ANDROID, LIGHT_COLOR } from '../../utils/constants'
 
  const NotFound = ({
   resetPriority,
@@ -21,10 +20,16 @@ import { ANDROID, LIGHT_COLOR } from '../../utils/constants'
   const { colorMode } = useColorMode();
 
   return (
-    <View>
+    <ScrollView 
+      bounces
+      flex={1} 
+      py={4}
+      contentContainerStyle={{ flexGrow: 1 }}
+      onTouchStart={() => Keyboard.dismiss()}
+      showsVerticalScrollIndicator={false}>
         <Center>
         <Image
-          size={scaledFont(300)}
+          size={scaledFont(280)}
           source={NoDataImage}
           alt="Notes Not Found !" />
         <Text fontFamily={'heading'} fontWeight={'900'} fontSize={scaledFont(30)}>Oops!</Text>
@@ -44,7 +49,7 @@ import { ANDROID, LIGHT_COLOR } from '../../utils/constants'
           </Text>
       </Button>
     </Center>
-    </View>
+    </ScrollView>
   );
  }
  export default NotFound;

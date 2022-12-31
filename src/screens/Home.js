@@ -15,7 +15,7 @@
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
-import { get, orderBy } from 'lodash';
+import { get, orderBy, debounce } from 'lodash';
 import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
@@ -29,7 +29,7 @@ import DeleteAlert from "../components/common/DeleteAlert";
 import Share from 'react-native-share';
 import HeartModal from '../components/common/HeartModal';
 import moment from "moment";
-import { isSameDayAndMonth } from '../components/common/utils';
+import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
@@ -40,7 +40,7 @@ import { isSameDayAndMonth } from '../components/common/utils';
   const { deleteNote } = get(route, 'params', false);
   const [sortBy, setSort] = useState('desc')
   const [search, setSearch] = useState('')
-  const [spinner, setSpinner] = useState(false);
+  // const [spinner, setSpinner] = useState(false);
   const [searchNotFound, setSearchNotFound] = useState(false);
   const [greet, setGreet] = useState('');
   const [notes, setNotes] = useState([]);
@@ -209,7 +209,7 @@ import { isSameDayAndMonth } from '../components/common/utils';
   }
 
   const handleSearch = async (text) => {
-    setSpinner(true);
+    // setSpinner(true);
     setSearch(text);
     setSelectedItems([]);
     const refresh = await AsyncStorage.getItem('notes');
@@ -217,7 +217,7 @@ import { isSameDayAndMonth } from '../components/common/utils';
 
     if (!text.trim()) {
       setSearch('')
-      setSpinner(false);
+      // setSpinner(false);
       setSearchNotFound(false);
       return await findNotes();
     }
@@ -234,23 +234,23 @@ import { isSameDayAndMonth } from '../components/common/utils';
         }
       });
       if (get(searchResults, 'length')) {
-        setSpinner(false);
+        // setSpinner(false);
         setSearchNotFound(false);
         setNotes([...searchResults]);
       } 
       else {
-        setSpinner(false);
+        // setSpinner(false);
         setSearchNotFound(true);
       }
     } else {
-      setSpinner(false);
+      // setSpinner(false);
       setSearchNotFound(true);
     }
   }
 
   const handleClearSearch = async () => {
     Keyboard.dismiss();
-    setSpinner(false);
+    // setSpinner(false);
     setSearch('')
     setSearchNotFound(false);
     return await findNotes();
@@ -274,7 +274,8 @@ import { isSameDayAndMonth } from '../components/common/utils';
     setShowUserModal(false);
   }
 
-  const avatar = updatedUser.split(/\s/).reduce((response,word)=> response+word.slice(0,1), '').toUpperCase();
+
+  const avatar = updatedUser.toUpperCase();
 
   const sortedNotes = (notes) => {
     return orderBy(notes, ['time'], [sortBy])
@@ -528,20 +529,19 @@ const handleNotePress = (note) => {
         setSelectedItems([]);
       }}>
         <Avatar
-        _dark={{ bg: LIGHT_COLOR }}
-        _light={{ bg: DARK_COLOR }}
-          style={{  width:scaledFont(60),
-            height: scaledFont(60) }}
+          _dark={{ bg: LIGHT_COLOR }}
+          _light={{ bg: DARK_COLOR }}
+          style={{ width: Platform.OS === ANDROID ? scaledFont(50): scaledFont(52), height: Platform.OS === ANDROID ? scaledFont(50): scaledFont(52) }}
         >
-          <Avatar.Badge bg="green.500" />
-         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={scaledFont(34)}>
-          {avatar.substring(0,1)}
+          <Avatar.Badge bg="green.500" size={3} />
+         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={scaledFont(30)}>
+          {avatar.slice(0,1)}
         </Text>
         </Avatar>
         </RNBounceable>
       </HStack>
         <HStack>
-          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(43)} fontFamily = 'ChocoChici'>
+          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(40)} fontFamily = 'ChocoChici'>
             RNotes
           </Text>
         </HStack>
@@ -550,7 +550,7 @@ const handleNotePress = (note) => {
           accessibilityLabel={'Switch color mode button'}
           accessibilityHint="Theme Change"
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(22)} solid /> 
-          : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(22)} solid />} 
+          : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(21)} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
@@ -585,7 +585,7 @@ const handleNotePress = (note) => {
                   borderRadius="full"
               />;
           }}>
-              <Menu.Group _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m="auto">
+              <Menu.Group pb={1} _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m={'auto'}>
                 <Menu.Item py={3} accessibilityLabel={'option confidential'} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="blue.600" /></Menu.Item>
                 <Menu.Item py={3} accessibilityLabel={'option high'}onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
                 <Menu.Item py={3} accessibilityLabel={'option medium'}onPress={() => handlePriority('medium')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
@@ -609,10 +609,10 @@ const handleNotePress = (note) => {
     <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
   </View>
 
-    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
-        <Text textAlign={'center'} pb='5' color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(19)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
+    <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}>
+        <Text px={4} py={5} numberOfLines={1} textAlign={'center'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(19)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
           {`Good ${greet}, `}
-          <Text color={colorMode === 'light' ? '#c05eff' : '#cb7bff' }>{updatedUser}!</Text>
+          <Text color={colorMode === 'light' ? '#c05eff' : '#cb7bff'}>{updatedUser}!</Text>
         </Text>
       {get(notes, 'length') ?
         <SearchBar
@@ -630,7 +630,7 @@ const handleNotePress = (note) => {
           autoFocus={false}
           autoCapitalize={'none'}
           selectionColor={colorMode === 'light' ? 'black': 'white'}
-          spinnerVisibility={spinner}
+          // spinnerVisibility={spinner}
           textInputStyle={{ fontFamily: 'Lato-Bold' }}
           searchIconImageStyle={{ width: scaledWidth(16), height: scaledHeight(16) }}
           clearIconImageStyle={{ width: scaledWidth(14), height: scaledHeight(14) }}
@@ -639,16 +639,17 @@ const handleNotePress = (note) => {
 
       {!get(notes, 'length') ? 
           <View flex={1}>
-            <SkeletonLoader /> 
+            {/* <SkeletonLoader />  */}
           </View>
         :
         <TouchableWithoutFeedback onPress={() => {
           Keyboard.dismiss()
-            setSelectedItems([]);
+          setSelectedItems([]);
         }}>
-        <View flex={1} px={4} py={6} accessibilityLabel={'Notes'} accessibilityHint={'Note List'}>
         {searchNotFound ? <NotFound findNotes={async () => await findNotes()} resetSearch={() => setSearch('')} resetPriority={() => setSearchNotFound(false)} /> 
-        : ( <FlatList
+        : ( 
+        <View flex={1} px={4} py={6} accessibilityLabel={'Notes'} accessibilityHint={'Note List'}>
+        <FlatList
               refreshControl={(
                 <RefreshControl
                   refreshing={refreshState}
@@ -674,10 +675,10 @@ const handleNotePress = (note) => {
               />
             }
           />
+          </View>
           )
         }
         
-        </View>
       </TouchableWithoutFeedback>
       }      
 
@@ -744,7 +745,7 @@ const handleNotePress = (note) => {
       style={{ elevation : 5 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
           <Modal.CloseButton 
             accessibilityLabel="Close Button"
             accessibilityHint="Close Modal"
@@ -755,20 +756,22 @@ const handleNotePress = (note) => {
           </Modal.Header>
           <Modal.Body>
           <FormControl px={1}>
-              <Input 
+              <Input
                 rounded={'3xl'}
                 textAlign={'center'}
+                multiline
                 fontSize={scaledFont(22)}
                 fontFamily={'mono'}
                 fontWeight={'900'}
-                autoCorrect={false}
-                autoFocus={false}
+                spellCheck={false}
+                autoFocus={true}
                 value={updatedUser}
                 accessibilityLabel={'Edit Name'}
                 accessibilityHint="Edit Name Field"
-                onChangeText={(value) => setUpdatedUser(value)}
+                onChangeText={(value) => setUpdatedUser(removeEmojis(value))}
                 placeholder="Name"
-                _focus={{ selectionColor: colorMode === 'light' ? 'black': 'white' }}
+                color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+                _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : colorMode === 'light' ? 'black': 'white' }} 
                 _dark={{ bg: 'black' }}
                 _light={{ bg: 'white' }} 
               />

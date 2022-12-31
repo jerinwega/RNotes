@@ -12,12 +12,14 @@
  import Spinner from "react-native-spinkit";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
+ import { get } from 'lodash';
  import IonIcon from 'react-native-vector-icons/Ionicons';
-import { LIGHT_COLOR, DARK_COLOR } from '../utils/constants';
+import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledStatusBar from "../components/common/StyledStatusBar";
 import { scaledFont } from "../components/common/Scale";
+import { removeEmojis } from '../components/common/utils';
 
 
  const UserScreen = ({ onClose }) => {
@@ -26,6 +28,7 @@ import { scaledFont } from "../components/common/Scale";
   const [user, setUser] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const userRef = useRef(null);
+  const [textFontSize , setTextFontSize] = useState(scaledFont(72))
 
   useEffect(() => {
     return () => clearTimeout(userRef.current);
@@ -41,7 +44,18 @@ import { scaledFont } from "../components/common/Scale";
       setIsLoading(false);
     }, 1000);
   }
-  
+
+  useEffect(() => {
+    if (get(user, 'length')) {
+      fontResize();
+    }
+  }, [user]);
+
+  const fontResize = () => {
+      const fontSize = scaledFont(72) - get(user, 'length', 0) * 0.5;
+      setTextFontSize(fontSize);
+  }
+
   return (
     <>
     <StyledStatusBar userScreen />
@@ -65,23 +79,25 @@ import { scaledFont } from "../components/common/Scale";
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <View style={[styles.container, { backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}>
           <Input
-            p={0}
+            px={4}
+            py={0}
             mb={4}
-            fontSize={scaledFont(72)}
-            autoCorrect={false}
-            autoFocus={false}
+            spellCheck={false}
+            autoFocus={true}
+            fontSize={textFontSize}
+            multiline={true}
             value={user} 
             fontFamily={'heading'}
             fontWeight={'900'}
             textAlign={'center'} 
-            alignSelf={'center'}
             textAlignVertical={'center'}
             variant={'unstyled'} 
             accessibilityLabel="Name Field"
             accessibilityHint="Enter Name"
+            enablesReturnKeyAutomatically
+            _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : colorMode === 'light' ? 'black': 'white' }}
             placeholder="Name"
-            onChangeText={(user) => setUser(user)}
-            caretHidden={true}
+            onChangeText={(user) => setUser(removeEmojis(user))}
           />
         {(user.trim() && !isLoading) ?
         <RNBounceable

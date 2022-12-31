@@ -32,3 +32,9 @@ react-native bundle --platform android --dev false --entry-file index.js --bundl
 
 versioning 
 react-native-version --never-amend
+
+
+iphone simulator 
+xcrun simctl list
+
+npx react-native run-ios --simulator 'iPhone SE (3rd generation)'

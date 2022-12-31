@@ -7,11 +7,11 @@
  */
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, Platform } from 'react-native';
 import { Text, HStack, Box, Center, useColorMode, IconButton, View, ScrollView, Icon, useToast } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
@@ -187,8 +187,8 @@ const ViewNotes = ({
               _light={{ bg: hashBgColor }}
               >
             <StyledStatusBar hashBgColor={hashBgColor}  />
-            <Box safeAreaTop />
-              <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: hashBgColor }}  px="2" py="2" 
+            {/* <Box safeAreaTop /> */}
+              <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: hashBgColor }}  px="2" py={2}
               justifyContent="space-between" 
               alignItems={'center'}
               style={{ width: deviceWidth }}
