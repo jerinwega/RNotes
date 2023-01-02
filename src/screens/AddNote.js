@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import useGoBackHandler from '../components/common/CrossSwipeHandler';
 import StyledStatusBar from '../components/common/StyledStatusBar';
-import { scaledFont, scaledWidth } from '../components/common/Scale';
+import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale';
 import { getDisabledBtnColor, useDebounce } from '../components/common/utils';
 import InfoModal from '../components/common/InfoModal';
 
@@ -46,7 +46,7 @@ const AddNote = ({
   }, [])
 
   useGoBackHandler(() => {
-      handleSubmit();
+    debounce(handleSubmit);
       return true;
   }, []);
 
@@ -70,7 +70,7 @@ const AddNote = ({
           navigation.navigate('ViewNotes');
           return;
         } else {
-        navigation.navigate('Home');
+        navigation.navigate('Home', { isEmptyBack : true });
         return;
       }
     }
@@ -156,11 +156,11 @@ const AddNote = ({
                 }}
                 selectedValue={priority} 
                 minW={scaledWidth(150)}
-                h={scaledFont(39)}
+                h={scaledFont(36)}
                 textAlign={'center'}
                 fontFamily={'mono'}
                 fontWeight={'900'}
-                fontSize={scaledFont(16 - get(priority, 'length', 0) * 0.3)}
+                fontSize={scaledFont(15 - get(priority, 'length', 0) * 0.3)}
                 _selectedItem={{
                     rounded: '2xl',
                     background: colorMode === 'light' ? startEndIconColorLight : startEndIconColor,
@@ -178,7 +178,7 @@ const AddNote = ({
                 _item={{
                   py: 3,
                   _text: {
-                    fontSize: scaledFont(16),
+                    fontSize: scaledFont(15),
                     fontFamily: 'mono',
                     fontWeight: '900',
                     color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR
@@ -227,7 +227,7 @@ const AddNote = ({
               <Box mx={5} pb={2}>
               <Input
                 py={3}
-                fontSize={scaledFont(24)}
+                fontSize={scaledFont(23)}
                 fontFamily={'heading'}
                 fontWeight={'900'}
                 spellCheck={false}
@@ -254,7 +254,7 @@ const AddNote = ({
               <KeyboardAvoidingView 
                 flex={1}
                 behavior={Platform.OS === ANDROID ? "height" : "padding" }
-                keyboardVerticalOffset={125}
+                keyboardVerticalOffset={scaledHeight(120)}
               >
               <ScrollView 
                 flex={1} 
@@ -270,7 +270,7 @@ const AddNote = ({
                   autoCapitalize={'none'}
                   fontFamily={'body'}
                   fontWeight={'600'}
-                  fontSize={scaledFont(20)} 
+                  fontSize={scaledFont(18)} 
                   rounded={'3xl'}
                   px={4} 
                   py={4}
@@ -293,12 +293,12 @@ const AddNote = ({
               </KeyboardAvoidingView>
               </View>
           </TouchableWithoutFeedback>
-          <InfoModal 
+          {openInfo ? <InfoModal 
             showInfoModal={openInfo}
             handleClose={() => { 
               setOpenInfo(false); 
             }}
-          />
+          /> : null}
           </View>
         ); 
     }

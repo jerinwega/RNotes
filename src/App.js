@@ -11,6 +11,10 @@ import SplashScreen from 'react-native-splash-screen'
 import { Platform } from 'react-native';
 import { ANDROID } from './utils/constants';
 import { enableScreens } from 'react-native-screens';
+import {
+  TourGuideProvider, // Main provider
+} from 'rn-tourguide'
+import OnboardingTooltip from './components/common/OnboardingTooltip';
 
 enableScreens(false);
 
@@ -19,6 +23,13 @@ const Stack = createStackNavigator();
 export default function App() {
   const [user, setUser] = useState('');
   const [isFirstLoad, setIsFirstLoad] = useState(false);
+  const [hasNotes, setHasNotes] = useState(false);
+
+
+  const findNotes = async () => {
+    const result = await AsyncStorage.getItem('notes');
+    if (result !== null) setHasNotes(true)
+  }
   
   const findUser = async () => {
     try {
@@ -40,7 +51,8 @@ export default function App() {
 
   useEffect(() => {
     // AsyncStorage.clear();
-    findUser();                    
+    findNotes();               
+    findUser();
   }, [])
 
 
@@ -65,7 +77,6 @@ const colorModeManager = {
       }
     },
   };
-
 
 const theme = extendTheme({
   config: {
@@ -98,12 +109,11 @@ const theme = extendTheme({
 
 if (isFirstLoad) {
  return  (
- <NativeBaseProvider config={mode} theme={theme}>
+ <NativeBaseProvider config={mode} theme={theme} colorModeManager={colorModeManager}>
     <User onClose={findUser} />
   </NativeBaseProvider>
  );
 }
-
 
 return (
   <NavigationContainer>
@@ -115,7 +125,18 @@ return (
         }}
        >
        <Stack.Screen name="Home">
-        {(props) => <Home {...props} user={user} onClose={findUser} />}
+        {(props) => 
+            <TourGuideProvider 
+            preventOutsideInteraction={true} 
+            androidStatusBarVisible={true}
+            tooltipComponent={OnboardingTooltip}
+            backdropColor={'rgba(0,0,0, 0.5)'}
+            animationDuration={500}
+            startAtMount={!hasNotes}
+            >
+            <Home {...props} user={user} onClose={findUser} />
+        </TourGuideProvider>
+        }
         </Stack.Screen>
         <Stack.Screen name="AddNote" component={AddNote} />
         <Stack.Screen name="ViewNotes" component={ViewNotes} />  

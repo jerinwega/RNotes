@@ -12,6 +12,7 @@ import { scaledFont } from "./Scale";
 import { LIGHT_COLOR, DARK_COLOR } from "../../utils/constants";
 import moment from "moment";
 import { isSameDayAndMonth } from '../common/utils';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 
 const HeartModal = ({
@@ -19,9 +20,6 @@ const HeartModal = ({
     handleClose,
 }) => {
     const { colorMode } = useColorMode();
-
-
-    
 
     const birthday = moment().diff('1997-10-25', 'years');
     const anniversary = moment().diff('2022-09-18', 'days');
@@ -61,17 +59,20 @@ const HeartModal = ({
       }}
       style={{ elevation : 5 }}
     >
-        <Modal.Content borderRadius={'3xl'} padding={3} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.CloseButton 
             accessibilityLabel={'Close button'}
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
-          <Modal.Body mt={6} mb={subFrag ? 6 : 0}>
-          <Text mb={subFrag ? 2 : 0} textAlign={'center'} fontSize={scaledFont(18)} fontFamily={'mono'} fontWeight={'900'}>{LoveMessageFrag}</Text>
-          <Text textAlign={'center'} fontSize={scaledFont(16)} fontFamily={'mono'} fontWeight={'600'}>{subFrag}</Text>
+           <Modal.Header>
+           <FontAwesome5Icon color={'red'} name="heart" size={scaledFont(21)} solid />
+          </Modal.Header>
+          <Modal.Body mt={2} mb={subFrag ? 4 : 0}>
+          <Text mb={subFrag ? 2 : 0} textAlign={'center'} fontSize={scaledFont(17)} fontFamily={'mono'} fontWeight={'900'}>{LoveMessageFrag}</Text>
+          <Text textAlign={'center'} fontSize={scaledFont(15)} fontFamily={'mono'} fontWeight={'600'}>{subFrag}</Text>
 
           </Modal.Body>
-          <Text textAlign={'center'} fontSize={scaledFont(14)} fontFamily={'mono'} fontWeight={'600'}>
+          <Text mb={2} textAlign={'center'} fontSize={scaledFont(13)} fontFamily={'mono'} fontWeight={'600'}>
             Made with
           <Text fontFamily={'mono'} fontWeight={'600'} color={'red.600'}>
             {' ❤️ '}

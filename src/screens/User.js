@@ -39,7 +39,7 @@ import { removeEmojis } from '../components/common/utils';
     setIsLoading(true);
     Keyboard.dismiss();
     userRef.current = setTimeout(async () => {
-      await AsyncStorage.setItem('user', user);
+      await AsyncStorage.setItem('user', user.trim());
       await onClose();
       setIsLoading(false);
     }, 1000);

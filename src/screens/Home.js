@@ -19,9 +19,8 @@ import { get, orderBy, debounce } from 'lodash';
 import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
- import SkeletonLoader from '../components/common/SkeletonLoader'
- import NoteList from '../components/views/NoteList';
- import NotFound from "../components/views/NotFound";
+import NoteList from '../components/views/NoteList';
+import NotFound from "../components/views/NotFound";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledStatusBar from "../components/common/StyledStatusBar";
 import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale'
@@ -30,17 +29,21 @@ import Share from 'react-native-share';
 import HeartModal from '../components/common/HeartModal';
 import moment from "moment";
 import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
+import {
+  TourGuideZone, // Main wrapper of highlight component
+  useTourGuideController, // hook to start, etc.
+} from 'rn-tourguide'
 
- const HomeScreen = ({ route, navigation, user, onClose }) => {
+ const HomeScreen = ({ route, navigation, user, onClose, hasNotes }) => {
 
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode, toggleColorMode } = useColorMode();
   const { allNotes } = get(route, 'params', []);
   const { saveNote } = get(route, 'params', false);
   const { deleteNote } = get(route, 'params', false);
+  const { isEmptyBack } = get(route, 'params', false);
   const [sortBy, setSort] = useState('desc')
   const [search, setSearch] = useState('')
-  // const [spinner, setSpinner] = useState(false);
   const [searchNotFound, setSearchNotFound] = useState(false);
   const [greet, setGreet] = useState('');
   const [notes, setNotes] = useState([]);
@@ -51,15 +54,66 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [deleteNoteToast, setDeleteNoteToast] = useState(false);  
   const [openHeart, setOpenHeart] = useState(false);  
+  const [firstLaunch, setFirstLaunch] = useState(false);
+  const [priority, setPriority] = useState('none');
 
-  const sortToast = useToast();
   const saveToast = useToast();
   const deleteToast = useToast();
-  const priorityToast = useToast();
   const shareToast = useToast();
   const cancelRef = useRef(null);
   const anim = useRef(new Animated.Value(0));
   const animLove = useRef(new Animated.Value(0));
+
+  const {
+    canStart, // a boolean indicate if you can start tour guide
+    start, // a function to start the tourguide
+    eventEmitter, // an object for listening some events
+    tourKey
+  } = useTourGuideController()
+
+  useEffect(() => { 
+    findDayTimeGreet();  
+    setTour();
+  }, [])
+
+  const setTour = async () => {
+    try {
+      const result = await AsyncStorage.getItem('tourLaunched')
+        if (result !== null) {
+          setFirstLaunch(false);
+        }
+        if (result === null) {
+          setFirstLaunch(true);
+          await AsyncStorage.setItem('tourLaunched', 'true');
+        } 
+    } catch(e) {
+      setFirstLaunch(false);
+    }
+  }
+
+  useEffect(() => {
+    if (canStart) {
+      setFirstLaunch(true);
+      start();    
+    }
+  }, [canStart])
+
+  useEffect(() => {
+    if (!get(notes, 'length') && !isEmptyBack) {
+      setFirstLaunch(true);
+      setPriority('none')
+      start();
+    }
+  }, [notes]) 
+
+  useEffect(() => {
+    eventEmitter.on("start", () => {
+    });
+    eventEmitter.on("stop", () => {
+      setFirstLaunch(false);
+    });
+    return () => eventEmitter.off("*", null);
+  }, []);
 
 
   useEffect(() => {
@@ -68,13 +122,12 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
     }
   }, [user]);
   
-  useEffect(() => {
-    findDayTimeGreet();  
-  }, [])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       findNotes();
+      setSort('desc');
+      setPriority('none');
     });
     return unsubscribe;
   }, [navigation])
@@ -88,6 +141,7 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
       setSearchNotFound(false);
     }
     if (saveNote) {
+      setSort('desc');
       const id = "saveToast";
       if (!saveToast.isActive(id)) {
         saveToast.show({
@@ -102,13 +156,14 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
-            fontSize: scaledFont(16),
+            fontSize: scaledFont(15),
             color: colorMode === 'light' ? LIGHT_COLOR : "success.600"
           }
         });
       }
     }
     if (deleteNote) {
+      setSort('desc');
       const id = "deleteToast";
       if (!deleteToast.isActive(id)) {
         deleteToast.show({
@@ -123,7 +178,7 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
-            fontSize: scaledFont(16),
+            fontSize: scaledFont(15),
             color: colorMode === 'light' ? LIGHT_COLOR : "error.600"
           }
         });
@@ -147,7 +202,7 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
-            fontSize: scaledFont(16),
+            fontSize: scaledFont(15),
             color: colorMode === 'light' ? LIGHT_COLOR : "error.600"
           }
         });
@@ -172,7 +227,9 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
 
   const findNotes = async () => {
     const result = await AsyncStorage.getItem('notes');
-    if (result !== null) setNotes(JSON.parse(result))
+    if (result !== null) {
+      setNotes(JSON.parse(result))
+    }
   }
 
   const handleSort = () => {
@@ -180,25 +237,8 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
       setSearch('');
       Keyboard.dismiss();
     if (!get(notes, 'length')) {
-      const id = "sortToast";
-      if (!sortToast.isActive(id)) {
-        sortToast.show({
-          id,
-          title: "Add Note",
-          placement: "bottom",
-          duration: 1500,
-          rounded: '3xl',
-          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
-          _title: {
-            px: 6,
-            py: 0,
-            fontFamily: 'mono',
-            fontWeight: '900',
-            fontSize: scaledFont(16),
-            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
-          }
-        });
-      }
+      setFirstLaunch(true);
+      start();
      return;
     }
     if (sortBy === 'desc') {
@@ -209,15 +249,14 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
   }
 
   const handleSearch = async (text) => {
-    // setSpinner(true);
     setSearch(text);
+    setPriority('none');
     setSelectedItems([]);
     const refresh = await AsyncStorage.getItem('notes');
     const refreshNotes = JSON.parse(refresh);
 
     if (!text.trim()) {
       setSearch('')
-      // setSpinner(false);
       setSearchNotFound(false);
       return await findNotes();
     }
@@ -234,28 +273,18 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
         }
       });
       if (get(searchResults, 'length')) {
-        // setSpinner(false);
         setSearchNotFound(false);
         setNotes([...searchResults]);
       } 
       else {
-        // setSpinner(false);
         setSearchNotFound(true);
       }
     } else {
-      // setSpinner(false);
       setSearchNotFound(true);
     }
   }
 
-  const handleClearSearch = async () => {
-    Keyboard.dismiss();
-    // setSpinner(false);
-    setSearch('')
-    setSearchNotFound(false);
-    return await findNotes();
-  }
-
+ 
   const handleEditName = async () => {
     if (!updatedUser || updatedUser === user) {
       setUpdatedUser(user);
@@ -275,7 +304,7 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
   }
 
 
-  const avatar = updatedUser.toUpperCase();
+  const avatar = updatedUser.trim().toUpperCase();
 
   const sortedNotes = (notes) => {
     return orderBy(notes, ['time'], [sortBy])
@@ -283,26 +312,11 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
 
   const handlePriority = async (priority) => {
       setSearch('');
+      setPriority(priority);
     if (!get(notes, 'length')) {
-      const id = "priorityToast";
-      if (!priorityToast.isActive(id)) {
-        priorityToast.show({
-          id,
-          title: "Add Note",
-          placement: "bottom",
-          duration: 1500,
-          rounded: '3xl',
-          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
-          _title: {
-            px: 6,
-            py: 0,
-            fontFamily: 'mono',
-            fontWeight: '900',
-            fontSize: scaledFont(16),
-            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
-          }
-        });
-      }
+      setFirstLaunch(true);
+      setPriority('none');
+      start();
       return;
      }
 
@@ -334,10 +348,22 @@ import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
     }
 }
 
+const handleClearSearch = async () => {
+  Keyboard.dismiss();
+  setPriority('none');
+  setSearch('')
+  setSort('desc');
+  setSearchNotFound(false);
+  return await findNotes();
+}
+
+
 const onRefresh = async () => {
   setRefreshState(true);
   setSearch('');
-  // setSelectedItems([]);
+  setPriority('none');
+  setSearchNotFound(false);
+  setSort('desc');
   Keyboard.dismiss();
   await findNotes();
   setRefreshState(false);
@@ -417,7 +443,7 @@ const handleNotePress = (note) => {
             py: 0,
             fontFamily: 'mono',
             fontWeight: '900',
-            fontSize: scaledFont(16),
+            fontSize: scaledFont(15),
             color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
           }
         });
@@ -509,10 +535,36 @@ const handleNotePress = (note) => {
 
   const conditionsForLove = (updatedUser.trim().toLowerCase() === 'ja'
   || updatedUser.trim().toLowerCase() === 'rani'
-  || updatedUser.trim().toLowerCase() === 'jerin'
   || updatedUser.trim().toLowerCase() === 'rani varghese'
   || updatedUser.trim().toLowerCase() === 'ponnu')
   && (birthdayCheck || anniversaryCheck);
+
+
+
+  let priorityIcon = <IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} />;
+  switch(priority) {
+    case 'confidential': {
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#2563eb'} />
+      break;
+    }
+    case 'high': {
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#dc2626'} />
+      break;
+    }
+    case 'medium': {
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#ca8a04'} />
+      break;
+    }
+    case 'low': {
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#16a34a'} />
+      break;
+    }
+    default: {
+      priorityIcon = <IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} />
+
+    }
+  }
+
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -571,17 +623,20 @@ const handleNotePress = (note) => {
             }
             }}
             onOpen={async () => {
+              setPriority('none');
               setSearchNotFound(false);
               setSelectedItems([]);
               setSearch('');
               Keyboard.dismiss();
-              await findNotes();
+              if(get(notes, 'length')) {
+                await findNotes();
+              }
             }}
             trigger={
               triggerProps => {
             return <IconButton {...triggerProps}
                   accessibilityLabel={'Priority sort button'}
-                  icon={<IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} />} 
+                  icon={priorityIcon}
                   borderRadius="full"
               />;
           }}>
@@ -605,16 +660,18 @@ const handleNotePress = (note) => {
     </HStack>
   </Center>
   
-  <View style={{ elevation: 5 }} accessibilityLabel={'Divider'}>
+  <View accessibilityLabel={'Divider'}>
     <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
   </View>
 
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}>
-        <Text px={4} py={5} numberOfLines={1} textAlign={'center'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(19)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
+        <Text px={4} py={5} numberOfLines={1} textAlign={'center'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(18)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
           {`Good ${greet}, `}
-          <Text color={colorMode === 'light' ? '#c05eff' : '#cb7bff'}>{updatedUser}!</Text>
+          <Text color={colorMode === 'light' ? '#c05eff' : '#cb7bff'}>{updatedUser.replace(/[\n\r]+/g, ' ').trim()}!</Text>
         </Text>
-      {get(notes, 'length') ?
+
+
+        {get(notes, 'length') ?  
         <SearchBar
           clearIconComponent={!search ? <></> : null}
           style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 30, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
@@ -630,23 +687,17 @@ const handleNotePress = (note) => {
           autoFocus={false}
           autoCapitalize={'none'}
           selectionColor={colorMode === 'light' ? 'black': 'white'}
-          // spinnerVisibility={spinner}
           textInputStyle={{ fontFamily: 'Lato-Bold' }}
           searchIconImageStyle={{ width: scaledWidth(16), height: scaledHeight(16) }}
           clearIconImageStyle={{ width: scaledWidth(14), height: scaledHeight(14) }}
-        /> : null
-        }
+        />  : null}
 
-      {!get(notes, 'length') ? 
-          <View flex={1}>
-            {/* <SkeletonLoader />  */}
-          </View>
-        :
+      {get(notes, 'length') ?
         <TouchableWithoutFeedback onPress={() => {
           Keyboard.dismiss()
           setSelectedItems([]);
         }}>
-        {searchNotFound ? <NotFound findNotes={async () => await findNotes()} resetSearch={() => setSearch('')} resetPriority={() => setSearchNotFound(false)} /> 
+        {searchNotFound ? <NotFound onRefresh={onRefresh} refreshState={refreshState} handleClearSearch={handleClearSearch} /> 
         : ( 
         <View flex={1} px={4} py={6} accessibilityLabel={'Notes'} accessibilityHint={'Note List'}>
         <FlatList
@@ -678,10 +729,9 @@ const handleNotePress = (note) => {
           </View>
           )
         }
-        
       </TouchableWithoutFeedback>
-      }      
-
+      : null }  
+       
       <Animated.View style={[styles.fabView, { transform: [{ translateX: anim.current }] } ]}>
       <RNBounceable  
         bounceEffectIn={0.6}
@@ -709,7 +759,7 @@ const handleNotePress = (note) => {
           style={[ styles.share, { backgroundColor: colorMode === 'light' ? '#2563eb' : LIGHT_COLOR } ]} 
           onPress={handleShare}
         >
-           <FontAwesome5Icon style={{ marginRight: 3}} color={colorMode === 'light' ? LIGHT_COLOR : '#2563eb' } name="share-alt" size={scaledFont(25)} solid />
+           <FontAwesome5Icon style={{ marginRight: 3 }} color={colorMode === 'light' ? LIGHT_COLOR : '#2563eb' } name="share-alt" size={scaledFont(23)} solid />
         </ RNBounceable>
       : null }
 
@@ -723,13 +773,13 @@ const handleNotePress = (note) => {
             setOpenHeart(true);
           }}
         >
-        <FontAwesome5Icon style={{ marginTop: 4 }} color={'red'} name="heart" size={scaledFont(22)} solid />
+        <FontAwesome5Icon style={{ marginTop: 4 }} color={'red'} name="heart" size={scaledFont(19)} solid />
      </ RNBounceable>
      </Animated.View> 
       : null }
     </View>
     
-    <Modal 
+    {showUserModal ? <Modal 
       shadow={4} 
       size={'md'}
       isOpen={showUserModal} 
@@ -752,7 +802,7 @@ const handleNotePress = (note) => {
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
             borderRadius={'full'} />
             <Modal.Header>
-              <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} solid /> 
+              <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(21)} solid /> 
           </Modal.Header>
           <Modal.Body>
           <FormControl px={1}>
@@ -784,25 +834,34 @@ const handleNotePress = (note) => {
                 onPress={handleEditName}
                 borderRadius={'none'}
               >
-              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(15)} fontWeight={'900'}>
+              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(14)} fontWeight={'900'}>
                 SAVE        
               </Text>
               </Button>
         </Modal.Content>
         </TouchableWithoutFeedback>
-      </Modal>
-      <DeleteAlert 
+      </Modal> : null}
+      {isDeleteAlertOpen ? <DeleteAlert 
         isDeleteAlertOpen={isDeleteAlertOpen} 
         cancelRef={cancelRef}
         handleDeleteAlert={handleDeleteMultipleNotes}
         onDeleteAlertClose={onDeleteAlertClose} 
-      />
-      <HeartModal 
+      /> : null}
+
+      {openHeart ? <HeartModal 
         showHeartModal={openHeart}
         handleClose={() => { 
           setOpenHeart(false); 
         }}
-      />
+      /> : null}
+
+  {firstLaunch ? <TourGuideZone
+        zone={1}
+        tourKey={tourKey}
+        shape={'circle'}
+        isTourGuide
+        style={styles.tourGuideOverlay}
+      /> : null}
   </View>
   )
  }
@@ -815,7 +874,14 @@ const handleNotePress = (note) => {
     position: 'absolute',                                          
     bottom: 35,                                                    
     right: 20,
-
+  },
+  tourGuideOverlay: {
+    zIndex: 1,
+    width:scaledFont(81),
+    height: scaledFont(81),
+    position: 'absolute',                                          
+    bottom: 24,                                                    
+    right: 9,
   },
   fab: {
     elevation: 5,
@@ -838,8 +904,8 @@ const handleNotePress = (note) => {
     elevation: 5,
     alignItems:'center',
     justifyContent:'center',
-    width:scaledFont(50),
-    height: scaledFont(50),
+    width:scaledFont(44),
+    height: scaledFont(44),
     position: 'absolute',                                          
     bottom: 35,                                                    
     right: 100,
@@ -854,8 +920,8 @@ const handleNotePress = (note) => {
   },
   loveView: {
     zIndex: 1,
-    width:scaledFont(40),
-    height: scaledFont(40),
+    width:scaledFont(38),
+    height: scaledFont(38),
     position: 'absolute',                                          
     bottom: 35,                                                    
     left: 20,
@@ -863,8 +929,8 @@ const handleNotePress = (note) => {
   love: {
     zIndex: 1,
     elevation: 5,
-    width:scaledFont(40),
-    height: scaledFont(40),
+    width:scaledFont(38),
+    height: scaledFont(38),
     alignItems:'center',
     justifyContent:'center',
     borderRadius:100,

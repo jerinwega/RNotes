@@ -44,7 +44,7 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
             <Button py={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={onDeleteAlertClose} ref={cancelRef}>
               <Text color={colorMode==='light' ? 'blue.500' : 'blue.600'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>NO</Text>
             </Button>
-            <Button py={3}  borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleDeleteAlert}>
+            <Button py={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleDeleteAlert}>
               <Text color={colorMode==='light' ? 'red.500' : 'red.600'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>YES</Text>
             </Button>
           </Button.Group>

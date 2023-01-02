@@ -42,7 +42,7 @@ const UrlAlert = ({
                 py: 1,
                 fontFamily: 'mono',
                 fontWeight: '900',
-                fontSize: scaledFont(16),
+                fontSize: scaledFont(15),
                 color: colorMode === "light" ? LIGHT_COLOR : 'warning.500'
             }
             });
@@ -64,7 +64,7 @@ const UrlAlert = ({
                 py: 1,
                 fontFamily: 'mono',
                 fontWeight: '900',
-                fontSize: scaledFont(16),
+                fontSize: scaledFont(15),
                 color: colorMode === "light" ? LIGHT_COLOR : 'warning.500'
             }
             });
@@ -87,7 +87,7 @@ const UrlAlert = ({
       }}
       style={{ elevation : 5 }}
     >
-        <Modal.Content borderRadius={'2xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.Header borderBottomWidth={0} ml={3} pt={6} pb={0}>
             <Text fontSize={scaledFont(18)} fontFamily={'mono'} fontWeight={'900'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>Go To</Text>
         </Modal.Header>
