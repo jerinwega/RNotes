@@ -17,7 +17,11 @@ all fonts -> find the font and see the info > PostScript name
 npx react-native link
 
 
+
+
+
  to add / refresh build apks budle
+
 
  delete duplicates
  
@@ -26,11 +30,14 @@ react-native bundle --platform android --dev false --entry-file index.js --bundl
 
 ./gradlew clean
 
+for apks
 ./gradlew assembleRelease
+
+for bundle
 ./gradlew bundleRelease
 
 
-versioning 
+versioning go to package.json change version
 react-native-version --never-amend
 
 
