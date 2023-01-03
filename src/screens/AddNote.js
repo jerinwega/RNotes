@@ -227,14 +227,13 @@ const AddNote = ({
               <Box mx={5} pb={2}>
               <Input
                 py={3}
+                px={4}
                 fontSize={scaledFont(24)}
                 fontFamily={'heading'}
                 fontWeight={'900'}
-                numberOfLines={1}
                 spellCheck={false}
                 autoFocus={false}
                 value={title} 
-                textAlign={'center'}
                 rounded={'3xl'}
                 placeholder="Title"
                 accessibilityRole={'none'}

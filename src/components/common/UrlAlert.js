@@ -73,6 +73,7 @@ const UrlAlert = ({
     }
  return (
     <Modal 
+      animationPreset="slide"
       shadow={4} 
       size={'md'}
       isOpen={showUrl} 

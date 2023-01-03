@@ -21,6 +21,7 @@ const InfoModal = ({
 
  return (
     <Modal 
+    animationPreset="slide"
       shadow={4} 
       size={'md'}
       isOpen={showInfoModal} 

@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-double-tap/index.js b/node_modules/react-native-double-tap/index.js
-index 812a47e..4afacf2 100644
+index 812a47e..46cfb29 100644
 --- a/node_modules/react-native-double-tap/index.js
 +++ b/node_modules/react-native-double-tap/index.js
 @@ -1,5 +1,5 @@
@@ -16,7 +16,7 @@ index 812a47e..4afacf2 100644
 +    const { reference, onScroll } = this.props;
      return (
 -      <TouchableOpacity onPress={this._onPress}>
-+      <ScrollView scrollEventThrottle={16} ref={reference} onScroll={onScroll} bounces contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} onTouchEnd={this._onPress}>
++      <ScrollView bounces contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} onTouchEnd={this._onPress}>
          {this.props.children}
 -      </TouchableOpacity>
 +      </ScrollView>

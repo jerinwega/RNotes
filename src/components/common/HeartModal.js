@@ -45,6 +45,7 @@ const HeartModal = ({
 
  return (
     <Modal 
+    animationPreset="slide"
       shadow={4} 
       size={'md'}
       isOpen={showHeartModal} 

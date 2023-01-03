@@ -9,7 +9,6 @@
  import React from "react";
  import { AlertDialog, Text, Button, useColorMode } from "native-base";
  import { scaledFont } from "./Scale";
-import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
 
  const DeleteAlert = ({
     cancelRef,
@@ -21,6 +20,7 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
   const { colorMode } = useColorMode();
   return (
     <AlertDialog 
+    animationPreset="slide"
       _backdrop={{
         _dark: {
           bg: isView ? 'dark.200' : 'gray.900'

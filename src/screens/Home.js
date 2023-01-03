@@ -54,7 +54,8 @@ import {
   const [deleteNoteToast, setDeleteNoteToast] = useState(false);  
   const [openHeart, setOpenHeart] = useState(false);  
   const [priority, setPriority] = useState('none');
-  const [disableTour, setDisableTour] = useState(false);
+  const [textFontSize , setTextFontSize] = useState(scaledFont(22))
+
 
   const sortToast = useToast();
   const priorityToast = useToast();
@@ -64,7 +65,6 @@ import {
   const cancelRef = useRef(null);
   const anim = useRef(new Animated.Value(0));
   const animLove = useRef(new Animated.Value(0));
-  const timerRef = useRef(null);
 
 
 
@@ -78,15 +78,11 @@ import {
 
   useEffect(() => { 
     findDayTimeGreet();  
-    return () => clearTimeout(timerRef.current);
   }, [])
 
   useEffect(() => {
     if (canStart) {
       start(); 
-      timerRef.current = setTimeout(() => {
-        stop();
-      }, 5000);
     }
   }, [canStart])
 
@@ -97,11 +93,9 @@ import {
   }, [notes]) 
 
   useEffect(() => {
-    eventEmitter.on("start", () => {
-    });
-    eventEmitter.on("stop", () => {
-      setDisableTour(true);
-    });
+    eventEmitter.on("start", () => {});
+    eventEmitter.on("stop", () => {});
+    eventEmitter.on('stepChange', () =>{});
     return () => eventEmitter.off("*", null);
   }, []);
 
@@ -112,6 +106,8 @@ import {
     }
   }, [user]);
   
+
+
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -227,6 +223,7 @@ import {
       setSearch('');
       Keyboard.dismiss();
     if (!get(notes, 'length')) {
+        start(1);
       const id = "sortToast";
       if (!sortToast.isActive(id)) {
         sortToast.show({
@@ -311,7 +308,12 @@ import {
   }
 
 
-  const avatar = updatedUser.trim().toUpperCase();
+  let avatar = updatedUser.trim().toUpperCase().replace(/[^0-9A-Z]+/gi,"");
+
+  if (!avatar) {
+    avatar = 'R';
+  }
+
 
   const sortedNotes = (notes) => {
     return orderBy(notes, ['time'], [sortBy])
@@ -321,6 +323,7 @@ import {
       setSearch('');
       setPriority(priority);
     if (!get(notes, 'length')) {
+      start(1);
       setPriority('none');
       const id = "priorityToast";
       if (!priorityToast.isActive(id)) {
@@ -589,6 +592,17 @@ const handleNotePress = (note) => {
     }
   }
 
+  useEffect(() => {
+    if (get(updatedUser, 'length')) {
+      fontResize();
+    }
+  }, [updatedUser]);
+
+  const fontResize = () => {
+      const fontSize = scaledFont(22) - get(updatedUser, 'length', 0) * 0.1;
+      setTextFontSize(fontSize);
+  }
+
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -610,7 +624,7 @@ const handleNotePress = (note) => {
           style={{ width: Platform.OS === ANDROID ? scaledFont(50): scaledFont(52), height: Platform.OS === ANDROID ? scaledFont(50): scaledFont(52) }}
         >
           <Avatar.Badge bg="green.500" size={3} />
-         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={scaledFont(30)}>
+         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={scaledFont(32)}>
           {avatar.slice(0,1)}
         </Text>
         </Avatar>
@@ -756,8 +770,15 @@ const handleNotePress = (note) => {
         }
       </TouchableWithoutFeedback>
       : null }  
-       
-      <Animated.View style={[styles.fabView, { transform: [{ translateX: anim.current }] } ]}>
+       <TourGuideZone
+        zone={1}
+        tourKey={tourKey}
+        shape={'circle'}
+        isTourGuide
+        style={styles.tourGuideOverlay}
+        tooltipBottomOffset={10}
+      > 
+      <Animated.View style={[styles.fabView, { transform: [{ translateX: anim.current }] }]}>
       <RNBounceable  
         bounceEffectIn={0.6}
         style={[styles.fab, { backgroundColor: homeFabStyle }]} 
@@ -777,6 +798,7 @@ const handleNotePress = (note) => {
           <FontAwesome5Icon solid size={scaledFont(34)} name="plus" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } /> }
       </ RNBounceable>
       </Animated.View> 
+      </TourGuideZone>
 
       {get(selectedItems, 'length') === 1 ? 
         <RNBounceable  
@@ -805,7 +827,8 @@ const handleNotePress = (note) => {
     </View>
     
     {showUserModal ? <Modal 
-    avoidKeyboard
+      avoidKeyboard
+      animationPreset="slide"
       shadow={4} 
       size={'md'}
       isOpen={showUserModal} 
@@ -833,10 +856,9 @@ const handleNotePress = (note) => {
           <Modal.Body>
           <FormControl px={1}>
               <Input
-                rounded={'3xl'}
                 textAlign={'center'}
-                multiline
-                fontSize={scaledFont(22)}
+                rounded={'3xl'}
+                fontSize={textFontSize}
                 fontFamily={'mono'}
                 fontWeight={'900'}
                 spellCheck={false}
@@ -881,35 +903,26 @@ const handleNotePress = (note) => {
         }}
       /> : null}
 
-  {!disableTour ? 
-  <TourGuideZone
-        zone={1}
-        tourKey={tourKey}
-        shape={'circle'}
-        isTourGuide
-        style={styles.tourGuideOverlay}
-      /> 
-    : null}
   </View>
   )
  }
 
  const styles = StyleSheet.create({
   fabView: {
-    zIndex: 200,
+    zIndex: 1,
     width:scaledFont(60),
     height: scaledFont(60),
     position: 'absolute',                                          
-    bottom: 35,                                                    
-    right: 20,
+    bottom: 130,                                                    
+    right: 140,
   },
   tourGuideOverlay: {
-    zIndex: 100,
-    width:scaledFont(81),
-    height: scaledFont(81),
+    zIndex: 1,
+    width:scaledFont(250),
+    height: scaledFont(250),
     position: 'absolute',                                          
-    bottom: 24,                                                    
-    right: 9,
+    bottom: -95,                                                    
+    right: -120,
   },
   fab: {
     elevation: 5,
@@ -925,7 +938,7 @@ const handleNotePress = (note) => {
       height: 1,
       width: 1
     },
-    zIndex: 200,
+    zIndex: 1,
   },
   share: {
     zIndex: 1,

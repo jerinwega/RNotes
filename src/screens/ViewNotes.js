@@ -25,7 +25,6 @@ import UrlAlert from '../components/common/UrlAlert';
 import Share from 'react-native-share';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import DoubleClick from 'react-native-double-tap'
-import scrollHandler from '../components/common/scrollHandler';
 
 const ViewNotes = ({
   navigation,
@@ -44,16 +43,10 @@ const ViewNotes = ({
 
   const cancelRef = useRef(null);
   const timerRef = useRef(null);
-  const scrollRef = useRef();
 
   const toast = useToast();
   const editToast = useToast();
   const shareToast = useToast();
-
-
-
-  const { handleScroll, showButton } = scrollHandler();
-
 
     useEffect(() => {
       findNotes();
@@ -294,8 +287,6 @@ const ViewNotes = ({
           <DoubleClick
             doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
             delay={300}
-            onScroll={handleScroll}
-            reference={scrollRef}
             >
               <View px={8} pb={2}>     
                 <Hyperlink
@@ -325,13 +316,6 @@ const ViewNotes = ({
                 </Hyperlink>
               </View>
               </DoubleClick>
-         {showButton &&  <RNBounceable  
-                bounceEffectIn={0.6}
-                style={[styles.scrollButton, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}]} 
-                onPress={handleScrollToTop}  
-              >
-                <FontAwesome5Icon name="angle-double-up" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid size={scaledFont(21)} />
-              </ RNBounceable> }
 
               <RNBounceable  
                 bounceEffectIn={0.6}

@@ -30,17 +30,14 @@ react-native bundle --platform android --dev false --entry-file index.js --bundl
 
 ./gradlew clean
 
+versioning go to package.json change version
+react-native-version --never-amend
+
 for apks
 ./gradlew assembleRelease
 
 for bundle
 ./gradlew bundleRelease
-
-
-versioning go to package.json change version
-react-native-version --never-amend
-
-
 iphone simulator 
 xcrun simctl list
 
