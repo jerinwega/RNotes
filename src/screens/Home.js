@@ -841,7 +841,7 @@ const handleNotePress = (note) => {
           bg: 'dark.200'
         }
       }}
-      style={{ elevation : 5 }}
+      style={{ elevation : 5, marginTop: Platform.OS === ANDROID ? -60 : 0 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Modal.Content borderRadius={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
