@@ -70,7 +70,7 @@ const AddNote = ({
           navigation.navigate('ViewNotes');
           return;
         } else {
-        navigation.navigate('Home', { isEmptyBack : true });
+        navigation.navigate('Home');
         return;
       }
     }
@@ -227,9 +227,10 @@ const AddNote = ({
               <Box mx={5} pb={2}>
               <Input
                 py={3}
-                fontSize={scaledFont(23)}
+                fontSize={scaledFont(24)}
                 fontFamily={'heading'}
                 fontWeight={'900'}
+                numberOfLines={1}
                 spellCheck={false}
                 autoFocus={false}
                 value={title} 
@@ -270,7 +271,7 @@ const AddNote = ({
                   autoCapitalize={'none'}
                   fontFamily={'body'}
                   fontWeight={'600'}
-                  fontSize={scaledFont(18)} 
+                  fontSize={scaledFont(20)} 
                   rounded={'3xl'}
                   px={4} 
                   py={4}

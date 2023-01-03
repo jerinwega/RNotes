@@ -8,7 +8,7 @@
 
  import React, { useState, useRef, useEffect } from "react";
  import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback } from "react-native";
- import { useColorMode, HStack, Text, Box, IconButton, Input, View } from "native-base";
+ import { useColorMode, HStack, Box, IconButton, Input, View } from "native-base";
  import Spinner from "react-native-spinkit";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
@@ -40,6 +40,7 @@ import { removeEmojis } from '../components/common/utils';
     Keyboard.dismiss();
     userRef.current = setTimeout(async () => {
       await AsyncStorage.setItem('user', user.trim());
+      await AsyncStorage.setItem('@color-mode', colorMode);
       await onClose();
       setIsLoading(false);
     }, 1000);

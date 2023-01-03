@@ -7,11 +7,11 @@
  */
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, Platform } from 'react-native';
-import { Text, HStack, Box, Center, useColorMode, IconButton, View, ScrollView, Icon, useToast } from "native-base";
+import { Dimensions, StyleSheet } from 'react-native';
+import { Text, HStack, Box, Center, useColorMode, IconButton, View, useToast } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
+import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
@@ -25,6 +25,7 @@ import UrlAlert from '../components/common/UrlAlert';
 import Share from 'react-native-share';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import DoubleClick from 'react-native-double-tap'
+import scrollHandler from '../components/common/scrollHandler';
 
 const ViewNotes = ({
   navigation,
@@ -43,9 +44,16 @@ const ViewNotes = ({
 
   const cancelRef = useRef(null);
   const timerRef = useRef(null);
+  const scrollRef = useRef();
+
   const toast = useToast();
   const editToast = useToast();
   const shareToast = useToast();
+
+
+
+  const { handleScroll, showButton } = scrollHandler();
+
 
     useEffect(() => {
       findNotes();
@@ -164,6 +172,13 @@ const ViewNotes = ({
       });
     }
 
+    const handleScrollToTop = () => {
+      scrollRef.current?.scrollTo({
+        y : 0,
+        animated : true,
+    });
+    }
+
 
     let startEndIconColor = '#16a34a';
     let hashBgColor = '#dcfce7';
@@ -214,14 +229,16 @@ const ViewNotes = ({
                   }}
                   />  
             </HStack>
-            <HStack space={5}>
-            <IconButton 
+            <HStack space={4}>
+              <IconButton 
+                  px={3}
                 accessibilityLabel={'share button'}
                   icon={<FontAwesome5Icon style={{ marginRight:3 }} color={'#2563eb' } name="share-alt" size={scaledFont(22)} solid />}
                   borderRadius="full"
                   onPress={handleShare}
                   />
               <IconButton 
+                  px={3.5}
                   accessibilityLabel={'delete button'}
                   icon={<FontAwesome5Icon color={'#dc2626'} name="trash-alt" size={scaledFont(22)} solid />}
                   borderRadius="full"
@@ -257,14 +274,14 @@ const ViewNotes = ({
                   selectable 
                   selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
                   color={startEndIconColor} 
-                  fontSize={scaledFont(28)} 
+                  fontSize={scaledFont(24)} 
                   fontFamily={'heading'}
                   fontWeight={'900'}>             
                   {get(viewedNote, 'title', '')}
                   </Text> 
                   : 
                   <Text color={colorMode === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'}  
-                    fontSize={scaledFont(28)} 
+                    fontSize={scaledFont(24)} 
                     fontFamily={'heading'}
                     fontWeight={'900'}
                   >
@@ -277,6 +294,8 @@ const ViewNotes = ({
           <DoubleClick
             doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
             delay={300}
+            onScroll={handleScroll}
+            reference={scrollRef}
             >
               <View px={8} pb={2}>     
                 <Hyperlink
@@ -288,7 +307,7 @@ const ViewNotes = ({
                     accessibilityLabel='note description'
                     selectable 
                     selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
-                    fontSize={scaledFont(19)} 
+                    fontSize={scaledFont(20)} 
                     fontFamily={'body'}
                     fontWeight={'600'}>             
                         {get(viewedNote, 'description', '')}
@@ -296,7 +315,7 @@ const ViewNotes = ({
                   :
                   
                   <Text color={colorMode === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'} 
-                      fontSize={scaledFont(19)} 
+                      fontSize={scaledFont(20)} 
                       fontFamily={'body'}
                       fontWeight={'600'}
                   >
@@ -306,13 +325,20 @@ const ViewNotes = ({
                 </Hyperlink>
               </View>
               </DoubleClick>
+         {showButton &&  <RNBounceable  
+                bounceEffectIn={0.6}
+                style={[styles.scrollButton, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}]} 
+                onPress={handleScrollToTop}  
+              >
+                <FontAwesome5Icon name="angle-double-up" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid size={scaledFont(21)} />
+              </ RNBounceable> }
 
               <RNBounceable  
                 bounceEffectIn={0.6}
                 style={[styles.editIcon, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}]} 
                 onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}  
               >
-                <FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid size={scaledFont(28)} />
+                <FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid size={scaledFont(26)} />
               </ RNBounceable>
             </View>
             
@@ -345,6 +371,25 @@ const ViewNotes = ({
     justifyContent:'center',
     width: scaledFont(54),
     height: scaledFont(54),
+    borderRadius:100,
+    shadowColor: DARK_COLOR,
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 1
+    },
+  zIndex: 1,
+  },
+  scrollButton: {
+    position: 'absolute',                                          
+    bottom: 150,                                                    
+    right: 24,
+    elevation: 5,
+    alignItems:'center',
+    justifyContent:'center',
+    width: scaledFont(38),
+    height: scaledFont(38),
     borderRadius:100,
     shadowColor: DARK_COLOR,
     shadowOpacity: 0.5,

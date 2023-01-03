@@ -23,14 +23,7 @@ const Stack = createStackNavigator();
 export default function App() {
   const [user, setUser] = useState('');
   const [isFirstLoad, setIsFirstLoad] = useState(false);
-  const [hasNotes, setHasNotes] = useState(false);
 
-
-  const findNotes = async () => {
-    const result = await AsyncStorage.getItem('notes');
-    if (result !== null) setHasNotes(true)
-  }
-  
   const findUser = async () => {
     try {
       const result = await AsyncStorage.getItem('user')
@@ -47,13 +40,12 @@ export default function App() {
       SplashScreen.hide();
     }
   }
-  
+
 
   useEffect(() => {
     // AsyncStorage.clear();
-    findNotes();               
     findUser();
-  }, [])
+  }, []);
 
 
 const mode = {
@@ -66,10 +58,11 @@ const colorModeManager = {
         let val = await AsyncStorage.getItem('@color-mode');
         return val === 'dark' ? 'dark' : 'light';
       } catch (e) {
+        console.log(e);
         return 'light';
       }
     },
-    set: async value => {
+    set: async (value) => {
       try {
         await AsyncStorage.setItem('@color-mode', value);
       } catch (e) {
@@ -79,9 +72,6 @@ const colorModeManager = {
   };
 
 const theme = extendTheme({
-  config: {
-    useSystemColorMode: true,
-  },
   fontConfig: {
     Lato: {
     
@@ -104,12 +94,19 @@ const theme = extendTheme({
     body: "Lato",
     mono: "Lato",
   },
+  config: {
+    useSystemColorMode: true,
+    initialColorMode : "dark"
+  },
 });
 
 
 if (isFirstLoad) {
  return  (
- <NativeBaseProvider config={mode} theme={theme} colorModeManager={colorModeManager}>
+ <NativeBaseProvider 
+ config={mode} 
+ theme={theme} 
+ >
     <User onClose={findUser} />
   </NativeBaseProvider>
  );
@@ -117,7 +114,11 @@ if (isFirstLoad) {
 
 return (
   <NavigationContainer>
-    <NativeBaseProvider config={mode} theme={theme} colorModeManager={colorModeManager}>
+    <NativeBaseProvider 
+    config={mode} 
+    theme={theme} 
+    colorModeManager={colorModeManager}
+    >
        <Stack.Navigator 
         screenOptions={{ 
           headerShown: false, 
@@ -132,9 +133,10 @@ return (
             tooltipComponent={OnboardingTooltip}
             backdropColor={'rgba(0,0,0, 0.5)'}
             animationDuration={500}
-            startAtMount={!hasNotes}
+            startAtMount={isFirstLoad}
             >
-            <Home {...props} user={user} onClose={findUser} />
+            <Home {...props} user={user} onClose={findUser} 
+            />
         </TourGuideProvider>
         }
         </Stack.Screen>

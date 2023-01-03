@@ -15,7 +15,7 @@
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
  import IonIcon from 'react-native-vector-icons/Ionicons';
-import { get, orderBy, debounce } from 'lodash';
+import { get, orderBy } from 'lodash';
 import { LIGHT_COLOR, DARK_COLOR, ANDROID } from '../utils/constants';
 import SearchBar from "react-native-dynamic-search-bar";
 import RNBounceable from "@freakycoder/react-native-bounceable";
@@ -34,14 +34,13 @@ import {
   useTourGuideController, // hook to start, etc.
 } from 'rn-tourguide'
 
- const HomeScreen = ({ route, navigation, user, onClose, hasNotes }) => {
+ const HomeScreen = ({ route, navigation, user, onClose }) => {
 
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode, toggleColorMode } = useColorMode();
   const { allNotes } = get(route, 'params', []);
   const { saveNote } = get(route, 'params', false);
   const { deleteNote } = get(route, 'params', false);
-  const { isEmptyBack } = get(route, 'params', false);
   const [sortBy, setSort] = useState('desc')
   const [search, setSearch] = useState('')
   const [searchNotFound, setSearchNotFound] = useState(false);
@@ -54,55 +53,46 @@ import {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [deleteNoteToast, setDeleteNoteToast] = useState(false);  
   const [openHeart, setOpenHeart] = useState(false);  
-  const [firstLaunch, setFirstLaunch] = useState(false);
   const [priority, setPriority] = useState('none');
+  const [disableTour, setDisableTour] = useState(false);
 
+  const sortToast = useToast();
+  const priorityToast = useToast();
   const saveToast = useToast();
   const deleteToast = useToast();
   const shareToast = useToast();
   const cancelRef = useRef(null);
   const anim = useRef(new Animated.Value(0));
   const animLove = useRef(new Animated.Value(0));
+  const timerRef = useRef(null);
+
+
 
   const {
     canStart, // a boolean indicate if you can start tour guide
     start, // a function to start the tourguide
+    stop,
     eventEmitter, // an object for listening some events
     tourKey
   } = useTourGuideController()
 
   useEffect(() => { 
     findDayTimeGreet();  
-    setTour();
+    return () => clearTimeout(timerRef.current);
   }, [])
-
-  const setTour = async () => {
-    try {
-      const result = await AsyncStorage.getItem('tourLaunched')
-        if (result !== null) {
-          setFirstLaunch(false);
-        }
-        if (result === null) {
-          setFirstLaunch(true);
-          await AsyncStorage.setItem('tourLaunched', 'true');
-        } 
-    } catch(e) {
-      setFirstLaunch(false);
-    }
-  }
 
   useEffect(() => {
     if (canStart) {
-      setFirstLaunch(true);
-      start();    
+      start(); 
+      timerRef.current = setTimeout(() => {
+        stop();
+      }, 5000);
     }
   }, [canStart])
 
   useEffect(() => {
-    if (!get(notes, 'length') && !isEmptyBack) {
-      setFirstLaunch(true);
-      setPriority('none')
-      start();
+    if (get(notes, 'length')) {
+      stop();
     }
   }, [notes]) 
 
@@ -110,7 +100,7 @@ import {
     eventEmitter.on("start", () => {
     });
     eventEmitter.on("stop", () => {
-      setFirstLaunch(false);
+      setDisableTour(true);
     });
     return () => eventEmitter.off("*", null);
   }, []);
@@ -237,8 +227,25 @@ import {
       setSearch('');
       Keyboard.dismiss();
     if (!get(notes, 'length')) {
-      setFirstLaunch(true);
-      start();
+      const id = "sortToast";
+      if (!sortToast.isActive(id)) {
+        sortToast.show({
+          id,
+          title: "Add Notes",
+          placement: "bottom",
+          duration: 1500,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(15),
+            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
+          }
+        });
+      }
      return;
     }
     if (sortBy === 'desc') {
@@ -314,9 +321,26 @@ import {
       setSearch('');
       setPriority(priority);
     if (!get(notes, 'length')) {
-      setFirstLaunch(true);
       setPriority('none');
-      start();
+      const id = "priorityToast";
+      if (!priorityToast.isActive(id)) {
+        priorityToast.show({
+          id,
+          title: "Add Note",
+          placement: "bottom",
+          duration: 1500,
+          rounded: '3xl',
+          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
+          _title: {
+            px: 6,
+            py: 0,
+            fontFamily: 'mono',
+            fontWeight: '900',
+            fontSize: scaledFont(16),
+            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
+          }
+        });
+      }
       return;
      }
 
@@ -634,11 +658,12 @@ const handleNotePress = (note) => {
             }}
             trigger={
               triggerProps => {
-            return <IconButton {...triggerProps}
+            return  (
+            <IconButton {...triggerProps}
                   accessibilityLabel={'Priority sort button'}
                   icon={priorityIcon}
                   borderRadius="full"
-              />;
+              />);
           }}>
               <Menu.Group pb={1} _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m={'auto'}>
                 <Menu.Item py={3} accessibilityLabel={'option confidential'} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="blue.600" /></Menu.Item>
@@ -676,7 +701,7 @@ const handleNotePress = (note) => {
           clearIconComponent={!search ? <></> : null}
           style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 30, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
-          fontSize={scaledFont(16)}
+          fontSize={scaledFont(15)}
           placeholder="Search"
           value={search}
           onChangeText={handleSearch}
@@ -780,6 +805,7 @@ const handleNotePress = (note) => {
     </View>
     
     {showUserModal ? <Modal 
+    avoidKeyboard
       shadow={4} 
       size={'md'}
       isOpen={showUserModal} 
@@ -795,7 +821,7 @@ const handleNotePress = (note) => {
       style={{ elevation : 5 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
           <Modal.CloseButton 
             accessibilityLabel="Close Button"
             accessibilityHint="Close Modal"
@@ -855,20 +881,22 @@ const handleNotePress = (note) => {
         }}
       /> : null}
 
-  {firstLaunch ? <TourGuideZone
+  {!disableTour ? 
+  <TourGuideZone
         zone={1}
         tourKey={tourKey}
         shape={'circle'}
         isTourGuide
         style={styles.tourGuideOverlay}
-      /> : null}
+      /> 
+    : null}
   </View>
   )
  }
 
  const styles = StyleSheet.create({
   fabView: {
-    zIndex: 1,
+    zIndex: 200,
     width:scaledFont(60),
     height: scaledFont(60),
     position: 'absolute',                                          
@@ -876,7 +904,7 @@ const handleNotePress = (note) => {
     right: 20,
   },
   tourGuideOverlay: {
-    zIndex: 1,
+    zIndex: 100,
     width:scaledFont(81),
     height: scaledFont(81),
     position: 'absolute',                                          
@@ -897,7 +925,7 @@ const handleNotePress = (note) => {
       height: 1,
       width: 1
     },
-    zIndex: 1,
+    zIndex: 200,
   },
   share: {
     zIndex: 1,

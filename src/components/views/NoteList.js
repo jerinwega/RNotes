@@ -73,7 +73,7 @@ import { scaledFont } from "../common/Scale";
               <Text accessibilityLabel={'title'} style={{ textAlign: !trimmedDesc ? 'center' : 'left' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(21) : scaledFont(19)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
               <Text
                 accessibilityLabel={'description'} 
-                fontSize={scaledFont(16)} 
+                fontSize={scaledFont(17)} 
                 style={priority === 'confidential' ? colorMode === 'light' ? styles.lightNote : styles.darkNote : {}}
                 fontFamily={'body'} 
                 fontWeight={'400'} 
