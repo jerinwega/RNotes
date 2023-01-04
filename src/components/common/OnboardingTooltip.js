@@ -9,7 +9,7 @@
 import React from "react";
 import { Text, View, Center, Button } from "native-base";
 import { scaledFont } from "./Scale";
-import { LIGHT_COLOR, DARK_COLOR } from "../../utils/constants";
+import { DARK_COLOR } from "../../utils/constants";
 
 const OnboardingTooltip = ({
     handleStop,
@@ -29,11 +29,13 @@ const OnboardingTooltip = ({
         backgroundColor={"white"}
         rounded={'3xl'}
         borderWidth={1} 
-        borderColor={'green.500'}>
+        borderColor={'green.200'}>
           <View px={6} pt={6} pb={4}>
           <Center>
-            <View>
-              <Text color={DARK_COLOR} fontWeight={'600'} fontSize={scaledFont(16)}>Tap to create your first note</Text>
+            <View alignItems={'center'}>
+              <Text color={DARK_COLOR} fontWeight={'600'} fontSize={scaledFont(15)}>Tap the plus button to create</Text>
+              <Text color={DARK_COLOR} fontWeight={'600'} fontSize={scaledFont(15)}>your first note 📝</Text>
+
             </View>
           </Center>
         </View>
@@ -44,7 +46,7 @@ const OnboardingTooltip = ({
             borderTopRadius={'none'}
             rounded={'3xl'}
             >
-            <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(14)} fontWeight={'900'}>
+            <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(13)} fontWeight={'900'}>
                 OK     
             </Text>
         </Button>

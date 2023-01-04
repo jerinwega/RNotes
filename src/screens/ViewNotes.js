@@ -165,13 +165,6 @@ const ViewNotes = ({
       });
     }
 
-    const handleScrollToTop = () => {
-      scrollRef.current?.scrollTo({
-        y : 0,
-        animated : true,
-    });
-    }
-
 
     let startEndIconColor = '#16a34a';
     let hashBgColor = '#dcfce7';

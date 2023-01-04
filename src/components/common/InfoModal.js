@@ -52,9 +52,9 @@ const InfoModal = ({
           <Modal.Body>
           <Center>
             <View>
-              <Text fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(16)}>Select <Text color={'green.600'}>LOW</Text> | <Text color={'yellow.600'}>MEDIUM</Text> | <Text color={'red.600'}>HIGH</Text> priority for notes.</Text>
-              <Text mt={3} fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(16)}>Select <Text color={colorMode === 'light' ? 'blue.600' : 'blue.500'}>CONFIDENTIAL</Text> priority to display Overlayed Notes</Text>
-              <Text mt={3} fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(14)}><Text color={'green.600'}>LOW</Text> priority is set as default</Text>
+              <Text fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(15)}>Select <Text color={'green.600'}>LOW</Text> | <Text color={'yellow.600'}>MEDIUM</Text> | <Text color={'red.600'}>HIGH</Text> priority for notes.</Text>
+              <Text mt={3} fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(15)}>Select <Text color={colorMode === 'light' ? 'blue.600' : 'blue.500'}>CONFIDENTIAL</Text> priority to display Overlayed Notes</Text>
+              <Text mt={3} fontFamily={'body'} fontWeight={'600'} fontSize={scaledFont(13)}><Text color={'green.600'}>LOW</Text> priority is set as default</Text>
             </View>
           </Center>
         </Modal.Body>

@@ -847,7 +847,7 @@ const handleNotePress = (note) => {
       style={{ elevation : 5, marginTop: -100 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content rounded={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
           <Modal.CloseButton 
             accessibilityLabel="Close Button"
             accessibilityHint="Close Modal"
@@ -879,13 +879,14 @@ const handleNotePress = (note) => {
             </FormControl>
           </Modal.Body>
               <Button
-                py={4}
+                py={3}
                 width={'full'}
                 variant="ghost" 
                 onPress={handleEditName}
-                borderRadius={'none'}
+                rounded={'3xl'}
+                borderTopRadius={'none'}
               >
-              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(14)} fontWeight={'900'}>
+              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(13)} fontWeight={'900'}>
                 SAVE        
               </Text>
               </Button>

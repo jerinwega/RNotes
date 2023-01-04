@@ -90,17 +90,17 @@ const UrlAlert = ({
     >
         <Modal.Content borderRadius={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
         <Modal.Header borderBottomWidth={0} ml={3} pt={6} pb={0}>
-            <Text fontSize={scaledFont(18)} fontFamily={'mono'} fontWeight={'900'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>Go To</Text>
+            <Text fontSize={scaledFont(17)} fontFamily={'mono'} fontWeight={'900'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>Go To</Text>
         </Modal.Header>
           <Modal.Body ml={3} pb={6}>
           <Text fontSize={scaledFont(16)} fontFamily={'mono'} fontWeight={'600'} style={styles.urlStyle}>{url}</Text>
           </Modal.Body>
             <Button.Group space={0}>
            <Button py={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleClose}>
-             <Text color={'red.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>CANCEL</Text>
+             <Text color={'red.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(13)}>CANCEL</Text>
            </Button>
            <Button py={3} borderRadius={'none'} width={'50%'} variant="ghost" onPress={handleUrl}>
-             <Text color={'blue.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(14)}>OK</Text>
+             <Text color={'blue.500'} fontFamily={'mono'} fontWeight={'900'} fontSize={scaledFont(13)}>OK</Text>
            </Button>
          </Button.Group>
         </Modal.Content>
