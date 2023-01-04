@@ -77,25 +77,28 @@ import {
   } = useTourGuideController()
 
   useEffect(() => { 
-    findDayTimeGreet();  
+    findDayTimeGreet();
   }, [])
 
   useEffect(() => {
     if (canStart) {
-      start(); 
+      start(1); 
     }
   }, [canStart])
 
   useEffect(() => {
     if (get(notes, 'length')) {
-      stop();
+      stop(1);
     }
   }, [notes]) 
 
   useEffect(() => {
-    eventEmitter.on("start", () => {});
-    eventEmitter.on("stop", () => {});
-    eventEmitter.on('stepChange', () =>{});
+    eventEmitter.on("start", () => {
+  });
+    eventEmitter.on("stop", () => {
+  });
+    eventEmitter.on('stepChange', () => {
+  });
     return () => eventEmitter.off("*", null);
   }, []);
 
@@ -106,9 +109,6 @@ import {
     }
   }, [user]);
   
-
-
-
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       findNotes();
@@ -230,7 +230,7 @@ import {
           id,
           title: "Add Notes",
           placement: "bottom",
-          duration: 1500,
+          duration: 2500,
           rounded: '3xl',
           bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
           _title: {
@@ -329,9 +329,9 @@ import {
       if (!priorityToast.isActive(id)) {
         priorityToast.show({
           id,
-          title: "Add Note",
+          title: "Add Notes",
           placement: "bottom",
-          duration: 1500,
+          duration: 2500,
           rounded: '3xl',
           bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
           _title: {
@@ -599,7 +599,11 @@ const handleNotePress = (note) => {
   }, [updatedUser]);
 
   const fontResize = () => {
-      const fontSize = scaledFont(22) - get(updatedUser, 'length', 0) * 0.1;
+      const fontSize = scaledFont(22) - get(updatedUser, 'length', 0) * 0.2;
+      if (fontSize < 16) {
+        setTextFontSize(scaledFont(16));
+        return;
+      }
       setTextFontSize(fontSize);
   }
 
@@ -681,9 +685,9 @@ const handleNotePress = (note) => {
           }}>
               <Menu.Group pb={1} _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m={'auto'}>
                 <Menu.Item py={3} accessibilityLabel={'option confidential'} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="blue.600" /></Menu.Item>
-                <Menu.Item py={3} accessibilityLabel={'option high'}onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option high'} onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
                 <Menu.Item py={3} accessibilityLabel={'option medium'}onPress={() => handlePriority('medium')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
-                <Menu.Item py={3}accessibilityLabel={'option low'} borderBottomLeftRadius={'3xl'} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')}alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option low'} borderBottomLeftRadius={'3xl'} borderBottomWidth={0} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
           <IconButton 
@@ -827,7 +831,6 @@ const handleNotePress = (note) => {
     </View>
     
     {showUserModal ? <Modal 
-      avoidKeyboard
       animationPreset="slide"
       shadow={4} 
       size={'md'}
@@ -841,7 +844,7 @@ const handleNotePress = (note) => {
           bg: 'dark.200'
         }
       }}
-      style={{ elevation : 5, marginTop: Platform.OS === ANDROID ? -60 : 0 }}
+      style={{ elevation : 5, marginTop: -100 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Modal.Content borderRadius={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>

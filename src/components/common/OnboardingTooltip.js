@@ -26,11 +26,10 @@ const OnboardingTooltip = ({
       accessibilityLabel="onboarding modal"
     >
     <View
-        backgroundColor={LIGHT_COLOR}
+        backgroundColor={"white"}
         rounded={'3xl'}
         borderWidth={1} 
-        borderBottomWidth={0}
-        borderColor={'rgba(0, 0, 0, 0.01)'}>
+        borderColor={'green.500'}>
           <View px={6} pt={6} pb={4}>
           <Center>
             <View>

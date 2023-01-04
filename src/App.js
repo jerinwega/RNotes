@@ -100,7 +100,6 @@ const theme = extendTheme({
   },
 });
 
-
 if (isFirstLoad) {
  return  (
  <NativeBaseProvider 
@@ -133,7 +132,7 @@ return (
             tooltipComponent={OnboardingTooltip}
             backdropColor={'rgba(0,0,0, 0.5)'}
             animationDuration={500}
-            startAtMount={isFirstLoad}
+            startAtMount={true}
             >
             <Home {...props} user={user} onClose={findUser} 
             />
