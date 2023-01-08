@@ -29,15 +29,12 @@ export default function App() {
       const result = await AsyncStorage.getItem('user')
         if (result === null) {
           setIsFirstLoad(true);
-          SplashScreen.hide();
         } else {
           setUser(result);
           setIsFirstLoad(false);
-          SplashScreen.hide();
         }
     } catch(e) {
       setIsFirstLoad(true);
-      SplashScreen.hide();
     }
   }
 
@@ -45,6 +42,9 @@ export default function App() {
   useEffect(() => {
     // AsyncStorage.clear();
     findUser();
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 500)
   }, []);
 
 

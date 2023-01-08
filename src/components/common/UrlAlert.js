@@ -80,10 +80,11 @@ const UrlAlert = ({
       onClose={handleClose} 
       _backdrop={{
         _dark: {
-          bg: 'gray.900'
+          bg: 'black',
+          opacity: 0.5
         },
         _light: {
-          bg: 'dark.200'
+          bg: 'gray.900'
         }
       }}
       style={{ elevation : 5 }}

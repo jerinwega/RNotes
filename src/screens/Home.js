@@ -7,10 +7,10 @@
  */
 
  import React, { useEffect, useState, useRef, useCallback } from "react";
- import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl, Platform, Animated } from "react-native";
+ import { StyleSheet, Dimensions, Keyboard, TouchableWithoutFeedback, RefreshControl, Platform, Animated, Image } from "react-native";
  import { 
-  useColorMode, HStack, Center, Avatar, Button, Box, IconButton, Text, Modal, FormControl,
-  Divider, Input, Icon, Menu, FlatList, View, useToast
+  useColorMode, HStack, Center, Button, Box, IconButton, Text,
+  Divider, Icon, Menu, FlatList, View, useToast
 } from "native-base";
  import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
  import OctIcon from 'react-native-vector-icons/Octicons';
@@ -25,14 +25,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledStatusBar from "../components/common/StyledStatusBar";
 import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale'
 import DeleteAlert from "../components/common/DeleteAlert";
+import NameModal from "../components/common/NameModal";
 import Share from 'react-native-share';
 import HeartModal from '../components/common/HeartModal';
 import moment from "moment";
-import { isSameDayAndMonth, removeEmojis } from '../components/common/utils';
+import { isSameDayAndMonth } from '../components/common/utils';
 import {
   TourGuideZone, // Main wrapper of highlight component
   useTourGuideController, // hook to start, etc.
 } from 'rn-tourguide'
+import { FloatingHeart } from 'react-native-floating-heart';
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
@@ -54,11 +56,12 @@ import {
   const [deleteNoteToast, setDeleteNoteToast] = useState(false);  
   const [openHeart, setOpenHeart] = useState(false);  
   const [priority, setPriority] = useState('none');
-  const [textFontSize , setTextFontSize] = useState(scaledFont(22))
+  const [textFontSize , setTextFontSize] = useState(scaledFont(22));
+  const [heartCount, setHeartCount] = useState(0);
+  const [brandTouched, setBrandTouched] = useState(false);
 
-
-  const sortToast = useToast();
-  const priorityToast = useToast();
+  // const sortToast = useToast();
+  // const priorityToast = useToast();
   const saveToast = useToast();
   const deleteToast = useToast();
   const shareToast = useToast();
@@ -224,25 +227,25 @@ import {
       Keyboard.dismiss();
     if (!get(notes, 'length')) {
         start(1);
-      const id = "sortToast";
-      if (!sortToast.isActive(id)) {
-        sortToast.show({
-          id,
-          title: "Add Notes",
-          placement: "bottom",
-          duration: 2500,
-          rounded: '3xl',
-          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
-          _title: {
-            px: 6,
-            py: 0,
-            fontFamily: 'mono',
-            fontWeight: '900',
-            fontSize: scaledFont(15),
-            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
-          }
-        });
-      }
+      // const id = "sortToast";
+      // if (!sortToast.isActive(id)) {
+      //   sortToast.show({
+      //     id,
+      //     title: "Add Notes",
+      //     placement: "bottom",
+      //     duration: 2500,
+      //     rounded: '3xl',
+      //     bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
+      //     _title: {
+      //       px: 6,
+      //       py: 0,
+      //       fontFamily: 'mono',
+      //       fontWeight: '900',
+      //       fontSize: scaledFont(15),
+      //       color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
+      //     }
+      //   });
+      // }
      return;
     }
     if (sortBy === 'desc') {
@@ -307,14 +310,6 @@ import {
     setShowUserModal(false);
   }
 
-
-  let avatar = updatedUser.trim().toUpperCase().replace(/[^0-9A-Z]+/gi,"");
-
-  if (!avatar) {
-    avatar = 'R';
-  }
-
-
   const sortedNotes = (notes) => {
     return orderBy(notes, ['time'], [sortBy])
   }
@@ -325,25 +320,25 @@ import {
     if (!get(notes, 'length')) {
       start(1);
       setPriority('none');
-      const id = "priorityToast";
-      if (!priorityToast.isActive(id)) {
-        priorityToast.show({
-          id,
-          title: "Add Notes",
-          placement: "bottom",
-          duration: 2500,
-          rounded: '3xl',
-          bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
-          _title: {
-            px: 6,
-            py: 0,
-            fontFamily: 'mono',
-            fontWeight: '900',
-            fontSize: scaledFont(16),
-            color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
-          }
-        });
-      }
+      // const id = "priorityToast";
+      // if (!priorityToast.isActive(id)) {
+      //   priorityToast.show({
+      //     id,
+      //     title: "Add Notes",
+      //     placement: "bottom",
+      //     duration: 2500,
+      //     rounded: '3xl',
+      //     bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
+      //     _title: {
+      //       px: 6,
+      //       py: 0,
+      //       fontFamily: 'mono',
+      //       fontWeight: '900',
+      //       fontSize: scaledFont(16),
+      //       color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
+      //     }
+      //   });
+      // }
       return;
      }
 
@@ -412,6 +407,7 @@ const handleNotePress = (note) => {
     return selectNotes(note);
   } else {
     setSearch('');
+    setHeartCount(0);
     navigation.navigate('ViewNotes', { viewedNote: note })
   }
 }
@@ -568,26 +564,26 @@ const handleNotePress = (note) => {
 
 
 
-  let priorityIcon = <IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} />;
+  let priorityIcon = <IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(21)} />;
   switch(priority) {
     case 'confidential': {
-      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#2563eb'} />
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(21)} color={'#2563eb'} />
       break;
     }
     case 'high': {
-      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#dc2626'} />
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(21)} color={'#dc2626'} />
       break;
     }
     case 'medium': {
-      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#ca8a04'} />
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(21)} color={'#ca8a04'} />
       break;
     }
     case 'low': {
-      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(22)} color={'#16a34a'} />
+      priorityIcon = <FontAwesome5Icon name="circle" solid size={scaledFont(21)} color={'#16a34a'} />
       break;
     }
     default: {
-      priorityIcon = <IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(22)} />
+      priorityIcon = <IonIcon name="color-filter" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(21)} />
 
     }
   }
@@ -607,6 +603,29 @@ const handleNotePress = (note) => {
       setTextFontSize(fontSize);
   }
 
+  const onChangeText = (value) => {
+    setUpdatedUser(value);
+  }
+
+  const addHeart = () => {
+    let newCount = heartCount + 1;
+    setHeartCount(newCount);
+  }
+const logoColor = () => {
+let lColor = '';
+  if (brandTouched) {
+    if (colorMode === 'light') {
+      lColor = '#c05eff';
+    } else {
+    lColor = '#cb7bff';
+    }
+  } else if(colorMode === 'light') {
+    lColor = DARK_COLOR;
+  } else {
+    lColor = LIGHT_COLOR;
+  }
+  return lColor;
+}
 
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
@@ -616,38 +635,27 @@ const handleNotePress = (note) => {
       >
     <StyledStatusBar />
     <Box safeAreaTop />
-    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} px="3" py="3" justifyContent={'space-between'} alignItems="center" style={{ width: deviceWidth }}>
-      <HStack>
-      <RNBounceable bounceEffectIn={0.8} onPress={() => {
-        setShowUserModal(true)
-        setSelectedItems([]);
-      }}>
-        <Avatar
-          _dark={{ bg: LIGHT_COLOR }}
-          _light={{ bg: DARK_COLOR }}
-          style={{ width: Platform.OS === ANDROID ? scaledFont(50): scaledFont(52), height: Platform.OS === ANDROID ? scaledFont(50): scaledFont(52) }}
-        >
-          <Avatar.Badge bg="green.500" size={3} />
-         <Text fontFamily={'heading'} fontWeight={'900'} color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR } fontSize={scaledFont(32)}>
-          {avatar.slice(0,1)}
-        </Text>
-        </Avatar>
-        </RNBounceable>
-      </HStack>
+    <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} pl={4} pr={3} py={2.5} justifyContent={'space-between'} alignItems="center" style={{ width: deviceWidth }}>
         <HStack>
-          <Text color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(40)} fontFamily = 'ChocoChici'>
+          <RNBounceable bounceEffectIn={0.9} onPress={addHeart} onTouchStart={() => setBrandTouched(true)} onTouchEnd={() => setBrandTouched(false)}>
+          <Text letterSpacing={0} color={logoColor()} fontSize={scaledFont(42)} fontFamily = 'ChocoChici'>
             RNotes
           </Text>
+          </RNBounceable>
         </HStack>
         <HStack>
+        <HStack >
           <IconButton
+           px={2.5}
           accessibilityLabel={'Switch color mode button'}
           accessibilityHint="Theme Change"
-          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(22)} solid /> 
-          : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(21)} solid />} 
+          icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(21)} solid /> 
+          : <OctIcon name="sun" color={LIGHT_COLOR} size={scaledFont(20)} solid />} 
           borderRadius="full"
           onPress={toggleColorMode}
           />
+          </HStack>
+       <HStack>
           <Menu
           accessibilityLabel="priority menu"
           accessibilityHint="sort by priority"
@@ -656,14 +664,15 @@ const handleNotePress = (note) => {
           rounded={'3xl'}
           pb={0}
           pt={0}
-          _backdrop={{ 
+          _backdrop={{
             _dark: {
-              bg: 'gray.900'
+              bg: 'black',
+              opacity: 0.5
             },
             _light: {
-              bg: 'dark.200'
+              bg: 'gray.900'
             }
-            }}
+          }}
             onOpen={async () => {
               setPriority('none');
               setSearchNotFound(false);
@@ -678,40 +687,58 @@ const handleNotePress = (note) => {
               triggerProps => {
             return  (
             <IconButton {...triggerProps}
+              px={2.5}
                   accessibilityLabel={'Priority sort button'}
                   icon={priorityIcon}
                   borderRadius="full"
               />);
           }}>
               <Menu.Group pb={1} _title={{ fontFamily: 'mono', fontWeight: '900' }} title="Priority" m={'auto'}>
-                <Menu.Item py={3} accessibilityLabel={'option confidential'} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="blue.600" /></Menu.Item>
-                <Menu.Item py={3} accessibilityLabel={'option high'} onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="red.600" /></Menu.Item>
-                <Menu.Item py={3} accessibilityLabel={'option medium'}onPress={() => handlePriority('medium')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="yellow.600" /></Menu.Item>
-                <Menu.Item py={3} accessibilityLabel={'option low'} borderBottomLeftRadius={'3xl'} borderBottomWidth={0} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(22)} color="green.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option confidential'} onPress={() => handlePriority('confidential')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(21)} color="blue.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option high'} onPress={() => handlePriority('high')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(21)} color="red.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option medium'}onPress={() => handlePriority('medium')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(21)} color="yellow.600" /></Menu.Item>
+                <Menu.Item py={3} accessibilityLabel={'option low'} borderBottomLeftRadius={'3xl'} borderBottomWidth={0} borderBottomRightRadius={'3xl'}  onPress={() => handlePriority('low')} alignItems={'center'}><Icon as={<FontAwesome5Icon name="circle" solid />} size={scaledFont(21)} color="green.600" /></Menu.Item>
               </Menu.Group>
             </Menu>
+            </HStack>
+           <HStack>
           <IconButton 
           accessibilityLabel={'date sort button'}
+          px={3}
           accessibilityHint="sort"
           icon={sortBy === 'desc' ? 
-          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(20)} solid /> 
-          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(20)} solid /> } 
+          <FontAwesome5Icon name="sort-amount-up-alt" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(19)} solid /> 
+          : <FontAwesome5Icon name="sort-amount-down" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(19)} solid /> } 
           borderRadius="full"
           onPress={handleSort}
           />
         </HStack>
+        </HStack>
+
     </HStack>
   </Center>
   
-  <View accessibilityLabel={'Divider'}>
+  <View accessibilityLabel={'Divider'} style={{ elevation: get(notes, 'length') ? 5 : 0 }}>
     <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
   </View>
 
     <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR }}>
-        <Text px={4} py={5} numberOfLines={1} textAlign={'center'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(18)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
+     
+     
+      <View px={20} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <Text py={5} textAlign={'center'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} fontSize={scaledFont(18)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'}>
           {`Good ${greet}, `}
-          <Text color={colorMode === 'light' ? '#c05eff' : '#cb7bff'}>{updatedUser.replace(/[\n\r]+/g, ' ').trim()}!</Text>
         </Text>
+        <Button borderColor={colorMode === 'light' ? 'rgba(212,147,255, 0.3)' : 'rgba(212,147,255, 0.2)'} 
+        variant={'outline'} px={2.5} py={0} 
+        rounded={'3xl'} 
+        onPress={() => {
+            setShowUserModal(true);
+            setSelectedItems([]);
+        }}>
+          <Text numberOfLines={1} fontSize={scaledFont(18)} fontFamily={'body'} fontWeight={'600'} fontStyle={'italic'} color={colorMode === 'light' ? '#c05eff' : '#cb7bff'}>{updatedUser.replace(/[\n\r]+/g, ' ').trim()}!</Text>
+        </Button>
+      </View>
 
 
         {get(notes, 'length') ?  
@@ -719,7 +746,7 @@ const handleNotePress = (note) => {
           clearIconComponent={!search ? <></> : null}
           style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 30, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
-          fontSize={scaledFont(15)}
+          fontSize={scaledFont(14)}
           placeholder="Search"
           value={search}
           onChangeText={handleSearch}
@@ -793,6 +820,7 @@ const handleNotePress = (note) => {
               setDeleteNoteToast(false)
             )
           }
+          setHeartCount(0);
           navigation.navigate('AddNote', { isEdit: false })
         }}
       >
@@ -829,70 +857,31 @@ const handleNotePress = (note) => {
      </Animated.View> 
       : null }
     </View>
-    
-    {showUserModal ? <Modal 
-      animationPreset="slide"
-      shadow={4} 
-      size={'md'}
-      isOpen={showUserModal} 
-      onClose={handleCloseUserModal} 
-      _backdrop={{
-        _dark: {
-          bg: 'gray.900'
-        },
-        _light: {
-          bg: 'dark.200'
+    <View>   
+        <FloatingHeart count={heartCount} renderCustomIcon={
+          () => (<Image
+          source={require('../assets/images/logo.png')}
+          style={{ 
+            width: 30, 
+            height: 30, 
+          }}
+          resizeMode="contain"
+        />)
         }
-      }}
-      style={{ elevation : 5, marginTop: -100 }}
-    >
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content rounded={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
-          <Modal.CloseButton 
-            accessibilityLabel="Close Button"
-            accessibilityHint="Close Modal"
-            _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}
-            borderRadius={'full'} />
-            <Modal.Header>
-              <FontAwesome5Icon name="user-edit" color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR} size={scaledFont(21)} solid /> 
-          </Modal.Header>
-          <Modal.Body>
-          <FormControl px={1}>
-              <Input
-                textAlign={'center'}
-                rounded={'3xl'}
-                fontSize={textFontSize}
-                fontFamily={'mono'}
-                fontWeight={'900'}
-                spellCheck={false}
-                autoFocus={true}
-                value={updatedUser}
-                accessibilityLabel={'Edit Name'}
-                accessibilityHint="Edit Name Field"
-                onChangeText={(value) => setUpdatedUser(removeEmojis(value))}
-                placeholder="Name"
-                color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
-                _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : colorMode === 'light' ? 'black': 'white' }} 
-                _dark={{ bg: 'black' }}
-                _light={{ bg: 'white' }} 
-              />
-            </FormControl>
-          </Modal.Body>
-              <Button
-                py={3}
-                width={'full'}
-                variant="ghost" 
-                onPress={handleEditName}
-                rounded={'3xl'}
-                borderTopRadius={'none'}
-              >
-              <Text fontFamily={'mono'} color={'green.500'} fontSize={scaledFont(13)} fontWeight={'900'}>
-                SAVE        
-              </Text>
-              </Button>
-        </Modal.Content>
-        </TouchableWithoutFeedback>
-      </Modal> : null}
+         color={colorMode === 'light' ? '#c05eff' : '#cb7bff'}
+         />
+    </View>
+
+    
+      {showUserModal ? <NameModal 
+        showUserModal={showUserModal}
+        handleCloseUserModal={handleCloseUserModal}
+        textFontSize={textFontSize}
+        handleEditName={handleEditName}
+        onChangeText={onChangeText}
+        updatedUser={updatedUser}
+      /> : null}
+
       {isDeleteAlertOpen ? <DeleteAlert 
         isDeleteAlertOpen={isDeleteAlertOpen} 
         cancelRef={cancelRef}
@@ -906,8 +895,8 @@ const handleNotePress = (note) => {
           setOpenHeart(false); 
         }}
       /> : null}
-
   </View>
+  
   )
  }
 

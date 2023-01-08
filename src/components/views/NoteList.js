@@ -61,6 +61,7 @@ import { scaledFont } from "../common/Scale";
         rounded="3xl" 
         justifyContent={!trimmedDesc ? "center" : 'flex-start'}
         borderTopWidth={5}
+        style={{ transform: [{ scale: selected ? 0.92 : 1 }]}}
         _dark={{ borderColor: borderDarkColor, borderWidth: 1, bg: selected ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}} 
         _light={{ borderColor: borderColor, borderWidth: 2, background: selected ? 'rgba(0, 0, 0, 0.1)' : hashBgColor }}
       >

@@ -52,7 +52,7 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
         bg={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR}
         borderColor={'blue.200'}
         borderWidth={2}
-       _pressed={{ bg: 'blue.100'}} mt={2} px={6} py={2} variant={'outline'} rounded={'full'} onPress={handleClearSearch}>
+       _pressed={{ bg: 'blue.100'}} mt={2} px={6} py={1} variant={'outline'} rounded={'full'} onPress={handleClearSearch}>
           <Text fontFamily={'mono'} color={'blue.600'} fontWeight={'900'} fontSize={scaledFont(16)}>
             Clear Filters
           </Text>

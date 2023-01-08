@@ -13,6 +13,8 @@ target 'RNotes' do
   )
 
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'RNotesTests' do
     inherit! :complete
     # Pods for testing

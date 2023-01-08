@@ -19,31 +19,23 @@ import RNBounceable from "@freakycoder/react-native-bounceable";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledStatusBar from "../components/common/StyledStatusBar";
 import { scaledFont } from "../components/common/Scale";
-import { removeEmojis } from '../components/common/utils';
-
 
  const UserScreen = ({ onClose }) => {
 
   const { colorMode, toggleColorMode } = useColorMode();
   const [user, setUser] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const userRef = useRef(null);
   const [textFontSize , setTextFontSize] = useState(scaledFont(72))
 
-  useEffect(() => {
-    return () => clearTimeout(userRef.current);
-  }, []);
 
 
   const handleUser = async () => {
     setIsLoading(true);
     Keyboard.dismiss();
-    userRef.current = setTimeout(async () => {
       await AsyncStorage.setItem('user', user.trim());
       await AsyncStorage.setItem('@color-mode', colorMode);
       await onClose();
       setIsLoading(false);
-    }, 1000);
   }
 
   useEffect(() => {
@@ -98,7 +90,7 @@ import { removeEmojis } from '../components/common/utils';
             enablesReturnKeyAutomatically
             _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : colorMode === 'light' ? 'black': 'white' }}
             placeholder="Name"
-            onChangeText={(user) => setUser(removeEmojis(user))}
+            onChangeText={(user) => setUser(user)}
           />
         {(user.trim() && !isLoading) ?
         <RNBounceable

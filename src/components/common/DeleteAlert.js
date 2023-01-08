@@ -15,7 +15,6 @@
     isDeleteAlertOpen,
     handleDeleteAlert,
     onDeleteAlertClose,
-    isView,
  }) => {
   const { colorMode } = useColorMode();
   return (
@@ -23,10 +22,11 @@
     animationPreset="slide"
       _backdrop={{
         _dark: {
-          bg: isView ? 'dark.200' : 'gray.900'
+          bg: 'black',
+          opacity: 0.5
         },
         _light: {
-          bg: 'dark.200'
+          bg: 'gray.900'
         }
       }} 
       leastDestructiveRef={cancelRef} 

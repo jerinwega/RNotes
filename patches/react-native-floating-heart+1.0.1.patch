@@ -1,0 +1,31 @@
+diff --git a/node_modules/react-native-floating-heart/.DS_Store b/node_modules/react-native-floating-heart/.DS_Store
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-floating-heart/assets/react-native-floating-hearts-example1.gif b/node_modules/react-native-floating-heart/assets/react-native-floating-hearts-example1.gif
+deleted file mode 100644
+index 1f32f28..0000000
+Binary files a/node_modules/react-native-floating-heart/assets/react-native-floating-hearts-example1.gif and /dev/null differ
+diff --git a/node_modules/react-native-floating-heart/src/FloatingHeart/FloatingHeart.js b/node_modules/react-native-floating-heart/src/FloatingHeart/FloatingHeart.js
+index ddea8d7..8e50663 100644
+--- a/node_modules/react-native-floating-heart/src/FloatingHeart/FloatingHeart.js
++++ b/node_modules/react-native-floating-heart/src/FloatingHeart/FloatingHeart.js
+@@ -36,7 +36,7 @@ const FloatingHeart = ({
+     if (count !== 0) {
+       const newHeartArr = [...hearts, {
+         id: heartCount++,
+-        right: getRandomNumber(50, 150),
++        right: getRandomNumber(80, 320),
+       }]
+       setHearts(newHeartArr);
+     }
+@@ -146,8 +146,8 @@ const styles = StyleSheet.create({
+     backgroundColor: 'transparent',
+   },
+   heart: {
+-    width: 30,
+-    height: 30,
++    width: 32,
++    height: 32,
+     alignItems: 'center',
+     justifyContent: 'center',
+     backgroundColor: 'transparent',

@@ -30,12 +30,12 @@ const InfoModal = ({
       }} 
       _backdrop={{
         _dark: {
-          bg: 'gray.900'
+          bg: 'gray.400'
         },
         _light: {
-          bg: 'dark.200'
+          bg: 'gray.900'
         }
-      }}
+        }}
       style={{ elevation : 5 }}
     >
         <Modal.Content 

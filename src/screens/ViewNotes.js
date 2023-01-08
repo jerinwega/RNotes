@@ -8,7 +8,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
-import { Text, HStack, Box, Center, useColorMode, IconButton, View, useToast } from "native-base";
+import { Text, HStack, Box, Center, useColorMode, IconButton, View, useToast, Divider } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
@@ -35,7 +35,6 @@ const ViewNotes = ({
   const { viewedNote } = get(route, 'params');
   const { editNote }  = get(route, 'params', false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [copyIconChange, setCopyIconChange] = useState(false);
   const [notes, setNotes] = useState([]);
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [showUrlAlert, setShowUrlAlert] = useState(false);
@@ -95,31 +94,27 @@ const ViewNotes = ({
     }
 
     const copyToClipboard = () => {
-      setCopyIconChange(true);
-    timerRef.current = setTimeout(() => {
-        setCopyIconChange(false);
-      }, 1500);
 
       const id = "single-toast";
       if (!toast.isActive(id)) {
       toast.show({
         id,
-        title: get(viewedNote, 'description') ? 'Copied to clipboard' : 'Nothing to copy',
+        title: 'Copied to clipboard',
         placement: "bottom",
         duration: 1500,
         rounded: '3xl',
-        bg: colorMode === 'light' ? get(viewedNote, 'description') ? 'blue.500': 'warning.500' : LIGHT_COLOR,
+        bg: colorMode === 'light' ? 'blue.500': LIGHT_COLOR,
         _title: {
           px: 2,
           py: 1,
           fontFamily: 'mono',
           fontWeight: '900',
           fontSize: scaledFont(15),
-          color: colorMode === 'light' ? LIGHT_COLOR : get(viewedNote, 'description') ? 'blue.500' : 'warning.500'
+          color: colorMode === 'light' ? LIGHT_COLOR : 'blue.500'
         }
       });
     }
-      Clipboard.setString(get(viewedNote, 'description', ''));
+      Clipboard.setString(`${get(viewedNote, 'title', '')}\n${get(viewedNote, 'description', '')}`);
     }
 
     handleUrlClick = (url) => {
@@ -202,7 +197,7 @@ const ViewNotes = ({
               <IconButton 
                 accessibilityLabel={'Back button'}
                   disabled={btnDisabled}
-                  icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(36)} />}
+                  icon={<IonIcon style={{ marginLeft: 3 }} name="arrow-back-circle-outline" color={getDisabledBtnColor(colorMode, btnDisabled)} size={scaledFont(35)} />}
                   borderRadius="full"
                   onPress={async () => {
                      setBtnDisabled(true);
@@ -219,22 +214,21 @@ const ViewNotes = ({
               <IconButton 
                   px={3}
                 accessibilityLabel={'share button'}
-                  icon={<FontAwesome5Icon style={{ marginRight:3 }} color={'#2563eb' } name="share-alt" size={scaledFont(22)} solid />}
+                  icon={<FontAwesome5Icon style={{ marginRight:3 }} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } name="share-alt" size={scaledFont(21)} solid />}
                   borderRadius="full"
                   onPress={handleShare}
                   />
               <IconButton 
                   px={3.5}
                   accessibilityLabel={'delete button'}
-                  icon={<FontAwesome5Icon color={'#dc2626'} name="trash-alt" size={scaledFont(22)} solid />}
+                  icon={<FontAwesome5Icon color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } name="trash-alt" size={scaledFont(21)} solid />}
                   borderRadius="full"
                   onPress={() => setIsDeleteAlertOpen(true)}
                 />
                 <IconButton 
                   accessibilityLabel={'copy to clipboard button'}
                   borderRadius="full"
-                  icon={copyIconChange ? <IonIcon name="copy" size={scaledFont(24)} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } />
-                  : <IonIcon name="copy-outline" size={scaledFont(24)} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } />}
+                  icon={<IonIcon name="copy" size={scaledFont(24)} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } />}
                   onPress={copyToClipboard}
                 />
             </HStack>
@@ -249,13 +243,13 @@ const ViewNotes = ({
               </Text>
           </View>
          
-            <View pb={3} px={7}>
+            <View py={3} px={7}>
               <Hyperlink              
                 onPress={(url)=> handleUrlClick(url)}
                 linkStyle={styles.urlStyle}
               >
               <View>
-              {get(viewedNote, 'title') ? <Text 
+              {get(viewedNote, 'title').trim() !== '' ? <Text 
                    accessibilityLabel='note title'
                   selectable 
                   selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
@@ -277,17 +271,21 @@ const ViewNotes = ({
               </View>
               </Hyperlink>
           </View>
+          <View accessibilityLabel={'Divider'} style={{
+              elevation: 5 }}>
+            <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
+          </View>
           <DoubleClick
             doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
             delay={300}
             >
-              <View px={8} pb={2}>     
+              <View px={7} py={2}>     
                 <Hyperlink
                   onPress={(url)=> handleUrlClick(url)}
                   linkStyle={styles.urlStyle}
                 >
                 <View>
-                {get(viewedNote, 'description') ? <Text 
+                {get(viewedNote, 'description').trim() !== '' ? <Text 
                     accessibilityLabel='note description'
                     selectable 
                     selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
@@ -312,7 +310,7 @@ const ViewNotes = ({
 
               <RNBounceable  
                 bounceEffectIn={0.6}
-                style={[styles.editIcon, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}]} 
+                style={[styles.editIcon, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }]} 
                 onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}  
               >
                 <FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid size={scaledFont(26)} />
@@ -324,7 +322,6 @@ const ViewNotes = ({
               cancelRef={cancelRef}
               handleDeleteAlert={handleDeleteAlert}
               onDeleteAlertClose={onDeleteAlertClose} 
-              isView
           /> : null}
           {showUrlAlert ? <UrlAlert 
               showUrl={showUrlAlert}
@@ -340,7 +337,7 @@ const ViewNotes = ({
 
  const styles = StyleSheet.create({
   editIcon: {
-    position: 'absolute',                                          
+    position: 'absolute',   
     bottom: 80,                                                    
     right: 15,
     elevation: 5,
@@ -348,25 +345,6 @@ const ViewNotes = ({
     justifyContent:'center',
     width: scaledFont(54),
     height: scaledFont(54),
-    borderRadius:100,
-    shadowColor: DARK_COLOR,
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    shadowOffset: {
-      height: 1,
-      width: 1
-    },
-  zIndex: 1,
-  },
-  scrollButton: {
-    position: 'absolute',                                          
-    bottom: 150,                                                    
-    right: 24,
-    elevation: 5,
-    alignItems:'center',
-    justifyContent:'center',
-    width: scaledFont(38),
-    height: scaledFont(38),
     borderRadius:100,
     shadowColor: DARK_COLOR,
     shadowOpacity: 0.5,
