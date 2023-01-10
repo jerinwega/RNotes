@@ -838,7 +838,7 @@ let lColor = '';
           style={[ styles.share, { backgroundColor: colorMode === 'light' ? '#2563eb' : LIGHT_COLOR } ]} 
           onPress={handleShare}
         >
-           <FontAwesome5Icon style={{ marginRight: 3 }} color={colorMode === 'light' ? LIGHT_COLOR : '#2563eb' } name="share-alt" size={scaledFont(23)} solid />
+           <FontAwesome5Icon style={{ marginRight: 3 }} color={colorMode === 'light' ? LIGHT_COLOR : '#2563eb'} name="share-alt" size={scaledFont(23)} solid />
         </ RNBounceable>
       : null }
 

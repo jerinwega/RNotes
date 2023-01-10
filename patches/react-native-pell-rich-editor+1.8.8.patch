@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-pell-rich-editor/src/RichToolbar.js b/node_modules/react-native-pell-rich-editor/src/RichToolbar.js
+index 6882aa8..ce8133c 100755
+--- a/node_modules/react-native-pell-rich-editor/src/RichToolbar.js
++++ b/node_modules/react-native-pell-rich-editor/src/RichToolbar.js
+@@ -197,7 +197,7 @@ export default class RichToolbar extends Component {
+             case actions.setHR:
+             case actions.indent:
+             case actions.outdent:
+-                editor.showAndroidKeyboard();
++                // editor.showAndroidKeyboard();
+                 editor.sendAction(action, 'result');
+                 break;
+             case actions.insertImage:

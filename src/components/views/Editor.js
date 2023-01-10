@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from "react";
-import { Platform, StyleSheet } from "react-native";
-import {  KeyboardAvoidingView, useColorMode } from "native-base";
+import { Platform, StyleSheet, Text, View , } from "react-native";
+import { useColorMode, KeyboardAvoidingView, ScrollView } from "native-base";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import { ANDROID, DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
 import {  } from "native-base";
@@ -11,74 +11,37 @@ import customRichDocumentFont from '../../utils/stylesheet';
 const Editor = ({
 }) => {
 
-    const richText = useRef();
+    const richText = useRef(null);
+    const scrollRef = useRef(null);
     const { colorMode } = useColorMode();
 
-
-    const handleCursorPosition = useCallback((scrollY) => {
+    let handleCursorPosition = useCallback((scrollY) => {
         // Positioning scroll bar
-        scrollRef.current.scrollTo({y: scrollY - 30, animated: true});
+        scrollRef.current.scrollTo({ y: scrollY - 30, animated: true });
     }, [])
 
 	return (
-            <>
-             {/* <RichToolbar
-             style={{ marginHorizontal: 20}}
-                     selectedIconTint={'#2095F2'}
-                     disabledIconTint={'#bfbfbf'}
-                    //  style={[styles.richBar, dark && styles.richBarDark]}
-                        flatContainerStyle={styles.flatStyle}
-                    // iconTint={color}
-                    // iconSize={24}
-                    // iconGap={10}
-                        editor={richText}
-                        actions={[ 
-                        actions.setBold, 
-                        actions.setItalic, 
-                        actions.heading1,
-                        // actions.insertImage,
-                        actions.insertBulletsList,
-                        actions.insertOrderedList,
-                        // actions.insertLink,
-                        actions.keyboard,
-                        actions.setStrikethrough,
-                        actions.setUnderline,
-                        actions.removeFormat,
-                        // actions.insertVideo,
-                        actions.checkboxList,
-                        actions.undo,
-                        actions.redo,
-                        actions.blockquote,
-                        actions.alignLeft,
-                        actions.alignCenter,
-                        actions.alignRight,
-                        actions.code,
-                        actions.line,
-                    ]}
-                    iconMap={{ [actions.heading1]: ({tintColor}) => (<Text style={[{color: tintColor}]}>H1</Text>), }}
-                 /> */}
-           
+            <>  
                  <KeyboardAvoidingView 
                   flex={1}
                   behavior={Platform.OS === ANDROID ? "height" : "padding" }
                   keyboardVerticalOffset={scaledHeight(120)}
-                  mx={5}
-                  mb={5}
-                //   contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 20 }}
                 >
-                {/* <ScrollView 
-                    keyboardDismissMode={'none'}
-                    nestedScrollEnabled={true}
-                    scrollEventThrottle={20}
-                    ref={scrollRef}
+                    <ScrollView 
                     flex={1} 
+                    ref={scrollRef}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    nestedScrollEnabled
                     bounces 
                     keyboardShouldPersistTaps="handled" 
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 20 }}
-                    > */}
+                    mx={5}
+                    > 
+                
                     <RichEditor
-                       androidHardwareAccelerationDisabled={true}
+                        // initialHeight={scaledHeight(100)}
+                        androidLayerType="software"
+                        androidHardwareAccelerationDisabled
                         accessibilityRole={'none'}
                         accessibilityLabel={"Description Field"}
                         accessibilityHint={"Add Description"}
@@ -89,13 +52,20 @@ const Editor = ({
                             placeholderColor: colorMode === 'light' ? '#a3a3a3' : '#525252',
                             initialCSSText: `${customRichDocumentFont}`,
                             contentCSSText:`
-                                padding: 16px;
+                                padding: 14px; 
                                 font-family: 'Lato';
                                 font-size: ${scaledFont(20)}px;
-                                min-height: 200px; 
-                                position: absolute; 
-                                top: 0; right: 0; bottom: 0; left: 0;`,
+                                `
                         }}
+                        // display: flex; 
+                        // flex-direction: column; 
+                        // position: absolute; 
+                        // top: 0; right: 0; bottom: 0; left: 0;
+                        // padding-top: 32px;
+                                // padding-left: 16px;
+                                // padding-right: 16px;
+                                // padding-bottom: 16px;
+                                // padding: 16px;
                         // padding: 12px; 
                         // padding: 0 30px; 
                         // font-family: Lato-Regular; 
@@ -108,30 +78,69 @@ const Editor = ({
                         ref={richText}
                         placeholder={"ideas"}
                         pasteAsPlainText={true}
-                        // initialFocus={true}
+                        initialFocus={false}
                         disabled={false}
                         useContainer={true}
                         onCursorPosition={handleCursorPosition}
                         containerStyle={{ 
                             borderRadius: 20, 
+                            borderBottomLeftRadius: 0,
+                            borderBottomRightRadius: 0,
+                            borderBottomWidth: 0,
                             backgroundColor: colorMode === 'light' ? 'white' : 'black', 
                             borderWidth: 1,
                             borderColor: colorMode === 'light' ? '#d4d4d4' : '#404040',
-                            // padding: 4,
                             }}
                         // initialContentHTML={value}
                         // onChange={onChangeText}
                     />
-                    {/* </ScrollView> */}
+                </ScrollView>
+                <RichToolbar
+                    editor={richText}
+                    selectedIconTint={colorMode === 'light' ? '#cb7bff' : '#c05eff'}
+                    iconTint={colorMode=== 'light' ? DARK_COLOR : LIGHT_COLOR }
+                    iconSize={scaledFont(22)}
+                    flatContainerStyle={{ paddingHorizontal: 6 }}
+                    actions={[
+                    // actions.insertImage,
+                    actions.keyboard,
+                    actions.setBold,
+                    actions.setStrikethrough,
+                    actions.undo,
+                    actions.redo,
+                    actions.insertBulletsList,
+                    actions.insertOrderedList,
+                    // actions.checkboxList,
+                    actions.insertLink, // check html view
+                    actions.setItalic,
+                    actions.setUnderline,
+                    // actions.line,
+                    actions.alignLeft,
+                    actions.alignCenter,
+                    actions.alignRight,
+                    ]}
+                    style={[
+                        styles.richTextToolbarStyle, { 
+                        height: scaledHeight(48), 
+                        backgroundColor: colorMode=== 'light' ? LIGHT_COLOR : DARK_COLOR, 
+                        borderColor: colorMode==='light' ? '#d4d4d4' : '#404040'}
+                    ]}
+                />
+
                 </KeyboardAvoidingView>
                 </>
     );
 };
 
 const styles = StyleSheet.create({
-    flatStyle: {
-        paddingHorizontal: 8,
-    }
+    richTextToolbarStyle: {
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        borderWidth: 1,
+        marginHorizontal: 20,
+        marginBottom: 20,
+      },
   });
 
 export default Editor;
+

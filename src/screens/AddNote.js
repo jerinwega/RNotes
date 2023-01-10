@@ -224,7 +224,7 @@ const AddNote = ({
 
             <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-              <Box mx={5} pb={4}>
+              <Box mx={5} pb={3}>
               <Input
                 py={3}
                 px={4}

@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import {  KeyboardAvoidingView, ScrollView } from "native-base";
+import { StyleSheet, Text, View , KeyboardAvoidingView, ScrollView } from "react-native";
 import { Dimensions } from 'react-native';
 
 
@@ -54,24 +53,7 @@ const Editor2 = () => {
 
   return (
     <View style={{flex: 1}}>
-    <ScrollView>
-      <RichEditor
-        disabled={false}
-        ref={richText}
-        placeholder={'Start Writing Here'}
-        // onChange={(text) => setArticle(text)}
-        // editorStyle={editorStyleConfig}
-        initialHeight={windowWidth.height}
-      />
-    </ScrollView>
-    <View
-        style={{
-          position: 'absolute',
-          width: '100%',
-          bottom: 0,
-        }}
-      >
-      <RichToolbar
+        <RichToolbar
         editor={richText}
         actions={[
           actions.undo,
@@ -85,7 +67,26 @@ const Editor2 = () => {
           actions.removeFormat,
         ]}
       />
-    </View>
+    <ScrollView>
+        <KeyboardAvoidingView 
+                  flex={1}
+                  behavior={Platform.OS === ANDROID ? "height" : "padding" }
+                //   keyboardVerticalOffset={scaledHeight(120)}
+                //   mx={5}
+                //   mb={5}
+                >
+      <RichEditor
+        disabled={false}
+        ref={richText}
+        placeholder={'Start Writing Here'}
+        // onChange={(text) => setArticle(text)}
+        // editorStyle={editorStyleConfig}
+        initialHeight={windowWidth.height}
+      />
+          </KeyboardAvoidingView>
+
+    </ScrollView>
+
 </View>
   );
 };
