@@ -11,7 +11,8 @@ import StyledStatusBar from '../components/common/StyledStatusBar';
 import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale';
 import { getDisabledBtnColor, useDebounce } from '../components/common/utils';
 import InfoModal from '../components/common/InfoModal';
-
+import Editor from '../components/views/Editor';
+import Editor2 from '../components/views/Editor2'
 
 
 const AddNote = ({
@@ -32,7 +33,7 @@ const AddNote = ({
   const { viewedNote } = get(route, 'params');
   const { editNote } = get(route, 'params');
   const { data } = get(route, 'params');
-  const nextRef = useRef();
+
 
   const { debounce } = useDebounce();
 
@@ -217,14 +218,13 @@ const AddNote = ({
             </HStack>
           </Center>
 
-            <View style={{
-              elevation: 5 }}>
+            <View style={{ elevation: 5 }}>
               <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
             </View>
 
-            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={{ flex: 1, backgroundColor: colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR, paddingTop: 20 }}>
-              <Box mx={5} pb={2}>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <Box mx={5} pb={4}>
               <Input
                 py={3}
                 px={4}
@@ -244,14 +244,12 @@ const AddNote = ({
                 _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : startEndIconColor }} 
                 _dark={{ bg: 'black' }}
                 _light={{ bg: 'white' }} 
-                returnKeyType={'next'}
-                onSubmitEditing={() => {
-                  nextRef.current.focus();
-                }}
-                blurOnSubmit={false}
               />
               </Box>
-              <KeyboardAvoidingView 
+              </TouchableWithoutFeedback>
+
+
+              {/* <KeyboardAvoidingView 
                 flex={1}
                 behavior={Platform.OS === ANDROID ? "height" : "padding" }
                 keyboardVerticalOffset={scaledHeight(120)}
@@ -290,9 +288,14 @@ const AddNote = ({
                   ref={nextRef}
                 />
               </ScrollView>
-              </KeyboardAvoidingView>
+              
+              </KeyboardAvoidingView> */}
+                          <Editor />
+
+                         {/* <Editor2 /> */}
+
               </View>
-          </TouchableWithoutFeedback>
+
           {openInfo ? <InfoModal 
             showInfoModal={openInfo}
             handleClose={() => { 

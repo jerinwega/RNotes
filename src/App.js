@@ -49,7 +49,7 @@ export default function App() {
 
 
 const mode = {
-    strictMode: 'warn',
+    strictMode: 'off',
 };
 
 const colorModeManager = {
