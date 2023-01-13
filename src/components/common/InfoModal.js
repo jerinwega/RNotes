@@ -30,8 +30,9 @@ const InfoModal = ({
       }} 
       _backdrop={{
         _dark: {
-          bg: 'gray.400'
-        },
+          bg: 'black',
+          opacity: 0.5
+        },        
         _light: {
           bg: 'gray.900'
         }
@@ -41,7 +42,7 @@ const InfoModal = ({
         <Modal.Content 
           borderRadius={'3xl'}
           borderWidth={1} 
-          borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+          borderColor={'rgba(0, 0, 0, 0.01)'}>
         <Modal.CloseButton 
           accessibilityLabel={'close button'}
           _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}

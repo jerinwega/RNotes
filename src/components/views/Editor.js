@@ -1,14 +1,15 @@
 import React, { useRef, useCallback } from "react";
-import { Platform, StyleSheet, Text, View , } from "react-native";
+import { Platform, StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
 import { useColorMode, KeyboardAvoidingView, ScrollView } from "native-base";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import { ANDROID, DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
 import {  } from "native-base";
 import { scaledFont, scaledHeight } from '../common/Scale';
-
 import customRichDocumentFont from '../../utils/stylesheet';
   
 const Editor = ({
+    value,
+    onChangeText
 }) => {
 
     const richText = useRef(null);
@@ -32,21 +33,20 @@ const Editor = ({
                     ref={scrollRef}
                     contentContainerStyle={{ flexGrow: 1 }}
                     nestedScrollEnabled
-                    bounces 
+                    bounces={false}
                     keyboardShouldPersistTaps="handled" 
                     showsVerticalScrollIndicator={false}
                     mx={5}
                     > 
                 
                     <RichEditor
-                        // initialHeight={scaledHeight(100)}
                         androidLayerType="software"
-                        androidHardwareAccelerationDisabled
                         accessibilityRole={'none'}
                         accessibilityLabel={"Description Field"}
                         accessibilityHint={"Add Description"}
                         showsVerticalScrollIndicator={false}
-                        editorStyle={{ 
+                        editorStyle={{
+                            caretColor: colorMode === 'light' ? 'black': 'white',
                             backgroundColor: colorMode === 'light' ? 'white' : 'black' , 
                             color: colorMode ==='light' ? DARK_COLOR : LIGHT_COLOR,
                             placeholderColor: colorMode === 'light' ? '#a3a3a3' : '#525252',
@@ -57,32 +57,16 @@ const Editor = ({
                                 font-size: ${scaledFont(20)}px;
                                 `
                         }}
-                        // display: flex; 
-                        // flex-direction: column; 
-                        // position: absolute; 
-                        // top: 0; right: 0; bottom: 0; left: 0;
-                        // padding-top: 32px;
-                                // padding-left: 16px;
-                                // padding-right: 16px;
-                                // padding-bottom: 16px;
-                                // padding: 16px;
-                        // padding: 12px; 
-                        // padding: 0 30px; 
-                        // font-family: Lato-Regular; 
-                        // display: flex;
-                        // flex-direction: column; 
-                        // padding-horizontal: 20px;
-                        // padding-bottom: 20px;
 
-                        style={{ flex: 1 }}
+                        style={{flex: 1, borderRadius: 20 }}
                         ref={richText}
                         placeholder={"ideas"}
-                        pasteAsPlainText={true}
+                        pasteAsPlainText={false}
                         initialFocus={false}
                         disabled={false}
                         useContainer={true}
                         onCursorPosition={handleCursorPosition}
-                        containerStyle={{ 
+                        containerStyle={{
                             borderRadius: 20, 
                             borderBottomLeftRadius: 0,
                             borderBottomRightRadius: 0,
@@ -91,8 +75,8 @@ const Editor = ({
                             borderWidth: 1,
                             borderColor: colorMode === 'light' ? '#d4d4d4' : '#404040',
                             }}
-                        // initialContentHTML={value}
-                        // onChange={onChangeText}
+                        initialContentHTML={value}
+                        onChange={onChangeText}
                     />
                 </ScrollView>
                 <RichToolbar
@@ -111,10 +95,9 @@ const Editor = ({
                     actions.insertBulletsList,
                     actions.insertOrderedList,
                     // actions.checkboxList,
-                    actions.insertLink, // check html view
+                    // actions.insertLink, // check html view
                     actions.setItalic,
                     actions.setUnderline,
-                    // actions.line,
                     actions.alignLeft,
                     actions.alignCenter,
                     actions.alignRight,
@@ -131,7 +114,6 @@ const Editor = ({
                 </>
     );
 };
-
 const styles = StyleSheet.create({
     richTextToolbarStyle: {
         borderBottomLeftRadius: 20,

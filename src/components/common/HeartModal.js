@@ -61,7 +61,7 @@ const HeartModal = ({
       }}
       style={{ elevation : 5 }}
     >
-        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderColor={'rgba(0, 0, 0, 0.01)'}>
         <Modal.CloseButton 
             accessibilityLabel={'Close button'}
             _icon={{ color: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }}

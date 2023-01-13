@@ -8,11 +8,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import useGoBackHandler from '../components/common/CrossSwipeHandler';
 import StyledStatusBar from '../components/common/StyledStatusBar';
-import { scaledFont, scaledHeight, scaledWidth } from '../components/common/Scale';
+import { scaledFont, scaledWidth } from '../components/common/Scale';
 import { getDisabledBtnColor, useDebounce } from '../components/common/utils';
 import InfoModal from '../components/common/InfoModal';
 import Editor from '../components/views/Editor';
-import Editor2 from '../components/views/Editor2'
 
 
 const AddNote = ({
@@ -66,15 +65,19 @@ const AddNote = ({
 
   const handleSubmit = async () => {
     setBtnDisabled(true);
+
     if (!title.trim() && !description.trim()) {
-        if (isEdit) {
-          navigation.navigate('ViewNotes');
-          return;
-        } else {
-        navigation.navigate('Home');
+      navigation.goBack();
+      return;
+    }
+
+    const replaceHTML = description.replace(/<(.|\n)*?>/g, "").trim();
+    const replaceWhiteSpace = replaceHTML.replace(/&nbsp;/g, "").trim();
+
+      if (!title.trim() && replaceWhiteSpace.length <= 0) {
+        navigation.goBack();
         return;
       }
-    }
     
     if (isEdit) {
       const sameNote = (data || []).some(item => item.id === get(viewedNote, 'id'))
@@ -290,9 +293,11 @@ const AddNote = ({
               </ScrollView>
               
               </KeyboardAvoidingView> */}
-                          <Editor />
+                          <Editor
+                            value={description} 
+                            onChangeText={(text) => handleChange(text, 'description')}
+                          />
 
-                         {/* <Editor2 /> */}
 
               </View>
 

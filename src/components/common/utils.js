@@ -43,3 +43,26 @@ export const useDebounce = () => {
 
   return { debounce };
 };
+
+
+export const convertHTMLtoPlainText = (html) => {
+
+html = html.replace(/\n/gi, "");
+html = html.replace(/<style([\s\S]*?)<\/style>/gi, "");
+html = html.replace(/<script([\s\S]*?)<\/script>/gi, "");
+html = html.replace(/<a.*?href="(.*?)[\?\"].*?>(.*?)<\/a.*?>/gi, " $2 $1 ");
+html = html.replace(/<\/div>/gi, "\n\n");
+html = html.replace(/<\/li>/gi, "\n");
+html = html.replace(/<li.*?>/gi, "  *  ");
+html = html.replace(/<\/ul>/gi, "\n\n");
+html = html.replace(/<\/p>/gi, "\n\n");
+html = html.replace(/<br\s*[\/]?>/gi, "\n");
+html = html.replace(/<[^>]+>/gi, "");
+html = html.replace(/^\s*/gim, "");
+html = html.replace(/ ,/gi, ",");
+html = html.replace(/ +/gi, " ");
+html = html.replace(/\n+/gi, "\n\n");
+html = html.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+return html;
+}

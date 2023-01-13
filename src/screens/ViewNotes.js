@@ -7,11 +7,11 @@
  */
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
-import { Text, HStack, Box, Center, useColorMode, IconButton, View, useToast, Divider } from "native-base";
+import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { Text, HStack, Box, Center, useColorMode, IconButton, useToast, View, Divider } from "native-base";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
+import { ANDROID, DARK_COLOR, LIGHT_COLOR } from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get } from 'lodash';
 import moment from 'moment';
@@ -19,16 +19,21 @@ import DeleteAlert from "../components/common/DeleteAlert";
 import Clipboard from '@react-native-clipboard/clipboard';
 import StyledStatusBar from '../components/common/StyledStatusBar';
 import { scaledFont } from '../components/common/Scale';
-import { getDisabledBtnColor } from '../components/common/utils';
+import { getDisabledBtnColor, convertHTMLtoPlainText } from '../components/common/utils';
 import Hyperlink from 'react-native-hyperlink';
 import UrlAlert from '../components/common/UrlAlert';
 import Share from 'react-native-share';
 import RNBounceable from "@freakycoder/react-native-bounceable";
 import DoubleClick from 'react-native-double-tap'
+import { WebView } from 'react-native-webview';
+import Autolinker from 'autolinker';
+import Spinner from "react-native-spinkit";
+
+
 
 const ViewNotes = ({
   navigation,
-  route
+  route,
 }) => { 
   const { width: deviceWidth } = Dimensions.get('window');
   const { colorMode } = useColorMode();
@@ -42,6 +47,7 @@ const ViewNotes = ({
 
   const cancelRef = useRef(null);
   const timerRef = useRef(null);
+  const webViewRef = useRef(null);
 
   const toast = useToast();
   const editToast = useToast();
@@ -93,6 +99,9 @@ const ViewNotes = ({
       navigation.navigate('Home', { allNotes: newNotes, deleteNote: true })
     }
 
+    const convertedDesc = convertHTMLtoPlainText(get(viewedNote, 'description'));
+
+
     const copyToClipboard = () => {
 
       const id = "single-toast";
@@ -114,7 +123,7 @@ const ViewNotes = ({
         }
       });
     }
-      Clipboard.setString(`${get(viewedNote, 'title', '')}\n${get(viewedNote, 'description', '')}`);
+      Clipboard.setString(`${get(viewedNote, 'title', '')}\n${convertedDesc}`);
     }
 
     handleUrlClick = (url) => {
@@ -124,8 +133,9 @@ const ViewNotes = ({
 
 
     const handleShare = async () => {
+
       const shareOption = {
-        message: `${viewedNote.title}\n${viewedNote.description}`,
+        message: `${viewedNote.title}\n${convertedDesc}`,
         excludedActivityTypes: [
           'com.apple.UIKit.activity.AirDrop',
           'com.apple.UIKit.activity.Print',
@@ -177,6 +187,49 @@ const ViewNotes = ({
         hashBgColor = '#dbeafe'
         borderColor = 'blue.200';
     }
+    
+
+    const autoLinkedText = Autolinker.link(get(viewedNote, 'description', ''));
+
+    const fileUriForRegular = Platform.select({
+      ios: `Lato-Regular.ttf`,
+      android: `file:///android_asset/fonts/Lato-Regular.ttf`
+    });
+  const fileUriForBold = Platform.select({
+      ios: `Lato-Bold.ttf`,
+      android: `file:///android_asset/fonts/Lato-Bold.ttf`
+    });
+
+    const css = `<style>
+    @font-face {
+        font-family: 'Lato-Regular';
+        src: local('Lato-Regular'), url('${fileUriForRegular}') format('truetype');
+    }
+    @font-face {
+      font-family: 'Lato-Bold';
+      src: local('Lato-Bold'), url('${fileUriForBold}') format('truetype');
+  }
+    
+    a {
+      color: #41B2F3;
+      font-family: 'Lato-Bold';
+      text-decoration: none;
+    }
+    body {
+      font-size: ${scaledFont(20)};
+      color: ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR};
+      line-height: 28px;
+      font-family: 'Lato-Regular';
+      word-break: break-all; 
+      word-wrap: break-word;
+      overflow-x: auto;
+      margin: 0;
+      padding: 0;
+    }
+    ::selection { background: ${colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}; color: ${colorMode === 'light' ? 'black' : 'white'};
+</style>`
+
+const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">${css}</head><body>${autoLinkedText}</body></html>`;
 
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
@@ -185,7 +238,6 @@ const ViewNotes = ({
               _light={{ bg: hashBgColor }}
               >
             <StyledStatusBar hashBgColor={hashBgColor}  />
-            {/* <Box safeAreaTop /> */}
               <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: hashBgColor }}  px={2} py={2}
               justifyContent="space-between" 
               alignItems={'center'}
@@ -277,34 +329,93 @@ const ViewNotes = ({
           </View>
           <DoubleClick
             doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
-            delay={300}
+            delay={400}
             >
-              <View px={7} py={2}>     
-                <Hyperlink
-                  onPress={(url)=> handleUrlClick(url)}
-                  linkStyle={styles.urlStyle}
-                >
-                <View>
-                {get(viewedNote, 'description').trim() !== '' ? <Text 
-                    accessibilityLabel='note description'
-                    selectable 
-                    selectionColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}
-                    fontSize={scaledFont(20)} 
-                    fontFamily={'body'}
-                    fontWeight={'600'}>             
-                        {get(viewedNote, 'description', '')}
-                  </Text> 
+              <View flex={1} px={7} py={4} accessibilityLabel={'note description'}>     
+                {get(viewedNote, 'description').trim() !== '' ?
+                <WebView
+                  ref={webViewRef}
+                   style={{ backgroundColor: 'transparent', flex: 1}}
+                    cacheEnabled={true}
+                    useWebKit={true}
+                    androidLayerType="software"
+                    hideKeyboardAccessoryView={true}
+                    keyboardDisplayRequiresUserAction={false}
+                    originWhitelist={['*']}
+                    dataDetectorTypes={'all'}
+                    domStorageEnabled
+                    javaScriptEnabled
+                    onMessage={(event) => {}}
+                    source={{ html: htmlText, baseUrl: '' }}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    allowsLinkPreview={true}
+                    startInLoadingState={true}
+                    geolocationEnabled
+                    setSupportMultipleWindows={false}
+                    renderLoading={() => (
+                      <View style={styles.loadingView}> 
+                        <Spinner size={scaledFont(140)} type="Pulse" color={colorMode === 'light' ? "#c05eff" : "#cb7bff" } />
+                      </View>
+                    )}
+                    onShouldStartLoadWithRequest={(request) => {
+                        // Only allow navigating within this website
+                        if (!request.url ||
+                          request.url.startsWith("/") ||
+                          request.url.startsWith("#") ||
+                          request.url.startsWith("javascript") ||
+                          request.url.startsWith("about:blank")
+                        ) {
+                          return true;
+                        }
+                        // blocked blobs
+                        if(request.url.startsWith("blob")){
+                          // Alert.alert("Link cannot be opened.");
+                          webViewRef.current.stopLoading();
+                          handleUrlClick(request.url);
+                        }
+                        // list of schemas we will allow the webview
+                        // to open natively
+                        if (request.url.startsWith("tel:") ||
+                          request.url.startsWith("mailto:") ||
+                          request.url.startsWith("maps:") ||
+                          request.url.startsWith("geo:") ||
+                          request.url.startsWith("sms:") ||
+                          request.url.startsWith('http')
+                          || request.navigationType === 'click'
+                          ){
+                            webViewRef.current.stopLoading();
+                            handleUrlClick(request.url);
+                          return false;
+                        }
+                        else if(Platform.OS === ANDROID) {
+                        // let everything handled through linking to the webview
+                          webViewRef.current.stopLoading();
+                          handleUrlClick(request.url);
+                         return false; 
+                        } else {
+                        // let everything handled through linking to the webview
+                        return true;   
+                        }         
+                      }}
+                      onError={({nativeEvent}) => {
+                        // Function that is invoked when the WebView load fails.
+                          // Fallback for links without target="_blank"
+                          webViewRef.current.stopLoading();
+                          webViewRef.current.goBack();
+                          handleUrlClick(nativeEvent.url);
+                          return false; 
+                     }}
+
+                />
                   :
-                  
-                  <Text color={colorMode === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'} 
+                  <Text color={colorMode === 'light' ? 'rgba(0,0,0,0.09)' : 'rgba(255,255,255,0.09)'} 
                       fontSize={scaledFont(20)} 
                       fontFamily={'body'}
                       fontWeight={'600'}
                   >
                     No Description
                   </Text> }
-                </View>
-                </Hyperlink>
               </View>
               </DoubleClick>
 
@@ -357,7 +468,19 @@ const ViewNotes = ({
   },
   urlStyle: {
     color: '#41B2F3',
-    textDecorationLine: 'underline',
-  }
+  },
+  loadingView: {
+    flex: 1,
+    position: 'absolute', 
+    top: 0,
+    left: 0, 
+    right: 0,
+    bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    zIndex: 1
+  },
  });
 export default ViewNotes;
+
+

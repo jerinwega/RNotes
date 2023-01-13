@@ -19,7 +19,6 @@ const UrlAlert = ({
 }) => {
     const { colorMode } = useColorMode();
     const urlToast = useToast();
-
     const handleUrl = async () => {
       try {
         const checkLink = await Linking.canOpenURL(url);
@@ -89,7 +88,7 @@ const UrlAlert = ({
       }}
       style={{ elevation : 5 }}
     >
-        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content borderRadius={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={'rgba(0, 0, 0, 0.01)'}>
         <Modal.Header borderBottomWidth={0} ml={3} pt={6} pb={0}>
             <Text fontSize={scaledFont(17)} fontFamily={'mono'} fontWeight={'900'} color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}>Go To</Text>
         </Modal.Header>
@@ -111,7 +110,7 @@ const UrlAlert = ({
 const styles = StyleSheet.create({
     urlStyle: {
       color: '#41B2F3',
-      textDecorationLine: 'underline'
+      textDecorationLine: 'underline',
     }
    });
 export default UrlAlert;

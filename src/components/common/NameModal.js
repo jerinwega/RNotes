@@ -42,7 +42,7 @@ return (
       style={{ elevation : 5, marginTop: -100 }}
     >
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Modal.Content rounded={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={colorMode === 'light' ? 'rgba(0, 0, 0, 0.01)' : 'rgba(255,255,255, 0.1)'}>
+        <Modal.Content rounded={'3xl'} borderWidth={1} borderBottomWidth={0} borderColor={'rgba(0, 0, 0, 0.01)'}>
           <Modal.CloseButton 
             accessibilityLabel="Close Button"
             accessibilityHint="Close Modal"

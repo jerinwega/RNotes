@@ -402,6 +402,8 @@ const selectNotes = (note) => {
 }
 
 const handleNotePress = (note) => {
+
+  // console.log("pressed")
   Keyboard.dismiss();
    if (get(selectedItems, 'length')) {
     return selectNotes(note);
@@ -646,7 +648,7 @@ let lColor = '';
         <HStack>
         <HStack >
           <IconButton
-           px={2.5}
+           px={3}
           accessibilityLabel={'Switch color mode button'}
           accessibilityHint="Theme Change"
           icon={colorMode === 'light' ? <IonIcon name="moon" color={DARK_COLOR} size={scaledFont(21)} solid /> 
@@ -687,7 +689,7 @@ let lColor = '';
               triggerProps => {
             return  (
             <IconButton {...triggerProps}
-              px={2.5}
+              px={3}
                   accessibilityLabel={'Priority sort button'}
                   icon={priorityIcon}
                   borderRadius="full"

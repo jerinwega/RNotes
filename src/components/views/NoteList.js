@@ -11,6 +11,10 @@ import { Dimensions, TouchableOpacity, StyleSheet } from "react-native";
 import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
 import moment from 'moment';
 import { scaledFont } from "../common/Scale";
+import { WebView } from 'react-native-webview';
+
+
+
 
  const NoteList = ({
   item,
@@ -44,7 +48,13 @@ import { scaledFont } from "../common/Scale";
     borderDarkColor = 'yellow.400';
   }
 
-  const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
+
+  // last reslt with .replace(/\n\s*\n/g, '\n').trim();
+
+const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
+
+  // const strippedHtml = trimmedDesc;
+
 
  return <TouchableOpacity
         onPress={onPress}
@@ -78,7 +88,9 @@ import { scaledFont } from "../common/Scale";
                 style={priority === 'confidential' ? colorMode === 'light' ? styles.lightNote : styles.darkNote : {}}
                 fontFamily={'body'} 
                 fontWeight={'400'} 
-                numberOfLines={4}>{trimmedDesc}</Text>
+                numberOfLines={4}>
+                  {trimmedDesc}
+                </Text>
               </View>
               </Box>   
         </TouchableOpacity>
