@@ -29,7 +29,7 @@ import NameModal from "../components/common/NameModal";
 import Share from 'react-native-share';
 import HeartModal from '../components/common/HeartModal';
 import moment from "moment";
-import { isSameDayAndMonth } from '../components/common/utils';
+import { isSameDayAndMonth, convertHTMLtoPlainText } from '../components/common/utils';
 import {
   TourGuideZone, // Main wrapper of highlight component
   useTourGuideController, // hook to start, etc.
@@ -402,8 +402,6 @@ const selectNotes = (note) => {
 }
 
 const handleNotePress = (note) => {
-
-  // console.log("pressed")
   Keyboard.dismiss();
    if (get(selectedItems, 'length')) {
     return selectNotes(note);
@@ -422,7 +420,6 @@ const handleNotePress = (note) => {
     setSelectedItems([]);
   }
 
-
   const handleDeleteMultipleNotes = async () => {
     let refreshNotes = [];
     const result = await AsyncStorage.getItem('notes');
@@ -440,8 +437,11 @@ const handleNotePress = (note) => {
 
   const handleShare = async () => {
     const selectedNote = notes.find(item => item.id === selectedItems[0]);
+
+    const convertedDesc = convertHTMLtoPlainText(get(selectedNote, 'description'));
+
     const shareOption = {
-      message: `${selectedNote.title}\n${selectedNote.description}`,
+      message: `${selectedNote.title}\n${convertedDesc}`,
       excludedActivityTypes: [
         'com.apple.UIKit.activity.AirDrop',
         'com.apple.UIKit.activity.Print',
@@ -732,7 +732,7 @@ let lColor = '';
           {`Good ${greet}, `}
         </Text>
         <Button borderColor={colorMode === 'light' ? 'rgba(212,147,255, 0.3)' : 'rgba(212,147,255, 0.2)'} 
-        variant={'outline'} px={2.5} py={0} 
+        variant={'outline'} px={2} py={0} 
         rounded={'3xl'} 
         onPress={() => {
             setShowUserModal(true);
@@ -771,14 +771,16 @@ let lColor = '';
         }}>
         {searchNotFound ? <NotFound onRefresh={onRefresh} refreshState={refreshState} handleClearSearch={handleClearSearch} /> 
         : ( 
-        <View flex={1} px={4} py={6} accessibilityLabel={'Notes'} accessibilityHint={'Note List'}>
+        <View flex={1} px={4} py={5} accessibilityLabel={'Notes'} accessibilityHint={'Note List'}>
         <FlatList
               refreshControl={(
                 <RefreshControl
                   refreshing={refreshState}
                   onRefresh={onRefresh}
-                  tintColor={colorMode=== 'light' ? DARK_COLOR : LIGHT_COLOR}
-                />
+                  tintColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+                  progressBackgroundColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+                  colors={colorMode === 'light' ? [LIGHT_COLOR] : [DARK_COLOR]}
+                  />
               )}
               showsVerticalScrollIndicator={false}
               data={sortedNotes(notes)} 
@@ -908,16 +910,16 @@ let lColor = '';
     width:scaledFont(60),
     height: scaledFont(60),
     position: 'absolute',                                          
-    bottom: 130,                                                    
-    right: 140,
+    bottom: -5,                                                    
+    right: -6,
   },
   tourGuideOverlay: {
     zIndex: 1,
-    width:scaledFont(250),
-    height: scaledFont(250),
+    width: scaledFont(50),
+    height: scaledFont(50),
     position: 'absolute',                                          
-    bottom: -95,                                                    
-    right: -120,
+    bottom: 40,                                                    
+    right: 26,
   },
   fab: {
     elevation: 5,

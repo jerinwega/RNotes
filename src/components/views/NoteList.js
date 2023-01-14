@@ -7,13 +7,16 @@
 
  import React from "react";
  import { Text, View, useColorMode, Box } from "native-base";
-import { Dimensions, TouchableOpacity, StyleSheet } from "react-native";
-import { DARK_COLOR, LIGHT_COLOR } from '../../utils/constants';
+import { Dimensions, TouchableOpacity, StyleSheet,Platform } from "react-native";
+import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../../utils/constants';
 import moment from 'moment';
-import { scaledFont } from "../common/Scale";
+import { scaledFont, scaledHeight } from "../common/Scale";
 import { WebView } from 'react-native-webview';
+import Spinner from "react-native-spinkit";
+import Autolinker from 'autolinker';
 
 
+// `${str.slice(0, limit)}...`;
 
 
  const NoteList = ({
@@ -48,12 +51,52 @@ import { WebView } from 'react-native-webview';
     borderDarkColor = 'yellow.400';
   }
 
+  const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
+  //add at end .replace(/\n\s*\n/g, '\n').trim();
 
-  // last reslt with .replace(/\n\s*\n/g, '\n').trim();
+  const autoLinkedText = Autolinker.link(trimmedDesc);
 
-const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
+  const fileUriForRegular = Platform.select({
+    ios: `Lato-Regular.ttf`,
+    android: `file:///android_asset/fonts/Lato-Regular.ttf`
+  });
+const fileUriForBold = Platform.select({
+    ios: `Lato-Bold.ttf`,
+    android: `file:///android_asset/fonts/Lato-Bold.ttf`
+  });
 
-  // const strippedHtml = trimmedDesc;
+  const css = `<style>
+  @font-face {
+      font-family: 'Lato-Regular';
+      src: local('Lato-Regular'), url('${fileUriForRegular}') format('truetype');
+  }
+  @font-face {
+    font-family: 'Lato-Bold';
+    src: local('Lato-Bold'), url('${fileUriForBold}') format('truetype');
+}
+  
+  a {
+    color: #41B2F3;
+    font-family: 'Lato-Bold';
+    text-decoration: none;
+  }
+  body {
+    font-size: ${scaledFont(17)};
+    color: ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR};
+    line-height: 28px;
+    font-family: 'Lato-Regular';
+    word-break: break-all; 
+    word-wrap: break-word;
+    overflow-x: auto;
+    margin: 0;
+    padding: 0;
+    text-shadow: ${priority === 'confidential' ? `-5px 0px 0.1px ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}`: 'none'};
+  }
+  ::selection { background: ${colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}; color: ${colorMode === 'light' ? 'black' : 'white'};
+</style>`
+
+const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">${css}</head><body>${autoLinkedText}</body></html>`;
+
 
 
  return <TouchableOpacity
@@ -82,16 +125,43 @@ const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
               </View>
               <View mt={6}>
               <Text accessibilityLabel={'title'} style={{ textAlign: !trimmedDesc ? 'center' : 'left' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(21) : scaledFont(19)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
-              <Text
-                accessibilityLabel={'description'} 
-                fontSize={scaledFont(17)} 
-                style={priority === 'confidential' ? colorMode === 'light' ? styles.lightNote : styles.darkNote : {}}
-                fontFamily={'body'} 
-                fontWeight={'400'} 
-                numberOfLines={4}>
-                  {trimmedDesc}
-                </Text>
               </View>
+
+
+
+                {/* style={priority === 'confidential' ? colorMode === 'light' ? styles.lightNote : styles.darkNote : {}} */}
+   
+
+          {trimmedDesc && 
+            <View flex={1} pointerEvents={'none'} accessibilityLabel={'description'}>
+                <WebView
+                    style={{ backgroundColor: 'transparent', opacity: priority === 'confidential' ? 0.03 : 1 }}
+                    containerStyle={{  minHeight: scaledHeight(81), 
+                      paddingBottom: Platform.OS === ANDROID ? scaledFont(12) : scaledFont(9) 
+                    }}
+                    cacheEnabled={true}
+                    androidLayerType="software"
+                    hideKeyboardAccessoryView={true}
+                    keyboardDisplayRequiresUserAction={false}
+                    originWhitelist={['*']}
+                    dataDetectorTypes={'all'}
+                    domStorageEnabled
+                    javaScriptEnabled
+                    scrollEnabled={false}
+                    onMessage={(event) => {}}
+                    source={{ html: htmlText, baseUrl: '' }}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    startInLoadingState={true}
+                    renderLoading={() => (
+                      <View style={styles.loadingView}>
+                        <Spinner size={scaledFont(50)} type="Pulse" color={colorMode === 'light' ? "#c05eff" : "#cb7bff" } />
+                      </View>
+                    )}
+                    />
+                    </View>}
+
+
               </Box>   
         </TouchableOpacity>
  }
@@ -114,6 +184,17 @@ const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
       height: 0,
     },
     textShadowRadius: 0.1,
-  }
+  },
+  loadingView: {
+    flex: 1,
+    position: 'absolute', 
+    top: 0,
+    left: 0, 
+    right: 0,
+    bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    zIndex: 1
+  },
 });
  export default NoteList;

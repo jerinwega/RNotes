@@ -337,7 +337,6 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
                   ref={webViewRef}
                    style={{ backgroundColor: 'transparent', flex: 1}}
                     cacheEnabled={true}
-                    useWebKit={true}
                     androidLayerType="software"
                     hideKeyboardAccessoryView={true}
                     keyboardDisplayRequiresUserAction={false}
@@ -354,8 +353,8 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
                     geolocationEnabled
                     setSupportMultipleWindows={false}
                     renderLoading={() => (
-                      <View style={styles.loadingView}> 
-                        <Spinner size={scaledFont(140)} type="Pulse" color={colorMode === 'light' ? "#c05eff" : "#cb7bff" } />
+                      <View style={styles.loadingView}>
+                        <Spinner size={scaledFont(200)} type="Pulse" color={colorMode === 'light' ? "#c05eff" : "#cb7bff" } />
                       </View>
                     )}
                     onShouldStartLoadWithRequest={(request) => {
