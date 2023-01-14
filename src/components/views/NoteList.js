@@ -15,10 +15,6 @@ import { WebView } from 'react-native-webview';
 import Spinner from "react-native-spinkit";
 import Autolinker from 'autolinker';
 
-
-// `${str.slice(0, limit)}...`;
-
-
  const NoteList = ({
   item,
   onLongPress,
@@ -52,7 +48,6 @@ import Autolinker from 'autolinker';
   }
 
   const trimmedDesc = description.replace(/\n\s*\n/g, '\n').trim();
-  //add at end .replace(/\n\s*\n/g, '\n').trim();
 
   const autoLinkedText = Autolinker.link(trimmedDesc);
 
@@ -98,7 +93,6 @@ const fileUriForBold = Platform.select({
 const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">${css}</head><body>${autoLinkedText}</body></html>`;
 
 
-
  return <TouchableOpacity
         onPress={onPress}
         onLongPress={onLongPress}
@@ -125,12 +119,7 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
               </View>
               <View mt={6}>
               <Text accessibilityLabel={'title'} style={{ textAlign: !trimmedDesc ? 'center' : 'left' }} numberOfLines={1} fontSize={!trimmedDesc ? scaledFont(21) : scaledFont(19)} color={colorMode === 'light' ? DARK_COLOR : borderDarkColor} fontFamily={'heading'} fontWeight={'900'} pb={!trimmedDesc ? 0 : 1 } >{title.trim()}</Text>
-              </View>
-
-
-
-                {/* style={priority === 'confidential' ? colorMode === 'light' ? styles.lightNote : styles.darkNote : {}} */}
-   
+              </View>   
 
           {trimmedDesc && 
             <View flex={1} pointerEvents={'none'} accessibilityLabel={'description'}>
@@ -160,7 +149,6 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
                     )}
                     />
                     </View>}
-
 
               </Box>   
         </TouchableOpacity>
