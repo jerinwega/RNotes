@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
-import { HStack, Divider, Select, Box, Center, useColorMode, IconButton, TextArea, Input, View, KeyboardAvoidingView, ScrollView } from "native-base";
+import { HStack, Divider, Select, Box, Center, useColorMode, IconButton, Input, View } from "native-base";
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { DARK_COLOR, LIGHT_COLOR, ANDROID } from '../utils/constants';
@@ -44,6 +44,7 @@ const AddNote = ({
       setPriority(viewedNote.priority)
     }
   }, [])
+
 
   useGoBackHandler(() => {
     debounce(handleSubmit);
@@ -229,6 +230,7 @@ const AddNote = ({
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <Box mx={5} pb={3}>
               <Input
+                blurOnSubmit={false}
                 py={3}
                 px={4}
                 fontSize={scaledFont(24)}
@@ -251,54 +253,10 @@ const AddNote = ({
               </Box>
               </TouchableWithoutFeedback>
 
-
-              {/* <KeyboardAvoidingView 
-                flex={1}
-                behavior={Platform.OS === ANDROID ? "height" : "padding" }
-                keyboardVerticalOffset={scaledHeight(120)}
-              >
-              <ScrollView 
-                flex={1} 
-                bounces 
-                keyboardShouldPersistTaps="handled" 
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1 }}
-                mx={5} pb={5} pt={2}>
-                <TextArea 
-                  flex={1}
-                  spellCheck={false}
-                  autoFocus={false}
-                  autoCapitalize={'none'}
-                  fontFamily={'body'}
-                  fontWeight={'600'}
-                  fontSize={scaledFont(20)} 
-                  rounded={'3xl'}
-                  px={4} 
-                  py={4}
-                  accessibilityRole={'none'}
-                  accessibilityLabel={"Description Field"}
-                  accessibilityHint={"Add Description"}
-                  placeholder="ideas"
-                  _focus={{ selectionColor: Platform.OS === ANDROID ? colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)' : colorMode === 'light' ? 'black': 'white' }} 
-                  _light={{
-                      bg: 'white',
-                    }} 
-                  _dark={{
-                      bg: 'black',
-                    }} 
-                  value={description} 
-                  onChangeText={(text) => handleChange(text, 'description')}
-                  ref={nextRef}
-                />
-              </ScrollView>
-              
-              </KeyboardAvoidingView> */}
-                          <Editor
-                            value={description} 
-                            onChangeText={(text) => handleChange(text, 'description')}
-                          />
-
-
+            <Editor
+              value={description} 
+              onChangeText={(text) => handleChange(text, 'description')}
+            />
               </View>
 
           {openInfo ? <InfoModal 

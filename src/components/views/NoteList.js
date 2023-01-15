@@ -68,15 +68,23 @@ const fileUriForBold = Platform.select({
   @font-face {
     font-family: 'Lato-Bold';
     src: local('Lato-Bold'), url('${fileUriForBold}') format('truetype');
-}
+  }
+
+  strike {
+    font-size: ${scaledFont(17)} !important;
+  }
+  span {
+    font-size: ${scaledFont(17)} !important;
+  }
   
   a {
+    font-size: ${scaledFont(17)} !important;
     color: #41B2F3;
     font-family: 'Lato-Bold';
     text-decoration: none;
   }
   body {
-    font-size: ${scaledFont(17)};
+    font-size: ${scaledFont(17)} !important;
     color: ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR};
     line-height: 28px;
     font-family: 'Lato-Regular';
@@ -87,7 +95,11 @@ const fileUriForBold = Platform.select({
     padding: 0;
     text-shadow: ${priority === 'confidential' ? `-5px 0px 0.1px ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}`: 'none'};
   }
-  ::selection { background: ${colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}; color: ${colorMode === 'light' ? 'black' : 'white'};
+  div {
+    font-size: ${scaledFont(17)};
+    max-height: 80px;
+    overflow: hidden;
+  }
 </style>`
 
 const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">${css}</head><body>${autoLinkedText}</body></html>`;
@@ -124,10 +136,8 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
           {trimmedDesc && 
             <View flex={1} pointerEvents={'none'} accessibilityLabel={'description'}>
                 <WebView
-                    style={{ backgroundColor: 'transparent', opacity: priority === 'confidential' ? 0.03 : 1 }}
-                    containerStyle={{  minHeight: scaledHeight(81), 
-                      paddingBottom: Platform.OS === ANDROID ? scaledFont(12) : scaledFont(9) 
-                    }}
+                    style={{ backgroundColor: 'transparent', opacity: priority === 'confidential' ? 0.03 : 1}}
+                    containerStyle={{  minHeight: scaledHeight(90), paddingBottom: 2 }}
                     cacheEnabled={true}
                     androidLayerType="software"
                     hideKeyboardAccessoryView={true}
@@ -136,7 +146,6 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
                     dataDetectorTypes={'all'}
                     domStorageEnabled
                     javaScriptEnabled
-                    scrollEnabled={false}
                     onMessage={(event) => {}}
                     source={{ html: htmlText, baseUrl: '' }}
                     showsHorizontalScrollIndicator={false}

@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from "react";
-import { Platform, StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { useColorMode, KeyboardAvoidingView, ScrollView } from "native-base";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import { ANDROID, DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
@@ -16,6 +16,7 @@ const Editor = ({
     const scrollRef = useRef(null);
     const { colorMode } = useColorMode();
 
+
     let handleCursorPosition = useCallback((scrollY) => {
         // Positioning scroll bar
         scrollRef.current.scrollTo({ y: scrollY - 30, animated: true });
@@ -24,6 +25,7 @@ const Editor = ({
 	return (
             <>  
                  <KeyboardAvoidingView 
+                    enabled
                   flex={1}
                   behavior={Platform.OS === ANDROID ? "height" : "padding" }
                   keyboardVerticalOffset={scaledHeight(120)}
@@ -87,8 +89,8 @@ const Editor = ({
                     flatContainerStyle={{ paddingHorizontal: 6 }}
                     actions={[
                     // actions.insertImage,
-                    actions.keyboard,
                     actions.setBold,
+                    actions.setItalic,
                     actions.setStrikethrough,
                     actions.undo,
                     actions.redo,
@@ -96,11 +98,11 @@ const Editor = ({
                     actions.insertOrderedList,
                     // actions.checkboxList,
                     // actions.insertLink, // check html view
-                    actions.setItalic,
-                    actions.setUnderline,
                     actions.alignLeft,
                     actions.alignCenter,
                     actions.alignRight,
+                    actions.setUnderline,
+                    actions.keyboard,
                     ]}
                     style={[
                         styles.richTextToolbarStyle, { 

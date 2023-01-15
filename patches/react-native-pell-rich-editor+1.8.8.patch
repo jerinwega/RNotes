@@ -11,3 +11,48 @@ index 6882aa8..ce8133c 100755
                  editor.sendAction(action, 'result');
                  break;
              case actions.insertImage:
+diff --git a/node_modules/react-native-pell-rich-editor/src/editor.js b/node_modules/react-native-pell-rich-editor/src/editor.js
+index 4252bd9..84517b5 100644
+--- a/node_modules/react-native-pell-rich-editor/src/editor.js
++++ b/node_modules/react-native-pell-rich-editor/src/editor.js
+@@ -34,7 +34,7 @@ function createHTML(options = {}) {
+         inputListener = false,
+         autoCapitalize = 'off',
+         enterKeyHint = '',
+-        autoCorrect = false,
++        autoCorrect = true,
+         defaultParagraphSeparator = 'div',
+         // When first gaining focus, the cursor moves to the end of the text
+         firstFocusEnd = true,
+@@ -435,7 +435,7 @@ function createHTML(options = {}) {
+             content.id = 'content';
+             content.contentEditable = true;
+             content.spellcheck = false;
+-            content.autofocus = true;
++            content.autofocus = false;
+             content.enterKeyHint = '${enterKeyHint}';
+             content.autocapitalize = '${autoCapitalize}';
+             content.autocorrect = ${autoCorrect};
+@@ -580,13 +580,15 @@ function createHTML(options = {}) {
+                     exec("insertText", text);
+                 }
+             });
+-            addEventListener(content, 'compositionstart', function(event){
+-                compositionStatus = 1;
+-            })
+-            addEventListener(content, 'compositionend', function (event){
+-                compositionStatus = 0;
+-                paragraphStatus && formatParagraph(true);
+-            })
++            // these make a mess on Android, and are not even used on iOS
++            // so it's better to disable them for now
++            // addEventListener(content, 'compositionstart', function(event){
++            //     compositionStatus = 1;
++            // })
++            // addEventListener(content, 'compositionend', function (event){
++            //     compositionStatus = 0;
++            //     paragraphStatus && formatParagraph(true);
++            // })
+ 
+             var message = function (event){
+                 var msgData = JSON.parse(event.data), action = Actions[msgData.type];

@@ -44,7 +44,7 @@ export default function App() {
     findUser();
     setTimeout(() => {
       SplashScreen.hide();
-    }, 500)
+    })
   }, []);
 
 

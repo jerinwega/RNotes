@@ -216,7 +216,7 @@ const ViewNotes = ({
       text-decoration: none;
     }
     body {
-      font-size: ${scaledFont(20)};
+      font-size: ${scaledFont(20)} !important;
       color: ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR};
       line-height: 28px;
       font-family: 'Lato-Regular';
