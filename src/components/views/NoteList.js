@@ -69,41 +69,36 @@ const fileUriForBold = Platform.select({
     font-family: 'Lato-Bold';
     src: local('Lato-Bold'), url('${fileUriForBold}') format('truetype');
   }
-
-  strike {
-    font-size: ${scaledFont(17)} !important;
-  }
-  span {
-    font-size: ${scaledFont(17)} !important;
-  }
   
   a {
-    font-size: ${scaledFont(17)} !important;
     color: #41B2F3;
     font-family: 'Lato-Bold';
     text-decoration: none;
   }
-  body {
+
+  .noteList {
     font-size: ${scaledFont(17)} !important;
     color: ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR};
     line-height: 28px;
     font-family: 'Lato-Regular';
     word-break: break-all; 
     word-wrap: break-word;
+    overflow-wrap: break-word;
     overflow-x: auto;
-    margin: 0;
+    margin: 2;
     padding: 0;
     text-shadow: ${priority === 'confidential' ? `-5px 0px 0.1px ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}`: 'none'};
   }
   div {
-    font-size: ${scaledFont(17)};
     max-height: 80px;
     overflow: hidden;
   }
 </style>`
 
-const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">${css}</head><body>${autoLinkedText}</body></html>`;
 
+// const temp1 = `<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body class="noteList">${autoLinkedText}</body></html>`;
+
+const htmlText = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body class="noteList">${autoLinkedText}</body></html>`;
 
  return <TouchableOpacity
         onPress={onPress}
@@ -136,8 +131,9 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
           {trimmedDesc && 
             <View flex={1} pointerEvents={'none'} accessibilityLabel={'description'}>
                 <WebView
-                    style={{ backgroundColor: 'transparent', opacity: priority === 'confidential' ? 0.03 : 1}}
-                    containerStyle={{  minHeight: scaledHeight(90), paddingBottom: 2 }}
+                    textZoom={100}
+                    style={{ backgroundColor: 'transparent', opacity: priority === 'confidential' ? 0.03 : 1, flex: 1 }}
+                    containerStyle={{  minHeight: scaledHeight(90) }}
                     cacheEnabled={true}
                     androidLayerType="software"
                     hideKeyboardAccessoryView={true}
@@ -147,6 +143,7 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
                     domStorageEnabled
                     javaScriptEnabled
                     onMessage={(event) => {}}
+                    thirdPartyCookiesEnabled
                     source={{ html: htmlText, baseUrl: '' }}
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}

@@ -46,7 +46,6 @@ const ViewNotes = ({
   const [url, setUrl] = useState('');
 
   const cancelRef = useRef(null);
-  const timerRef = useRef(null);
   const webViewRef = useRef(null);
 
   const toast = useToast();
@@ -55,7 +54,6 @@ const ViewNotes = ({
 
     useEffect(() => {
       findNotes();
-      return () => clearTimeout(timerRef.current);
     }, []);
 
 
@@ -215,21 +213,25 @@ const ViewNotes = ({
       font-family: 'Lato-Bold';
       text-decoration: none;
     }
-    body {
-      font-size: ${scaledFont(20)} !important;
+    .viewNotes {
+      font-size: ${scaledFont(20)};
       color: ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR};
       line-height: 28px;
       font-family: 'Lato-Regular';
       word-break: break-all; 
       word-wrap: break-word;
+      overflow-wrap: break-word;
       overflow-x: auto;
-      margin: 0;
+      margin: 6;
       padding: 0;
     }
     ::selection { background: ${colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}; color: ${colorMode === 'light' ? 'black' : 'white'};
 </style>`
 
-const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">${css}</head><body>${autoLinkedText}</body></html>`;
+
+// const temp1 = `<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body class="viewNotes">${autoLinkedText}</body></html>`;
+const htmlText = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body class="viewNotes">${autoLinkedText}</body></html>`;
+
 
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
@@ -331,12 +333,14 @@ const htmlText = `<html><head><meta name="viewport" content="user-scalable=1.0,i
             doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
             delay={400}
             >
-              <View flex={1} px={7} py={4} accessibilityLabel={'note description'}>     
+              <View flex={1} px={6} py={3} accessibilityLabel={'note description'}>     
                 {get(viewedNote, 'description').trim() !== '' ?
                 <WebView
                   ref={webViewRef}
-                   style={{ backgroundColor: 'transparent', flex: 1}}
+                  textZoom={100}
+                   style={{ backgroundColor: 'transparent', flex: 1 }}
                     cacheEnabled={true}
+                    thirdPartyCookiesEnabled
                     androidLayerType="software"
                     hideKeyboardAccessoryView={true}
                     keyboardDisplayRequiresUserAction={false}
