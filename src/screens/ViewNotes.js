@@ -214,7 +214,7 @@ const ViewNotes = ({
       text-decoration: none;
     }
     .viewNotes {
-      font-size: ${scaledFont(20)};
+      font-size: ${scaledFont(20)} !important;
       color: ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR};
       line-height: 28px;
       font-family: 'Lato-Regular';
@@ -224,6 +224,9 @@ const ViewNotes = ({
       overflow-x: auto;
       margin: 6;
       padding: 0;
+    }
+    span {
+      font-size: ${scaledFont(20)} !important;
     }
     ::selection { background: ${colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}; color: ${colorMode === 'light' ? 'black' : 'white'};
 </style>`
@@ -331,7 +334,7 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
           </View>
           <DoubleClick
             doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
-            delay={400}
+            delay={200}
             >
               <View flex={1} px={6} py={3} accessibilityLabel={'note description'}>     
                 {get(viewedNote, 'description').trim() !== '' ?
@@ -341,7 +344,9 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
                    style={{ backgroundColor: 'transparent', flex: 1 }}
                     cacheEnabled={true}
                     thirdPartyCookiesEnabled
-                    androidLayerType="software"
+                    // androidLayerType="software"
+                    androidHardwareAccelerationDisabled={true}
+
                     hideKeyboardAccessoryView={true}
                     keyboardDisplayRequiresUserAction={false}
                     originWhitelist={['*']}

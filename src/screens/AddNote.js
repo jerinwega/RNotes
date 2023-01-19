@@ -20,6 +20,7 @@ const AddNote = ({
   route
 }) => { 
   const { width: deviceWidth } = Dimensions.get('window');
+
   const { colorMode } = useColorMode();
 
   const [priority, setPriority] = useState('low');
@@ -27,7 +28,7 @@ const AddNote = ({
   const [description, setDescription] = useState('');
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [openInfo, setOpenInfo] = useState(false)
-  const [titleFocused, setTitleFocused] = useState(false);
+  const [showToolbar, setShowToolbar] = useState(false);
 
 
   const { isEdit } = get(route, 'params');
@@ -51,14 +52,14 @@ const AddNote = ({
     return () => clearTimeout(titleRef.current);
   }, [])
 
-  useEffect(() => {
-    setTitleFocused(true);
-    if (!title.trim()) {
-      setTimeout(() => {
-        titleRef.current?.focus();
-      },800)
-    }
-  }, [title])
+  // useEffect(() => {
+  //   setTitleFocused(true);
+  //   if (!title.trim()) {
+  //     setTimeout(() => {
+  //       titleRef.current?.focus();
+  //     },800)
+  //   }
+  // }, [title])
 
 
 
@@ -153,8 +154,9 @@ const AddNote = ({
     let handleCursorPosition = useCallback((scrollY) => {
       // Positioning scroll bar
       scrollRef.current.scrollTo({ y: scrollY - 30, animated: true });
-  }, [])
-   
+  }, []);
+
+
         return (
           <View style={{ flex: 1, width: deviceWidth }}>
             <Center
@@ -252,7 +254,7 @@ const AddNote = ({
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <Box mx={5} pb={3}>
               <Input
-                onTouchStart={() => setTitleFocused(true)}
+                onTouchStart={() => setShowToolbar(false)}
                 ref={titleRef}
                 blurOnSubmit={false}
                 py={3}
@@ -277,7 +279,7 @@ const AddNote = ({
               </TouchableWithoutFeedback>
 
              <KeyboardAvoidingView 
-                  enabled={!titleFocused}
+                  enabled={showToolbar}
                   flex={1}
                   behavior={Platform.OS === ANDROID ? "height" : "padding" }
                   keyboardVerticalOffset={scaledHeight(120)}
@@ -293,8 +295,9 @@ const AddNote = ({
                     mx={5}
                     >
                     <RichEditor
-                        onTouchStart={() => setTitleFocused(false)}
-                        androidLayerType="software"
+                      onFocus={() => setShowToolbar(true)}
+                        // androidLayerType="software"
+                        androidHardwareAccelerationDisabled={true}
                         accessibilityRole={'none'}
                         accessibilityLabel={"Description Field"}
                         accessibilityHint={"Add Description"}
@@ -308,16 +311,14 @@ const AddNote = ({
                             contentCSSText:`
                                 padding: 14px; 
                                 font-family: 'Lato';
-                                font-size: ${scaledFont(20)}px;
-                                `
+                                font-size: ${scaledFont(20)}px !important;
+                                `,
                         }}
-
-                        style={{flex: 1, borderRadius: 20 }}
+                        style={{flex: 1, borderRadius: 20, opacity: 1 }}
                         ref={richText}
                         placeholder={"ideas"}
                         pasteAsPlainText={true}
                         initialFocus={false}
-                        disabled={false}
                         useContainer={true}
                         onCursorPosition={handleCursorPosition}
                         containerStyle={{
@@ -335,6 +336,8 @@ const AddNote = ({
                 </ScrollView>
                 <RichToolbar
                     editor={richText}
+                    disabled={!showToolbar}
+                    disabledIconTint ={colorMode === 'light' ? '#a3a3a3' : '#525252'}
                     selectedIconTint={colorMode === 'light' ? '#cb7bff' : '#c05eff'}
                     iconTint={colorMode=== 'light' ? DARK_COLOR : LIGHT_COLOR }
                     iconSize={scaledFont(22)}
@@ -342,19 +345,18 @@ const AddNote = ({
                     actions={[
                     // actions.insertImage,
                     actions.setBold,
-                    actions.setItalic,
+                    // actions.setItalic,
+                    actions.setUnderline,
                     actions.setStrikethrough,
-                    actions.undo,
-                    actions.redo,
+                    // actions.undo,
+                    // actions.redo,
                     actions.insertBulletsList,
                     actions.insertOrderedList,
                     // actions.checkboxList,
-                    // actions.insertLink, // check html view
                     actions.alignLeft,
                     actions.alignCenter,
                     actions.alignRight,
-                    actions.setUnderline,
-                    actions.keyboard,
+                    // actions.keyboard,
                     ]}
                     style={[
                         styles.richTextToolbarStyle, { 

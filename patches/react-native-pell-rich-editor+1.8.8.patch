@@ -1,3 +1,26 @@
+diff --git a/node_modules/react-native-pell-rich-editor/src/RichEditor.js b/node_modules/react-native-pell-rich-editor/src/RichEditor.js
+index 74de536..8471610 100755
+--- a/node_modules/react-native-pell-rich-editor/src/RichEditor.js
++++ b/node_modules/react-native-pell-rich-editor/src/RichEditor.js
+@@ -262,8 +262,10 @@ export default class RichTextEditor extends Component {
+         return (
+             <>
+                 <WebView
++                    textZoom={100}
+                     useWebKit={true}
+                     scrollEnabled={false}
++                    androidHardwareAccelerationDisabled={true}
+                     hideKeyboardAccessoryView={true}
+                     keyboardDisplayRequiresUserAction={false}
+                     nestedScrollEnabled={!useContainer}
+@@ -473,6 +475,6 @@ const styles = StyleSheet.create({
+     },
+ 
+     webview: {
+-        backgroundColor: "transparent"
++        backgroundColor: "transparent",
+     }
+ });
 diff --git a/node_modules/react-native-pell-rich-editor/src/RichToolbar.js b/node_modules/react-native-pell-rich-editor/src/RichToolbar.js
 index 6882aa8..ce8133c 100755
 --- a/node_modules/react-native-pell-rich-editor/src/RichToolbar.js
@@ -12,7 +35,7 @@ index 6882aa8..ce8133c 100755
                  break;
              case actions.insertImage:
 diff --git a/node_modules/react-native-pell-rich-editor/src/editor.js b/node_modules/react-native-pell-rich-editor/src/editor.js
-index 4252bd9..84517b5 100644
+index 4252bd9..848e578 100644
 --- a/node_modules/react-native-pell-rich-editor/src/editor.js
 +++ b/node_modules/react-native-pell-rich-editor/src/editor.js
 @@ -34,7 +34,7 @@ function createHTML(options = {}) {
@@ -24,6 +47,15 @@ index 4252bd9..84517b5 100644
          defaultParagraphSeparator = 'div',
          // When first gaining focus, the cursor moves to the end of the text
          firstFocusEnd = true,
+@@ -46,7 +46,7 @@ function createHTML(options = {}) {
+ <html>
+ <head>
+     <title>RN Rich Text Editor</title>
+-    <meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
++    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+     <style>
+         ${initialCSSText}
+         * {outline: 0px solid transparent;-webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-touch-callout: none;box-sizing: border-box;}
 @@ -435,7 +435,7 @@ function createHTML(options = {}) {
              content.id = 'content';
              content.contentEditable = true;
@@ -33,7 +65,7 @@ index 4252bd9..84517b5 100644
              content.enterKeyHint = '${enterKeyHint}';
              content.autocapitalize = '${autoCapitalize}';
              content.autocorrect = ${autoCorrect};
-@@ -580,13 +580,15 @@ function createHTML(options = {}) {
+@@ -580,13 +580,16 @@ function createHTML(options = {}) {
                      exec("insertText", text);
                  }
              });
@@ -44,6 +76,7 @@ index 4252bd9..84517b5 100644
 -                compositionStatus = 0;
 -                paragraphStatus && formatParagraph(true);
 -            })
++
 +            // these make a mess on Android, and are not even used on iOS
 +            // so it's better to disable them for now
 +            // addEventListener(content, 'compositionstart', function(event){

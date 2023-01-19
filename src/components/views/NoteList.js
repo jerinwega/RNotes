@@ -93,6 +93,9 @@ const fileUriForBold = Platform.select({
     max-height: 80px;
     overflow: hidden;
   }
+  span {
+    font-size: ${scaledFont(17)} !important;
+  }
 </style>`
 
 
@@ -115,7 +118,7 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
         rounded="3xl" 
         justifyContent={!trimmedDesc ? "center" : 'flex-start'}
         borderTopWidth={5}
-        style={{ transform: [{ scale: selected ? 0.95 : 1 }], opacity: selected ? colorMode === 'light' ? 0.5 : 0.4 : 1 }}
+        style={{ transform: [{ scale: selected ? 0.95 : 1 }], opacity: selected ? 0.4 : 1 }}
         _dark={{ borderColor: borderDarkColor, borderWidth: 1, bg: selected ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}} 
         _light={{ borderColor: borderColor, borderWidth: 2, background: selected ? 'rgba(0, 0, 0, 0.1)' : hashBgColor }}
       >
@@ -135,7 +138,8 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
                     style={{ backgroundColor: 'transparent', opacity: priority === 'confidential' ? 0.03 : 1, flex: 1 }}
                     containerStyle={{  minHeight: scaledHeight(90) }}
                     cacheEnabled={true}
-                    androidLayerType="software"
+                    // androidLayerType="software" // longtext paste issue maker
+                    androidHardwareAccelerationDisabled={true}
                     hideKeyboardAccessoryView={true}
                     keyboardDisplayRequiresUserAction={false}
                     originWhitelist={['*']}

@@ -33,7 +33,9 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
         <RefreshControl
           refreshing={refreshState}
           onRefresh={onRefresh}
-          tintColor={colorMode=== 'light' ? DARK_COLOR : LIGHT_COLOR}
+          tintColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+          progressBackgroundColor={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}
+          colors={colorMode === 'light' ? [LIGHT_COLOR] : [DARK_COLOR]}
         />
       )}
       >

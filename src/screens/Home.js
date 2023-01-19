@@ -748,7 +748,6 @@ let lColor = '';
           clearIconComponent={!search ? <></> : null}
           style={[Platform.OS === ANDROID && styles.androidSearchShadow, { width: deviceWidth - 30, height: scaledHeight(38), borderRadius: 20, backgroundColor: colorMode === 'light' ? 'white' : 'black' }]}
           darkMode={colorMode === 'dark'}
-          fontSize={scaledFont(14)}
           placeholder="Search"
           value={search}
           onChangeText={handleSearch}
@@ -759,7 +758,7 @@ let lColor = '';
           autoFocus={false}
           autoCapitalize={'none'}
           selectionColor={colorMode === 'light' ? 'black': 'white'}
-          textInputStyle={{ fontFamily: 'Lato-Bold' }}
+          textInputStyle={{ fontFamily: 'Lato-Bold', fontSize: scaledFont(14) }}
           searchIconImageStyle={{ width: scaledWidth(16), height: scaledHeight(16) }}
           clearIconImageStyle={{ width: scaledWidth(14), height: scaledHeight(14) }}
         />  : null}
