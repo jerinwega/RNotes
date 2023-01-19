@@ -27,6 +27,7 @@
     "react-native-dynamic-search-bar": "^2.0.2",
     "react-native-floating-heart": "^1.0.1",
     "react-native-gesture-handler": "^1.9.0",
+    "react-native-haptic-feedback": "^1.14.0",
     "react-native-hyperlink": "0.0.22",
     "react-native-material-menu": "^2.0.0",
     "react-native-pell-rich-editor": "^1.8.8",

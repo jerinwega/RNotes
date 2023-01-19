@@ -28,6 +28,7 @@ import DoubleClick from 'react-native-double-tap'
 import { WebView } from 'react-native-webview';
 import Autolinker from 'autolinker';
 import Spinner from "react-native-spinkit";
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 
 
@@ -131,7 +132,6 @@ const ViewNotes = ({
 
 
     const handleShare = async () => {
-
       const shareOption = {
         message: `${viewedNote.title}\n${convertedDesc}`,
         excludedActivityTypes: [
@@ -167,6 +167,11 @@ const ViewNotes = ({
         err && console.log(err);
       });
     }
+
+    const options = {
+      enableVibrateFallback: true,
+      ignoreAndroidSystemSettings: false
+    };
 
 
     let startEndIconColor = '#16a34a';
@@ -280,7 +285,10 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
                   accessibilityLabel={'delete button'}
                   icon={<FontAwesome5Icon color={colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR } name="trash-alt" size={scaledFont(21)} solid />}
                   borderRadius="full"
-                  onPress={() => setIsDeleteAlertOpen(true)}
+                  onPress={() => {
+                    setIsDeleteAlertOpen(true);
+                    ReactNativeHapticFeedback.trigger("impactHeavy", options);
+                  }}
                 />
                 <IconButton 
                   accessibilityLabel={'copy to clipboard button'}
@@ -333,7 +341,10 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
             <Divider shadow={2} style={{ shadowColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }} />
           </View>
           <DoubleClick
-            doubleTap={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}
+            doubleTap={() => {
+              navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote });
+              ReactNativeHapticFeedback.trigger("impactLight", options);
+            }}
             delay={200}
             >
               <View flex={1} px={6} py={3} accessibilityLabel={'note description'}>     
@@ -430,7 +441,10 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
               <RNBounceable  
                 bounceEffectIn={0.6}
                 style={[styles.editIcon, { backgroundColor: colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR }]} 
-                onPress={() => navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote })}  
+                onPress={() => {
+                  navigation.navigate('AddNote', { viewedNote , isEdit: true, data: notes, editNote: editNote });
+                  ReactNativeHapticFeedback.trigger("impactLight", options);
+                }}  
               >
                 <FontAwesome5Icon name="pen-alt" color={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR} solid size={scaledFont(26)} />
               </ RNBounceable>

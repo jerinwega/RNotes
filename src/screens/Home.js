@@ -35,6 +35,8 @@ import {
   useTourGuideController, // hook to start, etc.
 } from 'rn-tourguide'
 import { FloatingHeart } from 'react-native-floating-heart';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+
 
  const HomeScreen = ({ route, navigation, user, onClose }) => {
 
@@ -68,8 +70,6 @@ import { FloatingHeart } from 'react-native-floating-heart';
   const cancelRef = useRef(null);
   const anim = useRef(new Animated.Value(0));
   const animLove = useRef(new Animated.Value(0));
-
-
 
   const {
     canStart, // a boolean indicate if you can start tour guide
@@ -227,25 +227,6 @@ import { FloatingHeart } from 'react-native-floating-heart';
       Keyboard.dismiss();
     if (!get(notes, 'length')) {
         start(1);
-      // const id = "sortToast";
-      // if (!sortToast.isActive(id)) {
-      //   sortToast.show({
-      //     id,
-      //     title: "Add Notes",
-      //     placement: "bottom",
-      //     duration: 2500,
-      //     rounded: '3xl',
-      //     bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
-      //     _title: {
-      //       px: 6,
-      //       py: 0,
-      //       fontFamily: 'mono',
-      //       fontWeight: '900',
-      //       fontSize: scaledFont(15),
-      //       color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
-      //     }
-      //   });
-      // }
      return;
     }
     if (sortBy === 'desc') {
@@ -320,25 +301,6 @@ import { FloatingHeart } from 'react-native-floating-heart';
     if (!get(notes, 'length')) {
       start(1);
       setPriority('none');
-      // const id = "priorityToast";
-      // if (!priorityToast.isActive(id)) {
-      //   priorityToast.show({
-      //     id,
-      //     title: "Add Notes",
-      //     placement: "bottom",
-      //     duration: 2500,
-      //     rounded: '3xl',
-      //     bg: colorMode === 'light' ? 'warning.500' : LIGHT_COLOR,
-      //     _title: {
-      //       px: 6,
-      //       py: 0,
-      //       fontFamily: 'mono',
-      //       fontWeight: '900',
-      //       fontSize: scaledFont(16),
-      //       color: colorMode === 'light' ? LIGHT_COLOR : "warning.500"
-      //     }
-      //   });
-      // }
       return;
      }
 
@@ -629,6 +591,11 @@ let lColor = '';
   return lColor;
 }
 
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
+
   return (
     <View style={{ width: deviceWidth, flex: 1 }}>
     <Center
@@ -639,7 +606,9 @@ let lColor = '';
     <Box safeAreaTop />
     <HStack _dark={{ bg: DARK_COLOR }} _light={{ bg: LIGHT_COLOR }} pl={4} pr={3} py={2.5} justifyContent={'space-between'} alignItems="center" style={{ width: deviceWidth }}>
         <HStack>
-          <RNBounceable bounceEffectIn={0.9} onPress={addHeart} onTouchStart={() => setBrandTouched(true)} onTouchEnd={() => setBrandTouched(false)}>
+          <RNBounceable bounceEffectIn={0.9} onPress={addHeart} onTouchStart={() => {
+            setBrandTouched(true);
+          }} onTouchEnd={() => setBrandTouched(false)}>
           <Text letterSpacing={0} color={logoColor()} fontSize={scaledFont(42)} fontFamily = 'ChocoChici'>
             RNotes
           </Text>
@@ -791,8 +760,14 @@ let lColor = '';
               }}
               renderItem={({item}) => 
               <NoteList 
-                onPress={() => handleNotePress(item)}
-                onLongPress={() => selectNotes(item)} 
+                onPress={() => {
+                  handleNotePress(item);
+                  ReactNativeHapticFeedback.trigger("soft", options);
+                }}
+                onLongPress={() => {
+                  selectNotes(item);
+                  ReactNativeHapticFeedback.trigger("soft", options);
+                }} 
                 item={item} 
                 navigation={navigation} 
                 selected={getSelectedNote(item)}
@@ -820,10 +795,12 @@ let lColor = '';
           if (get(selectedItems, 'length')) {
             return (
               setIsDeleteAlertOpen(true),
-              setDeleteNoteToast(false)
+              setDeleteNoteToast(false),
+              ReactNativeHapticFeedback.trigger("impactHeavy", options)
             )
           }
           setHeartCount(0);
+          ReactNativeHapticFeedback.trigger("impactLight", options)
           navigation.navigate('AddNote', { isEdit: false })
         }}
       >

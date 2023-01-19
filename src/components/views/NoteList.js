@@ -103,6 +103,20 @@ const fileUriForBold = Platform.select({
 
 const htmlText = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body class="noteList">${autoLinkedText}</body></html>`;
 
+
+let webViewOpacity = 1;
+
+if (selected) {
+  webViewOpacity = 0.5;
+}
+if (priority === 'confidential') {
+  if (selected) {
+  webViewOpacity =  0.03;
+  } else { 
+  webViewOpacity =  0.03;
+  }
+}
+
  return <TouchableOpacity
         onPress={onPress}
         onLongPress={onLongPress}
@@ -135,7 +149,7 @@ const htmlText = `<html><head><meta name="viewport" content="width=device-width,
             <View flex={1} pointerEvents={'none'} accessibilityLabel={'description'}>
                 <WebView
                     textZoom={100}
-                    style={{ backgroundColor: 'transparent', opacity: priority === 'confidential' ? 0.03 : 1, flex: 1 }}
+                    style={{ backgroundColor: 'transparent', opacity: webViewOpacity, flex: 1 }}
                     containerStyle={{  minHeight: scaledHeight(90) }}
                     cacheEnabled={true}
                     // androidLayerType="software" // longtext paste issue maker

@@ -8,7 +8,7 @@
 
  import React from "react";
  import { Text, Center, Button, Image, useColorMode, ScrollView } from "native-base";
-import { Keyboard, RefreshControl } from "react-native";
+import { Keyboard, RefreshControl, Dimensions } from "react-native";
 import NoDataImage from '../../assets/images/NoData.webp'
 import { scaledFont } from "../common/Scale";
 import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
@@ -20,6 +20,7 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
  }) => {
   const { colorMode } = useColorMode();
 
+  const deviceWidth = Dimensions.get('window').width - 40;
 
   return (
     <ScrollView 
@@ -49,12 +50,13 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
         </Center>
       <Center>
       <Button
+       width={deviceWidth - 40}
         accessibilityHint="clear all filters"
         accessibilityLabel="clear filters button"
-        bg={colorMode === 'light' ? LIGHT_COLOR : DARK_COLOR}
+        bg={ colorMode === 'light' ? 'white': 'black'}
         borderColor={'blue.200'}
         borderWidth={2}
-       _pressed={{ bg: 'blue.100'}} mt={2} px={6} py={1} variant={'outline'} rounded={'full'} onPress={handleClearSearch}>
+       _pressed={{ bg: 'blue.200'}} mt={4} py={3} variant={'outline'} rounded={'full'} onPress={handleClearSearch}>
           <Text fontFamily={'mono'} color={'blue.600'} fontWeight={'900'} fontSize={scaledFont(16)}>
             Clear Filters
           </Text>
