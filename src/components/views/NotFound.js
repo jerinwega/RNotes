@@ -26,7 +26,8 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
     <ScrollView 
       bounces
       flex={1} 
-      py={4}
+      py={4} 
+      pb={10}
       contentContainerStyle={{ flexGrow: 1 }}
       onTouchStart={() => Keyboard.dismiss()}
       showsVerticalScrollIndicator={false}
@@ -40,15 +41,13 @@ import { DARK_COLOR, LIGHT_COLOR } from "../../utils/constants";
         />
       )}
       >
-        <Center>
+        <Center flex={1} pb={6}>
         <Image
           size={scaledFont(280)}
           source={NoDataImage}
           alt="Notes Not Found !" />
         <Text pt={2} mb={1} fontFamily={'heading'} fontWeight={'900'} fontSize={scaledFont(28)}>Oops!</Text>
         <Text mb={1} fontFamily={'heading'} fontWeight={'600'} fontSize={scaledFont(18)}>Notes Not Found</Text>
-        </Center>
-      <Center>
       <Button
        width={deviceWidth - 40}
         accessibilityHint="clear all filters"

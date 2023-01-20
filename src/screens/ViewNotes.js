@@ -233,6 +233,9 @@ const ViewNotes = ({
     span {
       font-size: ${scaledFont(20)} !important;
     }
+    b {
+      font-size: ${scaledFont(20)} !important;
+    }
     ::selection { background: ${colorMode === 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255,255,255, 0.2)'}; color: ${colorMode === 'light' ? 'black' : 'white'};
 </style>`
 

@@ -90,12 +90,18 @@ const fileUriForBold = Platform.select({
     text-shadow: ${priority === 'confidential' ? `-5px 0px 0.1px ${colorMode === 'light' ? DARK_COLOR : LIGHT_COLOR}`: 'none'};
   }
   div {
+    font-size: ${scaledFont(17)} !important;
     max-height: 80px;
     overflow: hidden;
   }
   span {
     font-size: ${scaledFont(17)} !important;
   }
+
+  b {
+    font-size: ${scaledFont(17)} !important;
+  }
+
 </style>`
 
 
@@ -103,6 +109,7 @@ const fileUriForBold = Platform.select({
 
 const htmlText = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body class="noteList">${autoLinkedText}</body></html>`;
 
+console.log(htmlText)
 
 let webViewOpacity = 1;
 
