@@ -109,8 +109,6 @@ const fileUriForBold = Platform.select({
 
 const htmlText = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body class="noteList">${autoLinkedText}</body></html>`;
 
-console.log(htmlText)
-
 let webViewOpacity = 1;
 
 if (selected) {
